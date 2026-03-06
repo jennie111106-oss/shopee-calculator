@@ -134,6 +134,11 @@
       border: 1px solid var(--line);
     }
 
+    .btn-success {
+      background: var(--accent-2);
+      color: #07160c;
+    }
+
     .muted {
       color: var(--muted);
       font-size: 12px;
@@ -275,6 +280,39 @@
     .small {
       font-size: 12px;
     }
+
+    .settings-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .settings-body.hidden {
+      display: none;
+    }
+
+    .accordion-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #1f2430;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
   </style>
 </head>
 <body>
@@ -298,6 +336,7 @@
 
     <div class="card">
       <h2>2) 상품 정보</h2>
+
       <div class="grid grid-4">
         <div class="field">
           <label for="productName">상품명</label>
@@ -351,7 +390,7 @@
         </div>
         <div class="field">
           <label>&nbsp;</label>
-          <div class="inline-flex small muted" style="height: 42px;">판매가 반올림 기능은 제외됨</div>
+          <div class="inline-flex small muted" style="height: 42px;">KRW 및 TW/PH/VN/TH 판매가는 반올림 처리</div>
         </div>
       </div>
 
@@ -363,7 +402,7 @@
           </div>
           <div class="field">
             <label for="checkSellPriceTW">TW 판매가 (TWD)</label>
-            <input id="checkSellPriceTW" type="number" min="0" step="0.01" placeholder="0" />
+            <input id="checkSellPriceTW" type="number" min="0" step="1" placeholder="0" />
           </div>
           <div class="field">
             <label for="checkSellPriceMY">MY 판매가 (MYR)</label>
@@ -371,14 +410,14 @@
           </div>
           <div class="field">
             <label for="checkSellPricePH">PH 판매가 (PHP)</label>
-            <input id="checkSellPricePH" type="number" min="0" step="0.01" placeholder="0" />
+            <input id="checkSellPricePH" type="number" min="0" step="1" placeholder="0" />
           </div>
         </div>
 
         <div class="grid grid-4" style="margin-top: 12px;">
           <div class="field">
             <label for="checkSellPriceVN">VN 판매가 (VND)</label>
-            <input id="checkSellPriceVN" type="number" min="0" step="0.01" placeholder="0" />
+            <input id="checkSellPriceVN" type="number" min="0" step="1" placeholder="0" />
           </div>
           <div class="field">
             <label for="checkSellPriceBR">BR 판매가 (BRL)</label>
@@ -386,7 +425,7 @@
           </div>
           <div class="field">
             <label for="checkSellPriceTH">TH 판매가 (THB)</label>
-            <input id="checkSellPriceTH" type="number" min="0" step="0.01" placeholder="0" />
+            <input id="checkSellPriceTH" type="number" min="0" step="1" placeholder="0" />
           </div>
           <div class="field">
             <label for="checkSellPriceMX">MX 판매가 (MXN)</label>
@@ -404,170 +443,190 @@
     </div>
 
     <div class="card">
-      <h2>3) 국가별 설정</h2>
-      <div class="muted" style="margin-bottom: 12px;">
-        여기 값만 바꾸면 수수료/환율을 언제든 수정할 수 있어.
-      </div>
-
-      <div class="grid grid-4">
-        <div class="field">
-          <label for="fxSG">SG 환율 (1 KRW = ? SGD)</label>
-          <input id="fxSG" type="number" step="0.0000001" value="0.00103" />
+      <div class="settings-header">
+        <div class="accordion-title">
+          <span>⚙ 설정</span>
+          <span class="badge">접기/펼치기</span>
         </div>
-        <div class="field">
-          <label for="feeSG">SG 총수수료율 (예: 0.16)</label>
-          <input id="feeSG" type="number" step="0.0001" value="0.16" />
-        </div>
-        <div class="field">
-          <label for="fixedSG">SG 고정수수료 (SGD)</label>
-          <input id="fixedSG" type="number" step="0.01" value="0" />
-        </div>
-        <div class="field">
-          <label for="rebateSG">SG 추가보정 / rebate (KRW)</label>
-          <input id="rebateSG" type="number" step="1" value="0" />
-        </div>
-      </div>
-
-      <div class="grid grid-4" style="margin-top: 12px;">
-        <div class="field">
-          <label for="fxTW">TW 환율 (1 KRW = ? TWD)</label>
-          <input id="fxTW" type="number" step="0.0000001" value="0.0238" />
-        </div>
-        <div class="field">
-          <label for="feeTW">TW 총수수료율</label>
-          <input id="feeTW" type="number" step="0.0001" value="0.16" />
-        </div>
-        <div class="field">
-          <label for="fixedTW">TW 고정수수료 (TWD)</label>
-          <input id="fixedTW" type="number" step="0.01" value="0" />
-        </div>
-        <div class="field">
-          <label for="rebateTW">TW 추가보정 / rebate (KRW)</label>
-          <input id="rebateTW" type="number" step="1" value="0" />
-        </div>
-      </div>
-
-      <div class="grid grid-4" style="margin-top: 12px;">
-        <div class="field">
-          <label for="fxMY">MY 환율 (1 KRW = ? MYR)</label>
-          <input id="fxMY" type="number" step="0.0000001" value="0.00325" />
-        </div>
-        <div class="field">
-          <label for="feeMY">MY 총수수료율</label>
-          <input id="feeMY" type="number" step="0.0001" value="0.16" />
-        </div>
-        <div class="field">
-          <label for="fixedMY">MY 고정수수료 (MYR)</label>
-          <input id="fixedMY" type="number" step="0.01" value="0" />
-        </div>
-        <div class="field">
-          <label for="rebateMY">MY 추가보정 / rebate (KRW)</label>
-          <input id="rebateMY" type="number" step="1" value="0" />
-        </div>
-      </div>
-
-      <div class="grid grid-4" style="margin-top: 12px;">
-        <div class="field">
-          <label for="fxPH">PH 환율 (1 KRW = ? PHP)</label>
-          <input id="fxPH" type="number" step="0.0000001" value="0.0415" />
-        </div>
-        <div class="field">
-          <label for="feePH">PH 총수수료율</label>
-          <input id="feePH" type="number" step="0.0001" value="0.16" />
-        </div>
-        <div class="field">
-          <label for="fixedPH">PH 고정수수료 (PHP)</label>
-          <input id="fixedPH" type="number" step="0.01" value="0" />
-        </div>
-        <div class="field">
-          <label for="rebatePH">PH 추가보정 / rebate (KRW)</label>
-          <input id="rebatePH" type="number" step="1" value="0" />
-        </div>
-      </div>
-
-      <div class="grid grid-4" style="margin-top: 12px;">
-        <div class="field">
-          <label for="fxVN">VN 환율 (1 KRW = ? VND)</label>
-          <input id="fxVN" type="number" step="0.0001" value="18.4" />
-        </div>
-        <div class="field">
-          <label for="feeVN">VN 총수수료율</label>
-          <input id="feeVN" type="number" step="0.0001" value="0.16" />
-        </div>
-        <div class="field">
-          <label for="fixedVN">VN 고정수수료 (VND)</label>
-          <input id="fixedVN" type="number" step="0.01" value="0" />
-        </div>
-        <div class="field">
-          <label for="rebateVN">VN 추가보정 / rebate (KRW)</label>
-          <input id="rebateVN" type="number" step="1" value="0" />
-        </div>
-      </div>
-
-      <div class="grid grid-4" style="margin-top: 12px;">
-        <div class="field">
-          <label for="fxBR">BR 환율 (1 KRW = ? BRL)</label>
-          <input id="fxBR" type="number" step="0.0000001" value="0.00375" />
-        </div>
-        <div class="field">
-          <label for="feeBR">BR 총수수료율</label>
-          <input id="feeBR" type="number" step="0.0001" value="0.16" />
-        </div>
-        <div class="field">
-          <label for="fixedBR">BR 고정수수료 (BRL)</label>
-          <input id="fixedBR" type="number" step="0.01" value="0" />
-        </div>
-        <div class="field">
-          <label for="rebateBR">BR 추가보정 / rebate (KRW)</label>
-          <input id="rebateBR" type="number" step="1" value="0" />
-        </div>
-      </div>
-
-      <div class="grid grid-4" style="margin-top: 12px;">
-        <div class="field">
-          <label for="fxTH">TH 환율 (1 KRW = ? THB)</label>
-          <input id="fxTH" type="number" step="0.0000001" value="0.0250" />
-        </div>
-        <div class="field">
-          <label for="feeTH">TH 총수수료율</label>
-          <input id="feeTH" type="number" step="0.0001" value="0.16" />
-        </div>
-        <div class="field">
-          <label for="fixedTH">TH 고정수수료 (THB)</label>
-          <input id="fixedTH" type="number" step="0.01" value="0" />
-        </div>
-        <div class="field">
-          <label for="rebateTH">TH 추가보정 / rebate (KRW)</label>
-          <input id="rebateTH" type="number" step="1" value="0" />
-        </div>
-      </div>
-
-      <div class="grid grid-4" style="margin-top: 12px;">
-        <div class="field">
-          <label for="fxMX">MX 환율 (1 KRW = ? MXN)</label>
-          <input id="fxMX" type="number" step="0.0000001" value="0.0132" />
-        </div>
-        <div class="field">
-          <label for="feeMX">MX 총수수료율</label>
-          <input id="feeMX" type="number" step="0.0001" value="0.16" />
-        </div>
-        <div class="field">
-          <label for="fixedMX">MX 고정수수료 (MXN)</label>
-          <input id="fixedMX" type="number" step="0.01" value="0" />
-        </div>
-        <div class="field">
-          <label for="rebateMX">MX 추가보정 / rebate (KRW)</label>
-          <input id="rebateMX" type="number" step="1" value="0" />
+        <div class="inline-flex">
+          <button type="button" id="hanaRateBtn" class="btn-success">하나은행 환율 불러오기</button>
+          <button type="button" id="toggleSettingsBtn" class="btn-secondary">설정 접기</button>
         </div>
       </div>
 
       <div class="section-note">
-        환율 기본값은 예시값이야. 네가 쓰는 실제 값으로 바꿔서 써.
+        기본 화면은 심플하게 두고, 환율/수수료는 여기서 관리하면 돼.
+      </div>
+
+      <div id="settingsBody" class="settings-body" style="margin-top: 16px;">
+        <div class="card" style="margin-bottom: 12px; background: #141820;">
+          <h2 style="margin-bottom: 12px;">환율 설정</h2>
+
+          <div class="grid grid-4">
+            <div class="field">
+              <label for="fxSG">SG 환율 (1 KRW = ? SGD)</label>
+              <input id="fxSG" type="number" step="0.0000001" value="0.00103" />
+            </div>
+            <div class="field">
+              <label for="fxTW">TW 환율 (1 KRW = ? TWD)</label>
+              <input id="fxTW" type="number" step="0.0000001" value="0.0238" />
+            </div>
+            <div class="field">
+              <label for="fxMY">MY 환율 (1 KRW = ? MYR)</label>
+              <input id="fxMY" type="number" step="0.0000001" value="0.00325" />
+            </div>
+            <div class="field">
+              <label for="fxPH">PH 환율 (1 KRW = ? PHP)</label>
+              <input id="fxPH" type="number" step="0.0000001" value="0.0415" />
+            </div>
+          </div>
+
+          <div class="grid grid-4" style="margin-top: 12px;">
+            <div class="field">
+              <label for="fxVN">VN 환율 (1 KRW = ? VND)</label>
+              <input id="fxVN" type="number" step="0.0001" value="18.4" />
+            </div>
+            <div class="field">
+              <label for="fxBR">BR 환율 (1 KRW = ? BRL)</label>
+              <input id="fxBR" type="number" step="0.0000001" value="0.00375" />
+            </div>
+            <div class="field">
+              <label for="fxTH">TH 환율 (1 KRW = ? THB)</label>
+              <input id="fxTH" type="number" step="0.0000001" value="0.0250" />
+            </div>
+            <div class="field">
+              <label for="fxMX">MX 환율 (1 KRW = ? MXN)</label>
+              <input id="fxMX" type="number" step="0.0000001" value="0.0132" />
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 12px; background: #141820;">
+          <h2 style="margin-bottom: 12px;">국가별 수수료 / 추가보정</h2>
+
+          <div class="grid grid-4">
+            <div class="field">
+              <label for="feeSG">SG 총수수료율</label>
+              <input id="feeSG" type="number" step="0.0001" value="0.16" />
+            </div>
+            <div class="field">
+              <label for="fixedSG">SG 고정수수료 (SGD)</label>
+              <input id="fixedSG" type="number" step="0.01" value="0" />
+            </div>
+            <div class="field">
+              <label for="rebateSG">SG 추가보정 / rebate (KRW)</label>
+              <input id="rebateSG" type="number" step="1" value="0" />
+            </div>
+            <div class="field">
+              <label for="feeTW">TW 총수수료율</label>
+              <input id="feeTW" type="number" step="0.0001" value="0.16" />
+            </div>
+          </div>
+
+          <div class="grid grid-4" style="margin-top: 12px;">
+            <div class="field">
+              <label for="fixedTW">TW 고정수수료 (TWD)</label>
+              <input id="fixedTW" type="number" step="0.01" value="0" />
+            </div>
+            <div class="field">
+              <label for="rebateTW">TW 추가보정 / rebate (KRW)</label>
+              <input id="rebateTW" type="number" step="1" value="0" />
+            </div>
+            <div class="field">
+              <label for="feeMY">MY 총수수료율</label>
+              <input id="feeMY" type="number" step="0.0001" value="0.16" />
+            </div>
+            <div class="field">
+              <label for="fixedMY">MY 고정수수료 (MYR)</label>
+              <input id="fixedMY" type="number" step="0.01" value="0" />
+            </div>
+          </div>
+
+          <div class="grid grid-4" style="margin-top: 12px;">
+            <div class="field">
+              <label for="rebateMY">MY 추가보정 / rebate (KRW)</label>
+              <input id="rebateMY" type="number" step="1" value="0" />
+            </div>
+            <div class="field">
+              <label for="feePH">PH 총수수료율</label>
+              <input id="feePH" type="number" step="0.0001" value="0.16" />
+            </div>
+            <div class="field">
+              <label for="fixedPH">PH 고정수수료 (PHP)</label>
+              <input id="fixedPH" type="number" step="0.01" value="0" />
+            </div>
+            <div class="field">
+              <label for="rebatePH">PH 추가보정 / rebate (KRW)</label>
+              <input id="rebatePH" type="number" step="1" value="0" />
+            </div>
+          </div>
+
+          <div class="grid grid-4" style="margin-top: 12px;">
+            <div class="field">
+              <label for="feeVN">VN 총수수료율</label>
+              <input id="feeVN" type="number" step="0.0001" value="0.16" />
+            </div>
+            <div class="field">
+              <label for="fixedVN">VN 고정수수료 (VND)</label>
+              <input id="fixedVN" type="number" step="0.01" value="0" />
+            </div>
+            <div class="field">
+              <label for="rebateVN">VN 추가보정 / rebate (KRW)</label>
+              <input id="rebateVN" type="number" step="1" value="0" />
+            </div>
+            <div class="field">
+              <label for="feeBR">BR 총수수료율</label>
+              <input id="feeBR" type="number" step="0.0001" value="0.16" />
+            </div>
+          </div>
+
+          <div class="grid grid-4" style="margin-top: 12px;">
+            <div class="field">
+              <label for="fixedBR">BR 고정수수료 (BRL)</label>
+              <input id="fixedBR" type="number" step="0.01" value="0" />
+            </div>
+            <div class="field">
+              <label for="rebateBR">BR 추가보정 / rebate (KRW)</label>
+              <input id="rebateBR" type="number" step="1" value="0" />
+            </div>
+            <div class="field">
+              <label for="feeTH">TH 총수수료율</label>
+              <input id="feeTH" type="number" step="0.0001" value="0.16" />
+            </div>
+            <div class="field">
+              <label for="fixedTH">TH 고정수수료 (THB)</label>
+              <input id="fixedTH" type="number" step="0.01" value="0" />
+            </div>
+          </div>
+
+          <div class="grid grid-4" style="margin-top: 12px;">
+            <div class="field">
+              <label for="rebateTH">TH 추가보정 / rebate (KRW)</label>
+              <input id="rebateTH" type="number" step="1" value="0" />
+            </div>
+            <div class="field">
+              <label for="feeMX">MX 총수수료율</label>
+              <input id="feeMX" type="number" step="0.0001" value="0.16" />
+            </div>
+            <div class="field">
+              <label for="fixedMX">MX 고정수수료 (MXN)</label>
+              <input id="fixedMX" type="number" step="0.01" value="0" />
+            </div>
+            <div class="field">
+              <label for="rebateMX">MX 추가보정 / rebate (KRW)</label>
+              <input id="rebateMX" type="number" step="1" value="0" />
+            </div>
+          </div>
+        </div>
+
+        <div class="section-note">
+          환율/수수료 입력값은 자동 저장돼.
+        </div>
       </div>
     </div>
 
     <div class="card">
-      <h2>4) 무게 요약</h2>
+      <h2>3) 무게 요약</h2>
       <div class="summary-grid">
         <div class="summary-box">
           <div class="k">실중량</div>
@@ -593,7 +652,7 @@
     </div>
 
     <div class="card">
-      <h2>5) 국가별 결과</h2>
+      <h2>4) 국가별 결과</h2>
       <div class="table-wrap">
         <table id="resultsTable">
           <thead>
@@ -633,18 +692,8 @@
       MX: 'shipping_mx.json'
     };
 
-    const MARKET_CURRENCY = {
-      SG: 'SGD',
-      TW: 'TWD',
-      MY: 'MYR',
-      PH: 'PHP',
-      VN: 'VND',
-      BR: 'BRL',
-      TH: 'THB',
-      MX: 'MXN'
-    };
-
     let calcMode = 'reverse';
+
     let shippingJsonData = {
       SG: null,
       PH: null,
@@ -665,6 +714,9 @@
       }
     };
 
+    const SETTINGS_STORAGE_KEY = 'shopee_calculator_settings_v2';
+    const SETTINGS_OPEN_STORAGE_KEY = 'shopee_calculator_settings_open_v1';
+
     function $(id) {
       return document.getElementById(id);
     }
@@ -681,9 +733,28 @@
       return n.toFixed(digits).replace(/\.?0+$/, '');
     }
 
-    function fmtMoneyKRW(value) {
-      const n = Math.round(num(value));
-      return `${n.toLocaleString('en-US')} KRW`;
+    function fmtKRW(value) {
+      return String(Math.round(num(value)));
+    }
+
+    function fmtLocalValue(market, value) {
+      const n = num(value);
+
+      if (['TW', 'PH', 'VN', 'TH'].includes(market)) {
+        return String(Math.round(n));
+      }
+
+      return fmtSmart(n);
+    }
+
+    function roundSellPriceByMarket(market, value) {
+      const n = num(value);
+
+      if (['TW', 'PH', 'VN', 'TH'].includes(market)) {
+        return Math.round(n);
+      }
+
+      return n;
     }
 
     function ceil10g(weightG) {
@@ -840,17 +911,6 @@
         return (appliedWeightG / 10) * num(conf.ratePer10g);
       }
 
-      if (conf.type === 'base_plus_step') {
-        const baseWeight = num(conf.baseWeightG);
-        const basePrice = num(conf.basePrice);
-        const stepG = num(conf.stepG);
-        const stepPrice = num(conf.stepPrice);
-
-        if (appliedWeightG <= baseWeight) return basePrice;
-        const extraSteps = Math.ceil((appliedWeightG - baseWeight) / stepG);
-        return basePrice + (extraSteps * stepPrice);
-      }
-
       throw new Error(`${market} 규칙 타입을 지원하지 않습니다.`);
     }
 
@@ -933,12 +993,12 @@
     function getCheckSellPrices() {
       return {
         SG: num($('checkSellPriceSG').value),
-        TW: num($('checkSellPriceTW').value),
+        TW: Math.round(num($('checkSellPriceTW').value)),
         MY: num($('checkSellPriceMY').value),
-        PH: num($('checkSellPricePH').value),
-        VN: num($('checkSellPriceVN').value),
+        PH: Math.round(num($('checkSellPricePH').value)),
+        VN: Math.round(num($('checkSellPriceVN').value)),
         BR: num($('checkSellPriceBR').value),
-        TH: num($('checkSellPriceTH').value),
+        TH: Math.round(num($('checkSellPriceTH').value)),
         MX: num($('checkSellPriceMX').value)
       };
     }
@@ -947,7 +1007,7 @@
       $('sumActualWeight').textContent = `${fmtSmart(base.actualWeightG)} g`;
       $('sumVolWeight').textContent = `${fmtSmart(base.volumetricWeightG)} g`;
       $('sumAppliedWeight').textContent = `${fmtSmart(base.appliedWeightG)} g`;
-      $('sumBaseCost').textContent = fmtMoneyKRW(base.totalBaseCostKRW);
+      $('sumBaseCost').textContent = `${fmtKRW(base.totalBaseCostKRW)} KRW`;
       $('sumMode').textContent = calcMode === 'reverse' ? '역산' : '검산';
     }
 
@@ -962,15 +1022,15 @@
         tr.innerHTML = `
           <td><span class="pill">${row.market}</span></td>
           <td>${row.currency}</td>
-          <td>${fmtSmart(row.appliedWeightG)}</td>
-          <td>${fmtSmart(row.shippingLocal)}</td>
-          <td>${fmtSmart(row.shippingKRW)}</td>
+          <td>${Math.round(row.appliedWeightG)}</td>
+          <td>${fmtLocalValue(row.market, row.shippingLocal)}</td>
+          <td>${fmtKRW(row.shippingKRW)}</td>
           <td>${fmtSmart(row.feePct * 100)}%</td>
-          <td>${fmtSmart(row.fixedFee)}</td>
-          <td>${fmtSmart(row.rebateKRW)}</td>
-          <td>${fmtSmart(row.sellPriceLocal)}</td>
-          <td>${fmtSmart(row.settlementKRW)}</td>
-          <td class="${profitClass}"><strong>${fmtSmart(row.expectedProfitKRW)}</strong></td>
+          <td>${fmtLocalValue(row.market, row.fixedFee)}</td>
+          <td>${fmtKRW(row.rebateKRW)}</td>
+          <td>${fmtLocalValue(row.market, row.sellPriceLocal)}</td>
+          <td>${fmtKRW(row.settlementKRW)}</td>
+          <td class="${profitClass}"><strong>${fmtKRW(row.expectedProfitKRW)}</strong></td>
         `;
         tbody.appendChild(tr);
       });
@@ -978,7 +1038,9 @@
 
     async function calculateAll() {
       try {
+        saveSettingsToLocalStorage();
         setStatus('계산 중...');
+
         const base = getBaseInputs();
         const marketConfig = getMarketConfig();
 
@@ -997,12 +1059,13 @@
           if (!conf.fx || conf.fx <= 0) {
             throw new Error(`${market} 환율이 올바르지 않아.`);
           }
+
           if (conf.feePct >= 1) {
             throw new Error(`${market} 수수료율이 1 이상이면 안돼.`);
           }
 
           const shippingLocal = await getShippingCostLocal(market, base.appliedWeightG);
-          const shippingKRW = shippingLocal / conf.fx;
+          const shippingKRW = Math.round(shippingLocal / conf.fx);
 
           let sellPriceLocal = 0;
 
@@ -1016,23 +1079,25 @@
               fx: conf.fx,
               rebateKRW: conf.rebateKRW
             });
+
+            sellPriceLocal = roundSellPriceByMarket(market, sellPriceLocal);
           } else {
             sellPriceLocal = checkSellPrices[market];
           }
 
-          const settlementKRW = calcSettlementKRW({
+          const settlementKRW = Math.round(calcSettlementKRW({
             sellPriceLocal,
             feePct: conf.feePct,
             fixedFee: conf.fixedFee,
             fx: conf.fx
-          });
+          }));
 
-          const expectedProfitKRW = calcExpectedProfitKRW({
+          const expectedProfitKRW = Math.round(calcExpectedProfitKRW({
             settlementKRW,
             totalBaseCostKRW: base.totalBaseCostKRW,
             shippingKRW,
             rebateKRW: conf.rebateKRW
-          });
+          }));
 
           rows.push({
             market,
@@ -1056,7 +1121,7 @@
           `상품: ${base.productName || '(상품명 없음)'}`,
           `실중량: ${fmtSmart(base.actualWeightG)}g`,
           `부피무게: ${fmtSmart(base.volumetricWeightG)}g`,
-          `적용무게: ${fmtSmart(base.appliedWeightG)}g`
+          `적용무게: ${Math.round(base.appliedWeightG)}g`
         ].join('\n');
 
         setStatus(successMsg);
@@ -1118,7 +1183,92 @@
       setStatus('');
     }
 
+    function getSettingsInputIds() {
+      return [
+        'fxSG','fxTW','fxMY','fxPH','fxVN','fxBR','fxTH','fxMX',
+        'feeSG','fixedSG','rebateSG',
+        'feeTW','fixedTW','rebateTW',
+        'feeMY','fixedMY','rebateMY',
+        'feePH','fixedPH','rebatePH',
+        'feeVN','fixedVN','rebateVN',
+        'feeBR','fixedBR','rebateBR',
+        'feeTH','fixedTH','rebateTH',
+        'feeMX','fixedMX','rebateMX',
+        'volDivisor'
+      ];
+    }
+
+    function saveSettingsToLocalStorage() {
+      const data = {};
+      getSettingsInputIds().forEach(id => {
+        if ($(id)) data[id] = $(id).value;
+      });
+      localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(data));
+    }
+
+    function loadSettingsFromLocalStorage() {
+      try {
+        const raw = localStorage.getItem(SETTINGS_STORAGE_KEY);
+        if (!raw) return;
+
+        const data = JSON.parse(raw);
+        getSettingsInputIds().forEach(id => {
+          if ($(id) && data[id] != null) {
+            $(id).value = data[id];
+          }
+        });
+      } catch (err) {
+        console.error('설정 불러오기 실패', err);
+      }
+    }
+
+    function saveSettingsOpenState(isOpen) {
+      localStorage.setItem(SETTINGS_OPEN_STORAGE_KEY, isOpen ? 'open' : 'closed');
+    }
+
+    function loadSettingsOpenState() {
+      const state = localStorage.getItem(SETTINGS_OPEN_STORAGE_KEY);
+      return state !== 'closed';
+    }
+
+    function setSettingsOpen(isOpen) {
+      const body = $('settingsBody');
+      const btn = $('toggleSettingsBtn');
+
+      if (isOpen) {
+        body.classList.remove('hidden');
+        btn.textContent = '설정 접기';
+      } else {
+        body.classList.add('hidden');
+        btn.textContent = '설정 펼치기';
+      }
+
+      saveSettingsOpenState(isOpen);
+    }
+
+    function handleToggleSettings() {
+      const isOpen = !$('settingsBody').classList.contains('hidden');
+      setSettingsOpen(!isOpen);
+    }
+
+    function setupSettingsAutoSave() {
+      getSettingsInputIds().forEach(id => {
+        if ($(id)) {
+          $(id).addEventListener('input', saveSettingsToLocalStorage);
+          $(id).addEventListener('change', saveSettingsToLocalStorage);
+        }
+      });
+    }
+
+    function handleHanaBankRates() {
+      setStatus('하나은행 환율 자동 불러오기 기능은 다음 단계에서 API 연결로 붙일 예정이야. 지금은 수동 환율을 사용해줘.');
+    }
+
     async function init() {
+      loadSettingsFromLocalStorage();
+      setupSettingsAutoSave();
+      setSettingsOpen(loadSettingsOpenState());
+
       setStatus('배송비 JSON 불러오는 중...');
       await loadAllShippingJson();
 
@@ -1137,6 +1287,8 @@
     $('modeCheckBtn').addEventListener('click', () => setMode('check'));
     $('calculateBtn').addEventListener('click', calculateAll);
     $('resetBtn').addEventListener('click', resetInputs);
+    $('toggleSettingsBtn').addEventListener('click', handleToggleSettings);
+    $('hanaRateBtn').addEventListener('click', handleHanaBankRates);
 
     init();
   </script>
