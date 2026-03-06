@@ -15,8 +15,33 @@
   <div class="box">
     <h1>쇼피 마진 계산기</h1>
     <p>이 페이지는 테스트입니다. (곧 계산기 붙일 예정)</p>
-    <button onclick="alert('작동함!')">클릭 테스트</button>
+    <div style="margin-top:12px; display:grid; gap:8px; max-width:360px;">
+  <label>구입가격 (KRW) <input id="cost" type="number" value="33000" style="width:100%; padding:8px;"></label>
+  <label>국내배송비 (KRW) <input id="domestic" type="number" value="1000" style="width:100%; padding:8px;"></label>
+  <label>기자재/포장비 (KRW) <input id="pack" type="number" value="0" style="width:100%; padding:8px;"></label>
+  <label>희망마진 (KRW) <input id="margin" type="number" value="500" style="width:100%; padding:8px;"></label>
+
+  <button id="calcBtn" style="padding:10px;">계산하기(테스트)</button>
+
+  <div id="result" style="padding:10px; border:1px solid #eee; border-radius:12px;">
+    결과가 여기 뜹니다.
+  </div>
+</div>
+
+<script>
+  document.getElementById("calcBtn").addEventListener("click", () => {
+    const cost = Number(document.getElementById("cost").value || 0);
+    const domestic = Number(document.getElementById("domestic").value || 0);
+    const pack = Number(document.getElementById("pack").value || 0);
+    const margin = Number(document.getElementById("margin").value || 0);
+
+    const total = cost + domestic + pack + margin;
+    document.getElementById("result").textContent =
+      `테스트: (원가+국내배송+포장+희망마진) 합계 = ${total.toLocaleString()} KRW`;
+  });
+</script>
   </div>
 </body>
 
 </html>
+
