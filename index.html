@@ -28,6 +28,11 @@
       --light-save-border: #d3bf48;
       --light-cancel: #d8d1ef;
       --light-cancel-border: #bdb2e2;
+
+      --price-up: #7c73ff;
+      --price-rec: #4f70ff;
+      --price-final: #ff6c4d;
+      --settlement: #1f2937;
     }
 
     * { box-sizing: border-box; }
@@ -41,7 +46,7 @@
     }
 
     .wrap {
-      max-width: 1450px;
+      max-width: 1480px;
       margin: 0 auto;
       padding: 24px;
     }
@@ -80,12 +85,13 @@
     .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1180px) {
       .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-2 { grid-template-columns: 1fr; }
     }
 
-    @media (max-width: 720px) {
-      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    @media (max-width: 760px) {
+      .grid-3, .grid-4 { grid-template-columns: 1fr; }
       .wrap { padding: 14px; }
     }
 
@@ -169,11 +175,11 @@
       gap: 12px;
     }
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1180px) {
       .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
-    @media (max-width: 720px) {
+    @media (max-width: 760px) {
       .summary-grid { grid-template-columns: 1fr; }
     }
 
@@ -193,68 +199,6 @@
     .summary-box .v {
       font-size: 20px;
       font-weight: 800;
-    }
-
-    .table-wrap {
-      overflow: auto;
-      border: 1px solid var(--line);
-      border-radius: 14px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 1280px;
-      background: var(--panel);
-    }
-
-    th, td {
-      padding: 12px 10px;
-      border-bottom: 1px solid var(--line);
-      text-align: right;
-      font-size: 13px;
-      white-space: nowrap;
-    }
-
-    th {
-      background: #171d28;
-      color: #d7deea;
-      position: sticky;
-      top: 0;
-      z-index: 2;
-    }
-
-    td:first-child, th:first-child,
-    td:nth-child(2), th:nth-child(2) {
-      text-align: left;
-    }
-
-    tr:hover td {
-      background: rgba(255,255,255,0.02);
-    }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      height: 28px;
-      padding: 0 10px;
-      border-radius: 999px;
-      background: #1f2a36;
-      border: 1px solid #314052;
-      color: #d7f0ff;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .warn { color: var(--danger); }
-    .ok { color: var(--accent-2); }
-
-    .footer-note {
-      margin-top: 10px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
     }
 
     .inline-flex {
@@ -290,6 +234,209 @@
       flex-wrap: wrap;
     }
 
+    .help-line {
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .settings-summary-card {
+      background: var(--light-bg);
+      color: var(--light-text);
+      border: 1px solid var(--light-line);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .settings-summary-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--light-line);
+      font-weight: 800;
+    }
+
+    .settings-summary-body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .settings-summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid #e6ebf2;
+      font-size: 14px;
+    }
+
+    .settings-summary-row:last-child {
+      border-bottom: 0;
+    }
+
+    .summary-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .summary-right {
+      color: #6b63ff;
+      font-weight: 700;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .flag {
+      width: 24px;
+      text-align: center;
+      font-size: 18px;
+      flex: 0 0 24px;
+    }
+
+    .summary-market {
+      font-size: 14px;
+      color: var(--light-text);
+    }
+
+    /* Result cards */
+    .result-section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    @media (max-width: 1300px) {
+      .result-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .result-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .result-card {
+      background: #f4f5f8;
+      color: #1f2937;
+      border: 1px solid #cfd8e8;
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .result-card-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      font-size: 18px;
+    }
+
+    .result-topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: baseline;
+      font-size: 12px;
+      color: #7c73ff;
+      font-weight: 700;
+      margin-bottom: 2px;
+    }
+
+    .price-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 2px;
+    }
+
+    .price-label {
+      font-size: 14px;
+      color: #111827;
+      font-weight: 700;
+    }
+
+    .price-value {
+      font-weight: 900;
+      font-size: 30px;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
+
+    .price-up { color: var(--price-up); }
+    .price-rec { color: var(--price-rec); }
+    .price-final { color: var(--price-final); }
+
+    .dash {
+      margin: 8px 0 10px;
+      border-top: 1px dashed #cfd6e5;
+    }
+
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+
+    .breakdown-row .label {
+      color: #4b5563;
+    }
+
+    .breakdown-row .value {
+      color: #111827;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .settlement-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .settlement-line .label {
+      color: #4b5563;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .settlement-line .value {
+      color: var(--settlement);
+      font-weight: 900;
+      font-size: 28px;
+      white-space: nowrap;
+    }
+
+    .result-footnote {
+      margin-top: 6px;
+      color: #9ca3af;
+      font-size: 11px;
+      text-align: right;
+    }
+
+    /* Compare */
     .compare-card {
       background: #141820;
       border: 1px solid var(--line);
@@ -320,7 +467,7 @@
     }
 
     .modal {
-      width: min(980px, 100%);
+      width: min(1040px, 100%);
       max-height: 92vh;
       overflow: auto;
       background: var(--light-bg);
@@ -398,13 +545,6 @@
       align-items: center;
       gap: 12px;
       min-width: 0;
-    }
-
-    .flag {
-      width: 24px;
-      text-align: center;
-      font-size: 18px;
-      flex: 0 0 24px;
     }
 
     .settings-main {
@@ -558,12 +698,6 @@
     .fee-summary strong {
       color: var(--light-text);
     }
-
-    .help-line {
-      margin-top: 8px;
-      font-size: 12px;
-      color: var(--muted);
-    }
   </style>
 </head>
 <body>
@@ -593,7 +727,25 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="grid grid-2">
+      <div class="settings-summary-card">
+        <div class="settings-summary-head">
+          <span>국가별 환율 설정</span>
+          <button type="button" id="openFxModalBtn2" class="btn-ghost" style="height:32px;padding:0 10px;">⚙</button>
+        </div>
+        <div id="fxSummaryBody" class="settings-summary-body"></div>
+      </div>
+
+      <div class="settings-summary-card">
+        <div class="settings-summary-head">
+          <span>국가별 수수료 설정</span>
+          <button type="button" id="openFeeModalBtn2" class="btn-ghost" style="height:32px;padding:0 10px;">⚙</button>
+        </div>
+        <div id="feeSummaryBody" class="settings-summary-body"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
       <h2>상품 정보</h2>
 
       <div class="grid grid-4">
@@ -694,7 +846,7 @@
       </div>
 
       <div class="btn-row">
-        <button type="button" id="calculateBtn" class="btn-primary">전체 국가 계산</button>
+        <button type="button" id="calculateBtn" class="btn-primary">계산하기</button>
         <button type="button" id="resetBtn" class="btn-secondary">입력값 초기화</button>
       </div>
 
@@ -703,7 +855,7 @@
       <div class="compare-card">
         <h3>판매가 기준 빠른 비교</h3>
         <div class="muted" style="margin-bottom: 10px;">
-          예: 경쟁자 판매가를 넣고 국가별 예상이익을 빠르게 비교할 때 사용
+          경쟁자 판매가 기준으로 해당 국가 실제이익을 빠르게 비교
         </div>
         <div class="grid grid-4">
           <div class="field">
@@ -729,7 +881,7 @@
           </div>
           <div class="field">
             <label>&nbsp;</label>
-            <div class="inline-flex small muted" style="height:42px;">선택한 국가 판매가 기준으로 해당 국가 실제이익만 빠르게 확인</div>
+            <div class="inline-flex small muted" style="height:42px;">선택 국가 기준 실제이익만 빠르게 확인</div>
           </div>
         </div>
         <div id="quickCompareResult" class="help-line"></div>
@@ -766,29 +918,15 @@
     </div>
 
     <div class="card">
-      <h2>국가별 결과</h2>
-      <div class="table-wrap">
-        <table id="resultsTable">
-          <thead>
-            <tr>
-              <th>국가</th>
-              <th>통화</th>
-              <th>적용무게(g)</th>
-              <th>해외배송비(현지)</th>
-              <th>해외배송비(KRW)</th>
-              <th>총수수료율</th>
-              <th>고정수수료</th>
-              <th>목표 판매가</th>
-              <th>정산예상(KRW)</th>
-              <th>예상이익(KRW)</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+      <div class="result-section-head">
+        <h2 style="margin:0;">계산 결과</h2>
+        <div class="muted" id="resultTimestamp">-</div>
       </div>
+      <div id="resultCards" class="result-grid"></div>
       <div class="footer-note">
-        정산예상(KRW)은 판매가에서 수수료 차감 후 KRW 환산 값 기준.<br>
-        예상이익(KRW) = 정산예상(KRW) - 기본원가(KRW) - 해외배송비(KRW)
+        추천등록가 = 희망마진 최소 보장 판매가<br>
+        최종판매가 = 추천등록가에서 각 국가 반올림 규칙 반영값<br>
+        30% 인상 가격 = 최종판매가 × 1.3 반영값
       </div>
     </div>
   </div>
@@ -850,7 +988,7 @@
 
         <div class="modal-note">
           현재는 수동 입력 기준입니다. 기본값은 0으로 시작합니다.<br>
-          하나은행 환율 자동 불러오기는 다음 단계에서 실제 연동할 예정입니다.
+          하나은행 환율 자동 불러오기는 버튼 구조만 넣어둔 상태입니다.
         </div>
       </div>
     </div>
@@ -902,7 +1040,7 @@
     </div>
   </div>
 
-  <!-- 실제 계산용 환율 hidden -->
+  <!-- 계산용 hidden 환율 -->
   <input id="fxSG" type="hidden" value="0" />
   <input id="fxTW" type="hidden" value="0" />
   <input id="fxTH" type="hidden" value="0" />
@@ -916,14 +1054,14 @@
     const MARKETS = ['SG', 'TW', 'TH', 'MY', 'VN', 'PH', 'BR', 'MX'];
 
     const MARKET_INFO = {
-      SG: { name: '싱가포르', currency: 'SGD', flag: '🇸🇬' },
-      TW: { name: '대만', currency: 'TWD', flag: '🇹🇼' },
-      TH: { name: '태국', currency: 'THB', flag: '🇹🇭' },
-      MY: { name: '말레이시아', currency: 'MYR', flag: '🇲🇾' },
-      VN: { name: '베트남', currency: 'VND', flag: '🇻🇳' },
-      PH: { name: '필리핀', currency: 'PHP', flag: '🇵🇭' },
-      BR: { name: '브라질', currency: 'BRL', flag: '🇧🇷' },
-      MX: { name: '멕시코', currency: 'MXN', flag: '🇲🇽' }
+      SG: { name: '싱가포르', currency: 'SGD', flag: '🇸🇬', symbol: 'S$' },
+      TW: { name: '대만', currency: 'TWD', flag: '🇹🇼', symbol: '$' },
+      TH: { name: '태국', currency: 'THB', flag: '🇹🇭', symbol: '฿' },
+      MY: { name: '말레이시아', currency: 'MYR', flag: '🇲🇾', symbol: 'RM' },
+      VN: { name: '베트남', currency: 'VND', flag: '🇻🇳', symbol: '₫' },
+      PH: { name: '필리핀', currency: 'PHP', flag: '🇵🇭', symbol: '₱' },
+      BR: { name: '브라질', currency: 'BRL', flag: '🇧🇷', symbol: 'R$' },
+      MX: { name: '멕시코', currency: 'MXN', flag: '🇲🇽', symbol: '$' }
     };
 
     const JSON_RATE_FILES = {
@@ -940,25 +1078,25 @@
       MY: { type: 'per10g', ratePer10g: 0.20 }
     };
 
-    const SETTINGS_STORAGE_KEY = 'shopee_calc_settings_full_v1';
+    const SETTINGS_STORAGE_KEY = 'shopee_calc_settings_final_v2';
 
     const FEE_PERCENT_FIELDS = [
-      { key: 'sellFee', label: '판매수수료 (%)' },
-      { key: 'txFee', label: '거래수수료 (%)' },
-      { key: 'ccbFee', label: 'CCB (%)' },
-      { key: 'fspFee', label: 'FSP (%)' },
-      { key: 'payoneerFee', label: '페이오니아 인출수수료 (%)' },
-      { key: 'trafficFee', label: '트래픽 성장 수수료 (%)' },
-      { key: 'platformShipFee', label: '플랫폼 배송비 (%)' },
-      { key: 'pitFee', label: '개인 사업자(셀러) PIT (%)' },
-      { key: 'voucherFee', label: '바우처 (%)' },
-      { key: 'otherPctFee', label: '기타 (%)' }
+      { key: 'sellFee', label: '판매수수료 (%)', short: '판매수수료' },
+      { key: 'txFee', label: '거래수수료 (%)', short: '거래수수료' },
+      { key: 'ccbFee', label: 'CCB (%)', short: 'CCB' },
+      { key: 'fspFee', label: 'FSP (%)', short: 'FSP' },
+      { key: 'payoneerFee', label: '페이오니아 인출수수료 (%)', short: '인출수수료' },
+      { key: 'trafficFee', label: '트래픽 성장 수수료 (%)', short: '트래픽성장' },
+      { key: 'platformShipFee', label: '플랫폼 배송비 (%)', short: '플랫폼배송비' },
+      { key: 'pitFee', label: '개인 사업자(셀러) PIT (%)', short: 'PIT' },
+      { key: 'voucherFee', label: '바우처 (%)', short: '바우처' },
+      { key: 'otherPctFee', label: '기타 (%)', short: '기타%' }
     ];
 
     const FEE_FIXED_FIELDS = [
-      { key: 'infraFixed', label: '플랫폼 인프라 수수료 (정액)' },
-      { key: 'customsFixed', label: '세관 수수료 (정액)' },
-      { key: 'otherFixed', label: '기타 (정액)' }
+      { key: 'infraFixed', label: '플랫폼 인프라 수수료 (정액)', short: '플랫폼인프라' },
+      { key: 'customsFixed', label: '세관 수수료 (정액)', short: '세관수수료' },
+      { key: 'otherFixed', label: '기타 (정액)', short: '기타정액' }
     ];
 
     let calcMode = 'reverse';
@@ -1059,6 +1197,7 @@
         head.className = 'fee-market-head';
         head.innerHTML = `
           <span class="flag">${info.flag}</span>
+          <span>${info.market || market}</span>
           <span>${info.name}</span>
           <span style="font-size:12px; color:#6b7280; font-weight:600;">(${info.currency})</span>
         `;
@@ -1105,13 +1244,8 @@
     }
 
     function updateFeeSummary(market) {
-      const pctSum = FEE_PERCENT_FIELDS.reduce((sum, field) => {
-        return sum + num($(makeFeeInputId(market, field.key)).value);
-      }, 0);
-
-      const fixedSum = FEE_FIXED_FIELDS.reduce((sum, field) => {
-        return sum + num($(makeFeeInputId(market, field.key)).value);
-      }, 0);
+      const pctSum = FEE_PERCENT_FIELDS.reduce((sum, field) => sum + num($(makeFeeInputId(market, field.key)).value), 0);
+      const fixedSum = FEE_FIXED_FIELDS.reduce((sum, field) => sum + num($(makeFeeInputId(market, field.key)).value), 0);
 
       $(`sumPct_${market}`).textContent = `${fmtSmart(pctSum)}%`;
       $(`sumFixed_${market}`).textContent = `${fmtSmart(fixedSum)} ${MARKET_INFO[market].currency}`;
@@ -1123,6 +1257,7 @@
           const el = $(makeFeeInputId(market, field.key));
           el.addEventListener('input', () => {
             updateFeeSummary(market);
+            renderFeeSummaryList();
             saveSettingsToLocalStorage();
           });
         });
@@ -1131,14 +1266,8 @@
     }
 
     function getFeeConfig(market) {
-      const feePct = FEE_PERCENT_FIELDS.reduce((sum, field) => {
-        return sum + num($(makeFeeInputId(market, field.key)).value);
-      }, 0) / 100;
-
-      const fixedFee = FEE_FIXED_FIELDS.reduce((sum, field) => {
-        return sum + num($(makeFeeInputId(market, field.key)).value);
-      }, 0);
-
+      const feePct = FEE_PERCENT_FIELDS.reduce((sum, field) => sum + num($(makeFeeInputId(market, field.key)).value), 0) / 100;
+      const fixedFee = FEE_FIXED_FIELDS.reduce((sum, field) => sum + num($(makeFeeInputId(market, field.key)).value), 0);
       return { feePct, fixedFee };
     }
 
@@ -1157,7 +1286,6 @@
 
     async function loadAllShippingJson() {
       const entries = Object.entries(JSON_RATE_FILES);
-
       for (const [market, file] of entries) {
         try {
           const res = await fetch(file, { cache: 'no-store' });
@@ -1172,12 +1300,7 @@
 
     function lookupJsonRate(rateData, appliedWeightG) {
       if (!rateData) throw new Error('배송비 JSON 데이터가 없습니다.');
-
-      const keys = Object.keys(rateData)
-        .map(k => Number(k))
-        .filter(n => Number.isFinite(n))
-        .sort((a, b) => a - b);
-
+      const keys = Object.keys(rateData).map(k => Number(k)).filter(n => Number.isFinite(n)).sort((a,b)=>a-b);
       const key = keys.find(k => appliedWeightG <= k);
       if (key == null) throw new Error(`JSON 요율표 범위를 초과했습니다. 적용무게=${appliedWeightG}g`);
       return num(rateData[key]);
@@ -1210,6 +1333,44 @@
       return settlementKRW - totalBaseCostKRW - shippingKRW;
     }
 
+    function calcPriceUp30(market, finalPrice) {
+      return roundSellPriceByMarket(market, num(finalPrice) * 1.3);
+    }
+
+    function getBreakdownLines({ market, sellPriceLocal, shippingLocal, conf }) {
+      const lines = [];
+
+      FEE_PERCENT_FIELDS.forEach(field => {
+        const pct = num($(makeFeeInputId(market, field.key)).value);
+        if (pct > 0) {
+          const amount = sellPriceLocal * (pct / 100);
+          lines.push({
+            label: field.short,
+            value: `- ${MARKET_INFO[market].symbol}${fmtLocalValue(market, amount)}`
+          });
+        }
+      });
+
+      FEE_FIXED_FIELDS.forEach(field => {
+        const fixed = num($(makeFeeInputId(market, field.key)).value);
+        if (fixed > 0) {
+          lines.push({
+            label: field.short,
+            value: `- ${MARKET_INFO[market].symbol}${fmtLocalValue(market, fixed)}`
+          });
+        }
+      });
+
+      if (shippingLocal > 0) {
+        lines.unshift({
+          label: '배송료',
+          value: `- ${MARKET_INFO[market].symbol}${fmtLocalValue(market, shippingLocal)}`
+        });
+      }
+
+      return lines;
+    }
+
     function findGuaranteedPrice({ market, initialPrice, conf, totalBaseCostKRW, shippingKRW, desiredMarginKRW }) {
       const step = getMinPriceStep(market);
       let price = ceilToStep(initialPrice, step);
@@ -1230,11 +1391,7 @@
         }));
 
         if (expectedProfitKRW >= desiredMarginKRW) {
-          return {
-            price,
-            settlementKRW,
-            expectedProfitKRW
-          };
+          return { price, settlementKRW, expectedProfitKRW };
         }
 
         price = roundSellPriceByMarket(market, price + step);
@@ -1295,29 +1452,123 @@
       $('sumMode').textContent = calcMode === 'reverse' ? '역산' : '검산';
     }
 
-    function renderResults(rows) {
-      const tbody = $('resultsTable').querySelector('tbody');
-      tbody.innerHTML = '';
+    function renderFxSummaryList() {
+      const body = $('fxSummaryBody');
+      body.innerHTML = '';
+
+      MARKETS.forEach(market => {
+        const info = MARKET_INFO[market];
+        let valueText = '0 원';
+
+        if (market === 'VN') {
+          valueText = `${fmtSmart(num($('rateWonVN100').value), 2)} 원`;
+        } else if (market === 'SG') {
+          valueText = `${fmtSmart(num($('rateWonSG').value), 2)} 원`;
+        } else if (market === 'TW') {
+          valueText = `${fmtSmart(num($('rateWonTW').value), 2)} 원`;
+        } else if (market === 'TH') {
+          valueText = `${fmtSmart(num($('rateWonTH').value), 2)} 원`;
+        } else if (market === 'MY') {
+          valueText = `${fmtSmart(num($('rateWonMY').value), 2)} 원`;
+        } else if (market === 'PH') {
+          valueText = `${fmtSmart(num($('rateWonPH').value), 2)} 원`;
+        } else if (market === 'BR') {
+          valueText = `${fmtSmart(num($('rateWonBR').value), 2)} 원`;
+        } else if (market === 'MX') {
+          valueText = `${fmtSmart(num($('rateWonMX').value), 2)} 원`;
+        }
+
+        const row = document.createElement('div');
+        row.className = 'settings-summary-row';
+        row.innerHTML = `
+          <div class="summary-left">
+            <span class="flag">${info.flag}</span>
+            <span class="summary-market">${info.name}</span>
+          </div>
+          <div class="summary-right">${valueText}</div>
+        `;
+        body.appendChild(row);
+      });
+    }
+
+    function renderFeeSummaryList() {
+      const body = $('feeSummaryBody');
+      body.innerHTML = '';
+
+      MARKETS.forEach(market => {
+        const info = MARKET_INFO[market];
+        const pct = FEE_PERCENT_FIELDS.reduce((sum, field) => sum + num($(makeFeeInputId(market, field.key)).value), 0);
+
+        const row = document.createElement('div');
+        row.className = 'settings-summary-row';
+        row.innerHTML = `
+          <div class="summary-left">
+            <span class="flag">${info.flag}</span>
+            <span class="summary-market">${info.name}</span>
+          </div>
+          <div class="summary-right">${fmtSmart(pct)}%</div>
+        `;
+        body.appendChild(row);
+      });
+    }
+
+    function renderResultCards(rows) {
+      const container = $('resultCards');
+      container.innerHTML = '';
 
       rows.forEach(row => {
-        const tr = document.createElement('tr');
-        const profitClass = row.expectedProfitKRW >= 0 ? 'ok' : 'warn';
         const info = MARKET_INFO[row.market];
+        const breakdown = getBreakdownLines({
+          market: row.market,
+          sellPriceLocal: row.finalSellPriceLocal,
+          shippingLocal: row.shippingLocal,
+          conf: row.conf
+        });
 
-        tr.innerHTML = `
-          <td><span class="pill"><span>${info.flag}</span><span>${row.market}</span></span></td>
-          <td>${row.currency}</td>
-          <td>${Math.round(row.appliedWeightG)}</td>
-          <td>${fmtLocalValue(row.market, row.shippingLocal)}</td>
-          <td>${fmtKRW(row.shippingKRW)}</td>
-          <td>${fmtSmart(row.feePct * 100)}%</td>
-          <td>${fmtLocalValue(row.market, row.fixedFee)}</td>
-          <td>${fmtLocalValue(row.market, row.sellPriceLocal)}</td>
-          <td>${fmtKRW(row.settlementKRW)}</td>
-          <td class="${profitClass}"><strong>${fmtKRW(row.expectedProfitKRW)}</strong></td>
+        const breakdownHtml = breakdown.map(line => `
+          <div class="breakdown-row">
+            <span class="label">${line.label}</span>
+            <span class="value">${line.value}</span>
+          </div>
+        `).join('');
+
+        const card = document.createElement('div');
+        card.className = 'result-card';
+        card.innerHTML = `
+          <div class="result-card-head">${info.flag} ${info.name}</div>
+
+          <div class="result-topline">
+            <span>30% 인상된 가격</span>
+            <span class="price-up">${info.symbol} ${fmtLocalValue(row.market, row.priceUp30Local)}</span>
+          </div>
+
+          <div class="price-line">
+            <span class="price-label">추천등록가</span>
+            <span class="price-value price-rec">${info.symbol} ${fmtLocalValue(row.market, row.recommendedSellPriceLocal)}</span>
+          </div>
+
+          <div class="price-line">
+            <span class="price-label">최종판매가</span>
+            <span class="price-value price-final">${info.symbol} ${fmtLocalValue(row.market, row.finalSellPriceLocal)}</span>
+          </div>
+
+          <div class="dash"></div>
+
+          ${breakdownHtml || `<div class="breakdown-row"><span class="label">수수료 항목</span><span class="value">- ${info.symbol}0</span></div>`}
+
+          <div class="dash"></div>
+
+          <div class="settlement-line">
+            <span class="label">예상정산가</span>
+            <span class="value">${info.symbol} ${fmtLocalValue(row.market, row.settlementLocal)}</span>
+          </div>
+
+          <div class="result-footnote">*정산가/이익 오차가 있을 수 있습니다.</div>
         `;
-        tbody.appendChild(tr);
+        container.appendChild(card);
       });
+
+      $('resultTimestamp').textContent = new Date().toLocaleString('sv-SE').replace('T', ' ');
     }
 
     async function calculateAll() {
@@ -1352,7 +1603,8 @@
           const shippingLocal = await getShippingCostLocal(market, base.appliedWeightG);
           const shippingKRW = Math.round(shippingLocal / conf.fx);
 
-          let sellPriceLocal = 0;
+          let recommendedSellPriceLocal = 0;
+          let finalSellPriceLocal = 0;
           let settlementKRW = 0;
           let expectedProfitKRW = 0;
 
@@ -1375,14 +1627,16 @@
               desiredMarginKRW: base.desiredMarginKRW
             });
 
-            sellPriceLocal = guaranteed.price;
+            recommendedSellPriceLocal = guaranteed.price;
+            finalSellPriceLocal = guaranteed.price;
             settlementKRW = guaranteed.settlementKRW;
             expectedProfitKRW = guaranteed.expectedProfitKRW;
           } else {
-            sellPriceLocal = checkSellPrices[market];
+            recommendedSellPriceLocal = checkSellPrices[market];
+            finalSellPriceLocal = checkSellPrices[market];
 
             settlementKRW = Math.round(calcSettlementKRW({
-              sellPriceLocal,
+              sellPriceLocal: finalSellPriceLocal,
               feePct: conf.feePct,
               fixedFee: conf.fixedFee,
               fx: conf.fx
@@ -1395,21 +1649,24 @@
             }));
           }
 
+          const settlementLocal = finalSellPriceLocal * (1 - conf.feePct) - conf.fixedFee;
+          const priceUp30Local = calcPriceUp30(market, finalSellPriceLocal);
+
           rows.push({
             market,
-            currency: conf.currency,
-            appliedWeightG: base.appliedWeightG,
             shippingLocal,
             shippingKRW,
-            feePct: conf.feePct,
-            fixedFee: conf.fixedFee,
-            sellPriceLocal,
+            conf,
+            recommendedSellPriceLocal,
+            finalSellPriceLocal,
+            priceUp30Local,
             settlementKRW,
-            expectedProfitKRW
+            expectedProfitKRW,
+            settlementLocal
           });
         }
 
-        renderResults(rows);
+        renderResultCards(rows);
 
         setStatus([
           `계산 완료`,
@@ -1495,35 +1752,23 @@
 
     function resetInputs() {
       [
-        'productName',
-        'purchaseCost',
-        'packingCost',
-        'domesticShipping',
-        'productWeight',
-        'lengthCm',
-        'widthCm',
-        'heightCm',
-        'desiredMargin',
-        'checkSellPriceSG',
-        'checkSellPriceTW',
-        'checkSellPriceTH',
-        'checkSellPriceMY',
-        'checkSellPriceVN',
-        'checkSellPricePH',
-        'checkSellPriceBR',
-        'checkSellPriceMX',
+        'productName','purchaseCost','packingCost','domesticShipping',
+        'productWeight','lengthCm','widthCm','heightCm','desiredMargin',
+        'checkSellPriceSG','checkSellPriceTW','checkSellPriceTH','checkSellPriceMY',
+        'checkSellPriceVN','checkSellPricePH','checkSellPriceBR','checkSellPriceMX',
         'quickComparePrice'
       ].forEach(id => {
         if ($(id)) $(id).value = '';
       });
 
-      $('resultsTable').querySelector('tbody').innerHTML = '';
       $('sumActualWeight').textContent = '-';
       $('sumVolWeight').textContent = '-';
       $('sumAppliedWeight').textContent = '-';
       $('sumBaseCost').textContent = '-';
       $('sumMode').textContent = calcMode === 'reverse' ? '역산' : '검산';
       $('quickCompareResult').textContent = '';
+      $('resultCards').innerHTML = '';
+      $('resultTimestamp').textContent = '-';
       setStatus('');
     }
 
@@ -1612,6 +1857,7 @@
 
     function handleSaveFxModal() {
       syncWonRatesToHiddenFx();
+      renderFxSummaryList();
       saveSettingsToLocalStorage();
       closeModal('fx');
       setStatus('환율 설정 저장 완료');
@@ -1620,6 +1866,7 @@
     function handleSaveFeeModal() {
       syncModalDivisorToMain();
       MARKETS.forEach(updateFeeSummary);
+      renderFeeSummaryList();
       saveSettingsToLocalStorage();
       closeModal('fee');
       setStatus('수수료 설정 저장 완료');
@@ -1635,6 +1882,8 @@
       syncHiddenFxToWonInputs();
       syncMainDivisorToModal();
       bindFeeSummaryEvents();
+      renderFxSummaryList();
+      renderFeeSummaryList();
       setMode('reverse');
 
       setStatus('배송비 JSON 불러오는 중...');
@@ -1661,8 +1910,17 @@
       syncHiddenFxToWonInputs();
       openModal('fx');
     });
+    $('openFxModalBtn2').addEventListener('click', () => {
+      syncHiddenFxToWonInputs();
+      openModal('fx');
+    });
 
     $('openFeeModalBtn').addEventListener('click', () => {
+      syncMainDivisorToModal();
+      MARKETS.forEach(updateFeeSummary);
+      openModal('fee');
+    });
+    $('openFeeModalBtn2').addEventListener('click', () => {
       syncMainDivisorToModal();
       MARKETS.forEach(updateFeeSummary);
       openModal('fee');
