@@ -17,6 +17,7 @@
       --danger: #fca5a5;
       --warning: #fde68a;
       --input: #11151d;
+      --modal-bg: rgba(0, 0, 0, 0.6);
     }
 
     * { box-sizing: border-box; }
@@ -139,6 +140,12 @@
       color: #07160c;
     }
 
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
     .muted {
       color: var(--muted);
       font-size: 12px;
@@ -242,27 +249,6 @@
       color: var(--accent-2);
     }
 
-    .section-note {
-      margin-top: 8px;
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .toggle-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
-    }
-
-    .toggle-btn.active {
-      outline: 2px solid var(--accent);
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
     .footer-note {
       margin-top: 10px;
       color: var(--muted);
@@ -281,37 +267,161 @@
       font-size: 12px;
     }
 
-    .settings-header {
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .toolbar-left,
+    .toolbar-right {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--modal-bg);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 9999;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      width: min(820px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      background: #f4f5f8;
+      color: #111827;
+      border-radius: 18px;
+      border: 1px solid #d7dbe4;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+
+    .modal-header {
+      position: sticky;
+      top: 0;
+      background: #f4f5f8;
+      padding: 16px 18px;
+      border-bottom: 1px solid #d9dde5;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      z-index: 2;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #111827;
+    }
+
+    .modal-body {
+      padding: 12px 18px 18px;
+    }
+
+    .modal-close {
+      background: #fff;
+      color: #111827;
+      border: 1px solid #d0d7e2;
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 10px;
+    }
+
+    .settings-list {
+      background: #fff;
+      border: 1px solid #d8dde7;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .settings-row {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      align-items: center;
       gap: 12px;
-      flex-wrap: wrap;
+      padding: 12px 14px;
+      border-bottom: 1px solid #e8ebf1;
     }
 
-    .settings-body.hidden {
-      display: none;
+    .settings-row:last-child {
+      border-bottom: 0;
     }
 
-    .accordion-title {
+    .settings-left {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 18px;
-      font-weight: 700;
+      min-width: 0;
     }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      height: 24px;
-      padding: 0 8px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: #1f2430;
-      color: var(--muted);
-      font-size: 11px;
+    .flag {
+      font-size: 18px;
+      width: 24px;
+      text-align: center;
+      flex: 0 0 24px;
+    }
+
+    .settings-name {
+      font-size: 14px;
       font-weight: 700;
+      color: #111827;
+    }
+
+    .settings-sub {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .settings-right {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .settings-right input {
+      background: #fff;
+      border: 1px solid #d6dce7;
+      color: #111827;
+      width: 140px;
+      text-align: right;
+    }
+
+    .settings-unit {
+      min-width: 48px;
+      font-size: 13px;
+      color: #6b7280;
+      text-align: right;
+    }
+
+    .modal-note {
+      margin-top: 10px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .soft-card {
+      background: #141820;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
     }
   </style>
 </head>
@@ -323,11 +433,18 @@
     </div>
 
     <div class="card">
-      <h2>1) 계산 모드</h2>
-      <div class="toggle-row">
-        <button type="button" id="modeReverseBtn" class="btn-secondary toggle-btn active">역산 모드 (희망마진 → 판매가)</button>
-        <button type="button" id="modeCheckBtn" class="btn-secondary toggle-btn">검산 모드 (판매가 → 실제마진)</button>
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <button type="button" id="modeReverseBtn" class="btn-secondary">역산 모드</button>
+          <button type="button" id="modeCheckBtn" class="btn-secondary">검산 모드</button>
+        </div>
+        <div class="toolbar-right">
+          <button type="button" id="openFxModalBtn" class="btn-ghost">환율 설정</button>
+          <button type="button" id="openFeeModalBtn" class="btn-ghost">국가별 수수료 설정</button>
+          <button type="button" id="hanaRateBtn" class="btn-success">하나은행 환율 불러오기</button>
+        </div>
       </div>
+
       <div class="muted">
         역산 모드: 희망마진 KRW 입력 → 국가별 권장 판매가 계산<br>
         검산 모드: 국가별 판매가 직접 입력 → 실제 예상이익 계산
@@ -335,7 +452,7 @@
     </div>
 
     <div class="card">
-      <h2>2) 상품 정보</h2>
+      <h2>상품 정보</h2>
 
       <div class="grid grid-4">
         <div class="field">
@@ -390,7 +507,7 @@
         </div>
         <div class="field">
           <label>&nbsp;</label>
-          <div class="inline-flex small muted" style="height: 42px;">KRW 및 TW/PH/VN/TH 판매가는 반올림 처리</div>
+          <div class="inline-flex small muted" style="height: 42px;">TW / PH / VN / TH 판매가는 소수점 없이 처리</div>
         </div>
       </div>
 
@@ -443,190 +560,7 @@
     </div>
 
     <div class="card">
-      <div class="settings-header">
-        <div class="accordion-title">
-          <span>⚙ 설정</span>
-          <span class="badge">접기/펼치기</span>
-        </div>
-        <div class="inline-flex">
-          <button type="button" id="hanaRateBtn" class="btn-success">하나은행 환율 불러오기</button>
-          <button type="button" id="toggleSettingsBtn" class="btn-secondary">설정 접기</button>
-        </div>
-      </div>
-
-      <div class="section-note">
-        기본 화면은 심플하게 두고, 환율/수수료는 여기서 관리하면 돼.
-      </div>
-
-      <div id="settingsBody" class="settings-body" style="margin-top: 16px;">
-        <div class="card" style="margin-bottom: 12px; background: #141820;">
-          <h2 style="margin-bottom: 12px;">환율 설정</h2>
-
-          <div class="grid grid-4">
-            <div class="field">
-              <label for="fxSG">SG 환율 (1 KRW = ? SGD)</label>
-              <input id="fxSG" type="number" step="0.0000001" value="0.00103" />
-            </div>
-            <div class="field">
-              <label for="fxTW">TW 환율 (1 KRW = ? TWD)</label>
-              <input id="fxTW" type="number" step="0.0000001" value="0.0238" />
-            </div>
-            <div class="field">
-              <label for="fxMY">MY 환율 (1 KRW = ? MYR)</label>
-              <input id="fxMY" type="number" step="0.0000001" value="0.00325" />
-            </div>
-            <div class="field">
-              <label for="fxPH">PH 환율 (1 KRW = ? PHP)</label>
-              <input id="fxPH" type="number" step="0.0000001" value="0.0415" />
-            </div>
-          </div>
-
-          <div class="grid grid-4" style="margin-top: 12px;">
-            <div class="field">
-              <label for="fxVN">VN 환율 (1 KRW = ? VND)</label>
-              <input id="fxVN" type="number" step="0.0001" value="18.4" />
-            </div>
-            <div class="field">
-              <label for="fxBR">BR 환율 (1 KRW = ? BRL)</label>
-              <input id="fxBR" type="number" step="0.0000001" value="0.00375" />
-            </div>
-            <div class="field">
-              <label for="fxTH">TH 환율 (1 KRW = ? THB)</label>
-              <input id="fxTH" type="number" step="0.0000001" value="0.0250" />
-            </div>
-            <div class="field">
-              <label for="fxMX">MX 환율 (1 KRW = ? MXN)</label>
-              <input id="fxMX" type="number" step="0.0000001" value="0.0132" />
-            </div>
-          </div>
-        </div>
-
-        <div class="card" style="margin-bottom: 12px; background: #141820;">
-          <h2 style="margin-bottom: 12px;">국가별 수수료 / 추가보정</h2>
-
-          <div class="grid grid-4">
-            <div class="field">
-              <label for="feeSG">SG 총수수료율</label>
-              <input id="feeSG" type="number" step="0.0001" value="0.16" />
-            </div>
-            <div class="field">
-              <label for="fixedSG">SG 고정수수료 (SGD)</label>
-              <input id="fixedSG" type="number" step="0.01" value="0" />
-            </div>
-            <div class="field">
-              <label for="rebateSG">SG 추가보정 / rebate (KRW)</label>
-              <input id="rebateSG" type="number" step="1" value="0" />
-            </div>
-            <div class="field">
-              <label for="feeTW">TW 총수수료율</label>
-              <input id="feeTW" type="number" step="0.0001" value="0.16" />
-            </div>
-          </div>
-
-          <div class="grid grid-4" style="margin-top: 12px;">
-            <div class="field">
-              <label for="fixedTW">TW 고정수수료 (TWD)</label>
-              <input id="fixedTW" type="number" step="0.01" value="0" />
-            </div>
-            <div class="field">
-              <label for="rebateTW">TW 추가보정 / rebate (KRW)</label>
-              <input id="rebateTW" type="number" step="1" value="0" />
-            </div>
-            <div class="field">
-              <label for="feeMY">MY 총수수료율</label>
-              <input id="feeMY" type="number" step="0.0001" value="0.16" />
-            </div>
-            <div class="field">
-              <label for="fixedMY">MY 고정수수료 (MYR)</label>
-              <input id="fixedMY" type="number" step="0.01" value="0" />
-            </div>
-          </div>
-
-          <div class="grid grid-4" style="margin-top: 12px;">
-            <div class="field">
-              <label for="rebateMY">MY 추가보정 / rebate (KRW)</label>
-              <input id="rebateMY" type="number" step="1" value="0" />
-            </div>
-            <div class="field">
-              <label for="feePH">PH 총수수료율</label>
-              <input id="feePH" type="number" step="0.0001" value="0.16" />
-            </div>
-            <div class="field">
-              <label for="fixedPH">PH 고정수수료 (PHP)</label>
-              <input id="fixedPH" type="number" step="0.01" value="0" />
-            </div>
-            <div class="field">
-              <label for="rebatePH">PH 추가보정 / rebate (KRW)</label>
-              <input id="rebatePH" type="number" step="1" value="0" />
-            </div>
-          </div>
-
-          <div class="grid grid-4" style="margin-top: 12px;">
-            <div class="field">
-              <label for="feeVN">VN 총수수료율</label>
-              <input id="feeVN" type="number" step="0.0001" value="0.16" />
-            </div>
-            <div class="field">
-              <label for="fixedVN">VN 고정수수료 (VND)</label>
-              <input id="fixedVN" type="number" step="0.01" value="0" />
-            </div>
-            <div class="field">
-              <label for="rebateVN">VN 추가보정 / rebate (KRW)</label>
-              <input id="rebateVN" type="number" step="1" value="0" />
-            </div>
-            <div class="field">
-              <label for="feeBR">BR 총수수료율</label>
-              <input id="feeBR" type="number" step="0.0001" value="0.16" />
-            </div>
-          </div>
-
-          <div class="grid grid-4" style="margin-top: 12px;">
-            <div class="field">
-              <label for="fixedBR">BR 고정수수료 (BRL)</label>
-              <input id="fixedBR" type="number" step="0.01" value="0" />
-            </div>
-            <div class="field">
-              <label for="rebateBR">BR 추가보정 / rebate (KRW)</label>
-              <input id="rebateBR" type="number" step="1" value="0" />
-            </div>
-            <div class="field">
-              <label for="feeTH">TH 총수수료율</label>
-              <input id="feeTH" type="number" step="0.0001" value="0.16" />
-            </div>
-            <div class="field">
-              <label for="fixedTH">TH 고정수수료 (THB)</label>
-              <input id="fixedTH" type="number" step="0.01" value="0" />
-            </div>
-          </div>
-
-          <div class="grid grid-4" style="margin-top: 12px;">
-            <div class="field">
-              <label for="rebateTH">TH 추가보정 / rebate (KRW)</label>
-              <input id="rebateTH" type="number" step="1" value="0" />
-            </div>
-            <div class="field">
-              <label for="feeMX">MX 총수수료율</label>
-              <input id="feeMX" type="number" step="0.0001" value="0.16" />
-            </div>
-            <div class="field">
-              <label for="fixedMX">MX 고정수수료 (MXN)</label>
-              <input id="fixedMX" type="number" step="0.01" value="0" />
-            </div>
-            <div class="field">
-              <label for="rebateMX">MX 추가보정 / rebate (KRW)</label>
-              <input id="rebateMX" type="number" step="1" value="0" />
-            </div>
-          </div>
-        </div>
-
-        <div class="section-note">
-          환율/수수료 입력값은 자동 저장돼.
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>3) 무게 요약</h2>
+      <h2>무게 요약</h2>
       <div class="summary-grid">
         <div class="summary-box">
           <div class="k">실중량</div>
@@ -652,7 +586,7 @@
     </div>
 
     <div class="card">
-      <h2>4) 국가별 결과</h2>
+      <h2>국가별 결과</h2>
       <div class="table-wrap">
         <table id="resultsTable">
           <thead>
@@ -680,6 +614,243 @@
     </div>
   </div>
 
+  <!-- 환율 모달 -->
+  <div id="fxModalOverlay" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">국가별 환율 설정</div>
+        <button type="button" class="modal-close" data-close-modal="fx">닫기</button>
+      </div>
+      <div class="modal-body">
+        <div class="settings-list">
+          <div class="settings-row">
+            <div class="settings-left">
+              <div class="flag">🇸🇬</div>
+              <div>
+                <div class="settings-name">싱가포르</div>
+                <div class="settings-sub">1 SGD = ? 원</div>
+              </div>
+            </div>
+            <div class="settings-right">
+              <input id="rateWonSG" type="number" step="0.01" />
+              <div class="settings-unit">원</div>
+            </div>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-left">
+              <div class="flag">🇲🇾</div>
+              <div>
+                <div class="settings-name">말레이시아</div>
+                <div class="settings-sub">1 MYR = ? 원</div>
+              </div>
+            </div>
+            <div class="settings-right">
+              <input id="rateWonMY" type="number" step="0.01" />
+              <div class="settings-unit">원</div>
+            </div>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-left">
+              <div class="flag">🇵🇭</div>
+              <div>
+                <div class="settings-name">필리핀</div>
+                <div class="settings-sub">1 PHP = ? 원</div>
+              </div>
+            </div>
+            <div class="settings-right">
+              <input id="rateWonPH" type="number" step="0.01" />
+              <div class="settings-unit">원</div>
+            </div>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-left">
+              <div class="flag">🇻🇳</div>
+              <div>
+                <div class="settings-name">베트남</div>
+                <div class="settings-sub">100 VND = ? 원</div>
+              </div>
+            </div>
+            <div class="settings-right">
+              <input id="rateWonVN100" type="number" step="0.01" />
+              <div class="settings-unit">원</div>
+            </div>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-left">
+              <div class="flag">🇧🇷</div>
+              <div>
+                <div class="settings-name">브라질</div>
+                <div class="settings-sub">1 BRL = ? 원</div>
+              </div>
+            </div>
+            <div class="settings-right">
+              <input id="rateWonBR" type="number" step="0.01" />
+              <div class="settings-unit">원</div>
+            </div>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-left">
+              <div class="flag">🇲🇽</div>
+              <div>
+                <div class="settings-name">멕시코</div>
+                <div class="settings-sub">1 MXN = ? 원</div>
+              </div>
+            </div>
+            <div class="settings-right">
+              <input id="rateWonMX" type="number" step="0.01" />
+              <div class="settings-unit">원</div>
+            </div>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-left">
+              <div class="flag">🇹🇭</div>
+              <div>
+                <div class="settings-name">태국</div>
+                <div class="settings-sub">1 THB = ? 원</div>
+              </div>
+            </div>
+            <div class="settings-right">
+              <input id="rateWonTH" type="number" step="0.01" />
+              <div class="settings-unit">원</div>
+            </div>
+          </div>
+
+          <div class="settings-row">
+            <div class="settings-left">
+              <div class="flag">🇹🇼</div>
+              <div>
+                <div class="settings-name">대만</div>
+                <div class="settings-sub">1 TWD = ? 원</div>
+              </div>
+            </div>
+            <div class="settings-right">
+              <input id="rateWonTW" type="number" step="0.01" />
+              <div class="settings-unit">원</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" id="saveFxModalBtn" class="btn-primary">환율 저장</button>
+        </div>
+
+        <div class="modal-note">
+          내부 계산은 KRW → 현지통화 비율로 저장되며, 여기서는 보기 쉽게 “1통화 = 몇 원” 형식으로 입력해.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 수수료 모달 -->
+  <div id="feeModalOverlay" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">마켓별 수수료 설정</div>
+        <button type="button" class="modal-close" data-close-modal="fee">닫기</button>
+      </div>
+      <div class="modal-body">
+        <div class="soft-card" style="margin-bottom: 12px;">
+          <div class="grid grid-2">
+            <div class="field">
+              <label for="volDivisor">부피무게 divisor</label>
+              <input id="volDivisorModal" type="number" min="1" step="1" />
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <div class="inline-flex small muted" style="height:42px;">국가별 수수료 + 고정수수료 + rebate 관리</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-list">
+          <div class="settings-row">
+            <div class="settings-left"><div class="flag">🇸🇬</div><div><div class="settings-name">싱가포르</div><div class="settings-sub">총수수료율 / 고정수수료 / rebate</div></div></div>
+            <div class="settings-right">
+              <input id="feeSG" type="number" step="0.0001" placeholder="수수료율" />
+            </div>
+          </div>
+          <div class="settings-row"><div></div><div class="settings-right"><input id="fixedSG" type="number" step="0.01" placeholder="고정수수료" /><input id="rebateSG" type="number" step="1" placeholder="rebate KRW" /></div></div>
+
+          <div class="settings-row">
+            <div class="settings-left"><div class="flag">🇲🇾</div><div><div class="settings-name">말레이시아</div><div class="settings-sub">총수수료율 / 고정수수료 / rebate</div></div></div>
+            <div class="settings-right">
+              <input id="feeMY" type="number" step="0.0001" placeholder="수수료율" />
+            </div>
+          </div>
+          <div class="settings-row"><div></div><div class="settings-right"><input id="fixedMY" type="number" step="0.01" placeholder="고정수수료" /><input id="rebateMY" type="number" step="1" placeholder="rebate KRW" /></div></div>
+
+          <div class="settings-row">
+            <div class="settings-left"><div class="flag">🇵🇭</div><div><div class="settings-name">필리핀</div><div class="settings-sub">총수수료율 / 고정수수료 / rebate</div></div></div>
+            <div class="settings-right">
+              <input id="feePH" type="number" step="0.0001" placeholder="수수료율" />
+            </div>
+          </div>
+          <div class="settings-row"><div></div><div class="settings-right"><input id="fixedPH" type="number" step="0.01" placeholder="고정수수료" /><input id="rebatePH" type="number" step="1" placeholder="rebate KRW" /></div></div>
+
+          <div class="settings-row">
+            <div class="settings-left"><div class="flag">🇻🇳</div><div><div class="settings-name">베트남</div><div class="settings-sub">총수수료율 / 고정수수료 / rebate</div></div></div>
+            <div class="settings-right">
+              <input id="feeVN" type="number" step="0.0001" placeholder="수수료율" />
+            </div>
+          </div>
+          <div class="settings-row"><div></div><div class="settings-right"><input id="fixedVN" type="number" step="0.01" placeholder="고정수수료" /><input id="rebateVN" type="number" step="1" placeholder="rebate KRW" /></div></div>
+
+          <div class="settings-row">
+            <div class="settings-left"><div class="flag">🇧🇷</div><div><div class="settings-name">브라질</div><div class="settings-sub">총수수료율 / 고정수수료 / rebate</div></div></div>
+            <div class="settings-right">
+              <input id="feeBR" type="number" step="0.0001" placeholder="수수료율" />
+            </div>
+          </div>
+          <div class="settings-row"><div></div><div class="settings-right"><input id="fixedBR" type="number" step="0.01" placeholder="고정수수료" /><input id="rebateBR" type="number" step="1" placeholder="rebate KRW" /></div></div>
+
+          <div class="settings-row">
+            <div class="settings-left"><div class="flag">🇲🇽</div><div><div class="settings-name">멕시코</div><div class="settings-sub">총수수료율 / 고정수수료 / rebate</div></div></div>
+            <div class="settings-right">
+              <input id="feeMX" type="number" step="0.0001" placeholder="수수료율" />
+            </div>
+          </div>
+          <div class="settings-row"><div></div><div class="settings-right"><input id="fixedMX" type="number" step="0.01" placeholder="고정수수료" /><input id="rebateMX" type="number" step="1" placeholder="rebate KRW" /></div></div>
+
+          <div class="settings-row">
+            <div class="settings-left"><div class="flag">🇹🇭</div><div><div class="settings-name">태국</div><div class="settings-sub">총수수료율 / 고정수수료 / rebate</div></div></div>
+            <div class="settings-right">
+              <input id="feeTH" type="number" step="0.0001" placeholder="수수료율" />
+            </div>
+          </div>
+          <div class="settings-row"><div></div><div class="settings-right"><input id="fixedTH" type="number" step="0.01" placeholder="고정수수료" /><input id="rebateTH" type="number" step="1" placeholder="rebate KRW" /></div></div>
+
+          <div class="settings-row">
+            <div class="settings-left"><div class="flag">🇹🇼</div><div><div class="settings-name">대만</div><div class="settings-sub">총수수료율 / 고정수수료 / rebate</div></div></div>
+            <div class="settings-right">
+              <input id="feeTW" type="number" step="0.0001" placeholder="수수료율" />
+            </div>
+          </div>
+          <div class="settings-row"><div></div><div class="settings-right"><input id="fixedTW" type="number" step="0.01" placeholder="고정수수료" /><input id="rebateTW" type="number" step="1" placeholder="rebate KRW" /></div></div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" id="saveFeeModalBtn" class="btn-primary">수수료 저장</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 숨김 계산용 fx input -->
+  <input id="fxSG" type="hidden" value="0.00103" />
+  <input id="fxTW" type="hidden" value="0.0238" />
+  <input id="fxMY" type="hidden" value="0.00325" />
+  <input id="fxPH" type="hidden" value="0.0415" />
+  <input id="fxVN" type="hidden" value="18.4" />
+  <input id="fxBR" type="hidden" value="0.00375" />
+  <input id="fxTH" type="hidden" value="0.0250" />
+  <input id="fxMX" type="hidden" value="0.0132" />
+
   <script>
     const MARKETS = ['SG', 'TW', 'MY', 'PH', 'VN', 'BR', 'TH', 'MX'];
 
@@ -704,18 +875,11 @@
     };
 
     const RULE_CONFIG = {
-      TW: {
-        type: 'per10g',
-        ratePer10g: 1.30
-      },
-      MY: {
-        type: 'per10g',
-        ratePer10g: 0.20
-      }
+      TW: { type: 'per10g', ratePer10g: 1.30 },
+      MY: { type: 'per10g', ratePer10g: 0.20 }
     };
 
-    const SETTINGS_STORAGE_KEY = 'shopee_calculator_settings_v2';
-    const SETTINGS_OPEN_STORAGE_KEY = 'shopee_calculator_settings_open_v1';
+    const SETTINGS_STORAGE_KEY = 'shopee_calculator_settings_v3';
 
     function $(id) {
       return document.getElementById(id);
@@ -739,21 +903,13 @@
 
     function fmtLocalValue(market, value) {
       const n = num(value);
-
-      if (['TW', 'PH', 'VN', 'TH'].includes(market)) {
-        return String(Math.round(n));
-      }
-
+      if (['TW', 'PH', 'VN', 'TH'].includes(market)) return String(Math.round(n));
       return fmtSmart(n);
     }
 
     function roundSellPriceByMarket(market, value) {
       const n = num(value);
-
-      if (['TW', 'PH', 'VN', 'TH'].includes(market)) {
-        return Math.round(n);
-      }
-
+      if (['TW', 'PH', 'VN', 'TH'].includes(market)) return Math.round(n);
       return n;
     }
 
@@ -787,62 +943,14 @@
 
     function getMarketConfig() {
       return {
-        SG: {
-          currency: 'SGD',
-          fx: num($('fxSG').value),
-          feePct: num($('feeSG').value),
-          fixedFee: num($('fixedSG').value),
-          rebateKRW: num($('rebateSG').value)
-        },
-        TW: {
-          currency: 'TWD',
-          fx: num($('fxTW').value),
-          feePct: num($('feeTW').value),
-          fixedFee: num($('fixedTW').value),
-          rebateKRW: num($('rebateTW').value)
-        },
-        MY: {
-          currency: 'MYR',
-          fx: num($('fxMY').value),
-          feePct: num($('feeMY').value),
-          fixedFee: num($('fixedMY').value),
-          rebateKRW: num($('rebateMY').value)
-        },
-        PH: {
-          currency: 'PHP',
-          fx: num($('fxPH').value),
-          feePct: num($('feePH').value),
-          fixedFee: num($('fixedPH').value),
-          rebateKRW: num($('rebatePH').value)
-        },
-        VN: {
-          currency: 'VND',
-          fx: num($('fxVN').value),
-          feePct: num($('feeVN').value),
-          fixedFee: num($('fixedVN').value),
-          rebateKRW: num($('rebateVN').value)
-        },
-        BR: {
-          currency: 'BRL',
-          fx: num($('fxBR').value),
-          feePct: num($('feeBR').value),
-          fixedFee: num($('fixedBR').value),
-          rebateKRW: num($('rebateBR').value)
-        },
-        TH: {
-          currency: 'THB',
-          fx: num($('fxTH').value),
-          feePct: num($('feeTH').value),
-          fixedFee: num($('fixedTH').value),
-          rebateKRW: num($('rebateTH').value)
-        },
-        MX: {
-          currency: 'MXN',
-          fx: num($('fxMX').value),
-          feePct: num($('feeMX').value),
-          fixedFee: num($('fixedMX').value),
-          rebateKRW: num($('rebateMX').value)
-        }
+        SG: { currency: 'SGD', fx: num($('fxSG').value), feePct: num($('feeSG').value), fixedFee: num($('fixedSG').value), rebateKRW: num($('rebateSG').value) },
+        TW: { currency: 'TWD', fx: num($('fxTW').value), feePct: num($('feeTW').value), fixedFee: num($('fixedTW').value), rebateKRW: num($('rebateTW').value) },
+        MY: { currency: 'MYR', fx: num($('fxMY').value), feePct: num($('feeMY').value), fixedFee: num($('fixedMY').value), rebateKRW: num($('rebateMY').value) },
+        PH: { currency: 'PHP', fx: num($('fxPH').value), feePct: num($('feePH').value), fixedFee: num($('fixedPH').value), rebateKRW: num($('rebatePH').value) },
+        VN: { currency: 'VND', fx: num($('fxVN').value), feePct: num($('feeVN').value), fixedFee: num($('fixedVN').value), rebateKRW: num($('rebateVN').value) },
+        BR: { currency: 'BRL', fx: num($('fxBR').value), feePct: num($('feeBR').value), fixedFee: num($('fixedBR').value), rebateKRW: num($('rebateBR').value) },
+        TH: { currency: 'THB', fx: num($('fxTH').value), feePct: num($('feeTH').value), fixedFee: num($('fixedTH').value), rebateKRW: num($('rebateTH').value) },
+        MX: { currency: 'MXN', fx: num($('fxMX').value), feePct: num($('feeMX').value), fixedFee: num($('fixedMX').value), rebateKRW: num($('rebateMX').value) }
       };
     }
 
@@ -852,9 +960,7 @@
       for (const [market, file] of entries) {
         try {
           const res = await fetch(file, { cache: 'no-store' });
-          if (!res.ok) {
-            throw new Error(`${file} load failed: ${res.status}`);
-          }
+          if (!res.ok) throw new Error(`${file} load failed: ${res.status}`);
           shippingJsonData[market] = await res.json();
         } catch (err) {
           console.error(`[${market}] JSON load error`, err);
@@ -864,9 +970,7 @@
     }
 
     function lookupJsonRate(rateData, appliedWeightG) {
-      if (!rateData) {
-        throw new Error('배송비 JSON 데이터가 없습니다.');
-      }
+      if (!rateData) throw new Error('배송비 JSON 데이터가 없습니다.');
 
       if (!Array.isArray(rateData) && typeof rateData === 'object') {
         const keys = Object.keys(rateData)
@@ -875,27 +979,8 @@
           .sort((a, b) => a - b);
 
         const key = keys.find(k => appliedWeightG <= k);
-        if (key == null) {
-          throw new Error(`JSON 요율표 범위를 초과했습니다. 적용무게=${appliedWeightG}g`);
-        }
+        if (key == null) throw new Error(`JSON 요율표 범위를 초과했습니다. 적용무게=${appliedWeightG}g`);
         return num(rateData[key]);
-      }
-
-      if (Array.isArray(rateData)) {
-        const normalized = rateData.map(item => {
-          return {
-            weight: num(item.weight ?? item.maxWeight ?? item.toWeight ?? item.g ?? item.gram),
-            price: num(item.price ?? item.rate ?? item.cost ?? item.amount)
-          };
-        }).filter(x => x.weight > 0);
-
-        normalized.sort((a, b) => a.weight - b.weight);
-
-        const found = normalized.find(item => appliedWeightG <= item.weight);
-        if (!found) {
-          throw new Error(`JSON 요율표 범위를 초과했습니다. 적용무게=${appliedWeightG}g`);
-        }
-        return found.price;
       }
 
       throw new Error('지원하지 않는 JSON 형식입니다.');
@@ -903,59 +988,28 @@
 
     function calcRuleRate(market, appliedWeightG) {
       const conf = RULE_CONFIG[market];
-      if (!conf) {
-        throw new Error(`${market} 규칙 설정이 없습니다.`);
-      }
-
-      if (conf.type === 'per10g') {
-        return (appliedWeightG / 10) * num(conf.ratePer10g);
-      }
-
-      throw new Error(`${market} 규칙 타입을 지원하지 않습니다.`);
+      if (!conf) throw new Error(`${market} 규칙 설정이 없습니다.`);
+      return (appliedWeightG / 10) * num(conf.ratePer10g);
     }
 
     async function getShippingCostLocal(market, appliedWeightG) {
-      if (shippingJsonData[market]) {
-        return lookupJsonRate(shippingJsonData[market], appliedWeightG);
-      }
-
-      if (RULE_CONFIG[market]) {
-        return calcRuleRate(market, appliedWeightG);
-      }
-
+      if (shippingJsonData[market]) return lookupJsonRate(shippingJsonData[market], appliedWeightG);
+      if (RULE_CONFIG[market]) return calcRuleRate(market, appliedWeightG);
       throw new Error(`${market} 배송비 설정이 없습니다.`);
     }
 
-    function calcTargetPriceLocal({
-      totalBaseCostKRW,
-      shippingKRW,
-      desiredMarginKRW,
-      feePct,
-      fixedFee,
-      fx,
-      rebateKRW = 0
-    }) {
+    function calcTargetPriceLocal({ totalBaseCostKRW, shippingKRW, desiredMarginKRW, feePct, fixedFee, fx, rebateKRW = 0 }) {
       const needKRW = totalBaseCostKRW + shippingKRW + desiredMarginKRW - rebateKRW;
       const localBeforeFee = needKRW * fx;
       return (localBeforeFee + fixedFee) / (1 - feePct);
     }
 
-    function calcSettlementKRW({
-      sellPriceLocal,
-      feePct,
-      fixedFee,
-      fx
-    }) {
+    function calcSettlementKRW({ sellPriceLocal, feePct, fixedFee, fx }) {
       const settlementLocal = (num(sellPriceLocal) * (1 - num(feePct))) - num(fixedFee);
       return settlementLocal / num(fx);
     }
 
-    function calcExpectedProfitKRW({
-      settlementKRW,
-      totalBaseCostKRW,
-      shippingKRW,
-      rebateKRW = 0
-    }) {
+    function calcExpectedProfitKRW({ settlementKRW, totalBaseCostKRW, shippingKRW, rebateKRW = 0 }) {
       return settlementKRW - totalBaseCostKRW - shippingKRW + rebateKRW;
     }
 
@@ -1038,15 +1092,14 @@
 
     async function calculateAll() {
       try {
+        syncWonRatesToHiddenFx();
         saveSettingsToLocalStorage();
         setStatus('계산 중...');
 
         const base = getBaseInputs();
         const marketConfig = getMarketConfig();
 
-        if (base.appliedWeightG <= 0) {
-          throw new Error('무게를 입력해줘.');
-        }
+        if (base.appliedWeightG <= 0) throw new Error('무게를 입력해줘.');
 
         renderSummary(base);
 
@@ -1056,13 +1109,8 @@
         for (const market of MARKETS) {
           const conf = marketConfig[market];
 
-          if (!conf.fx || conf.fx <= 0) {
-            throw new Error(`${market} 환율이 올바르지 않아.`);
-          }
-
-          if (conf.feePct >= 1) {
-            throw new Error(`${market} 수수료율이 1 이상이면 안돼.`);
-          }
+          if (!conf.fx || conf.fx <= 0) throw new Error(`${market} 환율이 올바르지 않아.`);
+          if (conf.feePct >= 1) throw new Error(`${market} 수수료율이 1 이상이면 안돼.`);
 
           const shippingLocal = await getShippingCostLocal(market, base.appliedWeightG);
           const shippingKRW = Math.round(shippingLocal / conf.fx);
@@ -1116,15 +1164,13 @@
 
         renderResults(rows);
 
-        const successMsg = [
+        setStatus([
           `계산 완료`,
           `상품: ${base.productName || '(상품명 없음)'}`,
           `실중량: ${fmtSmart(base.actualWeightG)}g`,
           `부피무게: ${fmtSmart(base.volumetricWeightG)}g`,
           `적용무게: ${Math.round(base.appliedWeightG)}g`
-        ].join('\n');
-
-        setStatus(successMsg);
+        ].join('\n'));
       } catch (err) {
         console.error(err);
         setStatus(`오류: ${err.message}`, true);
@@ -1137,13 +1183,17 @@
       if (mode === 'reverse') {
         $('reverseFields').classList.remove('hidden');
         $('checkFields').classList.add('hidden');
-        $('modeReverseBtn').classList.add('active');
-        $('modeCheckBtn').classList.remove('active');
+        $('modeReverseBtn').classList.add('btn-primary');
+        $('modeReverseBtn').classList.remove('btn-secondary');
+        $('modeCheckBtn').classList.add('btn-secondary');
+        $('modeCheckBtn').classList.remove('btn-primary');
       } else {
         $('reverseFields').classList.add('hidden');
         $('checkFields').classList.remove('hidden');
-        $('modeReverseBtn').classList.remove('active');
-        $('modeCheckBtn').classList.add('active');
+        $('modeCheckBtn').classList.add('btn-primary');
+        $('modeCheckBtn').classList.remove('btn-secondary');
+        $('modeReverseBtn').classList.add('btn-secondary');
+        $('modeReverseBtn').classList.remove('btn-primary');
       }
 
       $('sumMode').textContent = mode === 'reverse' ? '역산' : '검산';
@@ -1172,8 +1222,6 @@
         if ($(id)) $(id).value = '';
       });
 
-      $('volDivisor').value = 6000;
-
       $('resultsTable').querySelector('tbody').innerHTML = '';
       $('sumActualWeight').textContent = '-';
       $('sumVolWeight').textContent = '-';
@@ -1183,8 +1231,18 @@
       setStatus('');
     }
 
-    function getSettingsInputIds() {
-      return [
+    function openModal(type) {
+      if (type === 'fx') $('fxModalOverlay').classList.add('show');
+      if (type === 'fee') $('feeModalOverlay').classList.add('show');
+    }
+
+    function closeModal(type) {
+      if (type === 'fx') $('fxModalOverlay').classList.remove('show');
+      if (type === 'fee') $('feeModalOverlay').classList.remove('show');
+    }
+
+    function saveSettingsToLocalStorage() {
+      const ids = [
         'fxSG','fxTW','fxMY','fxPH','fxVN','fxBR','fxTH','fxMX',
         'feeSG','fixedSG','rebateSG',
         'feeTW','fixedTW','rebateTW',
@@ -1196,13 +1254,12 @@
         'feeMX','fixedMX','rebateMX',
         'volDivisor'
       ];
-    }
 
-    function saveSettingsToLocalStorage() {
       const data = {};
-      getSettingsInputIds().forEach(id => {
+      ids.forEach(id => {
         if ($(id)) data[id] = $(id).value;
       });
+
       localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(data));
     }
 
@@ -1210,64 +1267,79 @@
       try {
         const raw = localStorage.getItem(SETTINGS_STORAGE_KEY);
         if (!raw) return;
-
         const data = JSON.parse(raw);
-        getSettingsInputIds().forEach(id => {
-          if ($(id) && data[id] != null) {
-            $(id).value = data[id];
-          }
+
+        Object.keys(data).forEach(id => {
+          if ($(id)) $(id).value = data[id];
         });
       } catch (err) {
         console.error('설정 불러오기 실패', err);
       }
     }
 
-    function saveSettingsOpenState(isOpen) {
-      localStorage.setItem(SETTINGS_OPEN_STORAGE_KEY, isOpen ? 'open' : 'closed');
+    function syncHiddenFxToWonInputs() {
+      $('rateWonSG').value = fmtSmart(1 / num($('fxSG').value), 2);
+      $('rateWonTW').value = fmtSmart(1 / num($('fxTW').value), 2);
+      $('rateWonMY').value = fmtSmart(1 / num($('fxMY').value), 2);
+      $('rateWonPH').value = fmtSmart(1 / num($('fxPH').value), 2);
+      $('rateWonVN100').value = fmtSmart(100 / num($('fxVN').value), 2);
+      $('rateWonBR').value = fmtSmart(1 / num($('fxBR').value), 2);
+      $('rateWonTH').value = fmtSmart(1 / num($('fxTH').value), 2);
+      $('rateWonMX').value = fmtSmart(1 / num($('fxMX').value), 2);
     }
 
-    function loadSettingsOpenState() {
-      const state = localStorage.getItem(SETTINGS_OPEN_STORAGE_KEY);
-      return state !== 'closed';
+    function syncWonRatesToHiddenFx() {
+      const sgWon = num($('rateWonSG').value);
+      const twWon = num($('rateWonTW').value);
+      const myWon = num($('rateWonMY').value);
+      const phWon = num($('rateWonPH').value);
+      const vn100Won = num($('rateWonVN100').value);
+      const brWon = num($('rateWonBR').value);
+      const thWon = num($('rateWonTH').value);
+      const mxWon = num($('rateWonMX').value);
+
+      if (sgWon > 0) $('fxSG').value = 1 / sgWon;
+      if (twWon > 0) $('fxTW').value = 1 / twWon;
+      if (myWon > 0) $('fxMY').value = 1 / myWon;
+      if (phWon > 0) $('fxPH').value = 1 / phWon;
+      if (vn100Won > 0) $('fxVN').value = 100 / vn100Won;
+      if (brWon > 0) $('fxBR').value = 1 / brWon;
+      if (thWon > 0) $('fxTH').value = 1 / thWon;
+      if (mxWon > 0) $('fxMX').value = 1 / mxWon;
     }
 
-    function setSettingsOpen(isOpen) {
-      const body = $('settingsBody');
-      const btn = $('toggleSettingsBtn');
-
-      if (isOpen) {
-        body.classList.remove('hidden');
-        btn.textContent = '설정 접기';
-      } else {
-        body.classList.add('hidden');
-        btn.textContent = '설정 펼치기';
-      }
-
-      saveSettingsOpenState(isOpen);
+    function syncMainDivisorToModal() {
+      $('volDivisorModal').value = $('volDivisor').value;
     }
 
-    function handleToggleSettings() {
-      const isOpen = !$('settingsBody').classList.contains('hidden');
-      setSettingsOpen(!isOpen);
+    function syncModalDivisorToMain() {
+      $('volDivisor').value = $('volDivisorModal').value;
     }
 
-    function setupSettingsAutoSave() {
-      getSettingsInputIds().forEach(id => {
-        if ($(id)) {
-          $(id).addEventListener('input', saveSettingsToLocalStorage);
-          $(id).addEventListener('change', saveSettingsToLocalStorage);
-        }
-      });
+    function handleSaveFxModal() {
+      syncWonRatesToHiddenFx();
+      saveSettingsToLocalStorage();
+      closeModal('fx');
+      setStatus('환율 설정 저장 완료');
+    }
+
+    function handleSaveFeeModal() {
+      syncModalDivisorToMain();
+      saveSettingsToLocalStorage();
+      closeModal('fee');
+      setStatus('수수료 설정 저장 완료');
     }
 
     function handleHanaBankRates() {
-      setStatus('하나은행 환율 자동 불러오기 기능은 다음 단계에서 API 연결로 붙일 예정이야. 지금은 수동 환율을 사용해줘.');
+      setStatus('하나은행 환율 자동 불러오기 기능은 다음 단계에서 실제 연동해줄게. 지금은 버튼 자리와 구조만 넣어둔 상태야.');
     }
 
     async function init() {
       loadSettingsFromLocalStorage();
-      setupSettingsAutoSave();
-      setSettingsOpen(loadSettingsOpenState());
+      syncHiddenFxToWonInputs();
+      syncMainDivisorToModal();
+
+      setMode('reverse');
 
       setStatus('배송비 JSON 불러오는 중...');
       await loadAllShippingJson();
@@ -1287,8 +1359,33 @@
     $('modeCheckBtn').addEventListener('click', () => setMode('check'));
     $('calculateBtn').addEventListener('click', calculateAll);
     $('resetBtn').addEventListener('click', resetInputs);
-    $('toggleSettingsBtn').addEventListener('click', handleToggleSettings);
+    $('openFxModalBtn').addEventListener('click', () => {
+      syncHiddenFxToWonInputs();
+      openModal('fx');
+    });
+    $('openFeeModalBtn').addEventListener('click', () => {
+      syncMainDivisorToModal();
+      openModal('fee');
+    });
+    $('saveFxModalBtn').addEventListener('click', handleSaveFxModal);
+    $('saveFeeModalBtn').addEventListener('click', handleSaveFeeModal);
     $('hanaRateBtn').addEventListener('click', handleHanaBankRates);
+
+    document.querySelectorAll('[data-close-modal="fx"]').forEach(btn => {
+      btn.addEventListener('click', () => closeModal('fx'));
+    });
+
+    document.querySelectorAll('[data-close-modal="fee"]').forEach(btn => {
+      btn.addEventListener('click', () => closeModal('fee'));
+    });
+
+    $('fxModalOverlay').addEventListener('click', (e) => {
+      if (e.target === $('fxModalOverlay')) closeModal('fx');
+    });
+
+    $('feeModalOverlay').addEventListener('click', (e) => {
+      if (e.target === $('feeModalOverlay')) closeModal('fee');
+    });
 
     init();
   </script>
