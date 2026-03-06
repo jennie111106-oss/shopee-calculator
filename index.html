@@ -57,7 +57,7 @@
   </div>
 
   <script>
-    // ✅ 싱가포르 배송표(JSON) 로드
+    // ✅ 싱가포르 배송표(JSON) 로드 (10g~1470g 등 구간)
     let SG_TABLE = {};
     fetch("./shipping_sg.json")
       .then(res => res.json())
@@ -78,14 +78,27 @@
 
       const total = cost + domestic + pack + margin;
 
-      // ✅ 싱가포르 배송비 (테스트: JSON에 있는 값만 표시)
-      const sgShip = (SG_TABLE[String(applied)] ?? "-");
+      // ✅ 싱가포르 배송비: 1) JSON에서 찾고 2) 없으면(1480g 이상) 공식으로 계산
+      let sgShip = SG_TABLE[String(applied)] ?? "-";
+
+      // 1480g 이상은 공식 적용 (표를 3만g까지 다 넣지 않기)
+      if (sgShip === "-" && applied >= 1480) {
+        if (applied <= 1500) {
+          sgShip = 11.50;
+        } else {
+          // 1510~1600: 12.20 / 이후 100g마다 +0.70
+          const steps = Math.floor((applied - 1510) / 100);
+          sgShip = 12.20 + 0.70 * steps;
+        }
+      }
+
+      const sgShipText = (sgShip === "-") ? "-" : Number(sgShip).toFixed(2);
 
       document.getElementById("result").textContent =
         `테스트 결과\n` +
         `- 합계(원가+국내배송+포장+희망마진) = ${total.toLocaleString()} KRW\n` +
         `- 적용무게 = ${applied}g\n` +
-        `- 싱가포르 판매자부담 배송비 = ${sgShip} SGD`;
+        `- 싱가포르 판매자부담 배송비 = ${sgShipText} SGD`;
     });
   </script>
 </body>
