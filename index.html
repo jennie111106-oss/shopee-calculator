@@ -24,7 +24,6 @@
       --light-line: #d9dee8;
       --light-text: #1f2937;
       --light-muted: #6b7280;
-      --light-accent: #5b8bd9;
       --light-save: #f0d74f;
       --light-save-border: #d3bf48;
       --light-cancel: #d8d1ef;
@@ -285,7 +284,6 @@
 
     .hidden { display: none !important; }
 
-    /* Modal */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -629,7 +627,7 @@
         </div>
         <div class="field">
           <label>&nbsp;</label>
-          <div class="inline-flex small muted" style="height: 42px;">대만 / 태국 / 베트남 / 필리핀 판매가는 정수 처리</div>
+          <div class="inline-flex small muted" style="height: 42px;">희망마진은 최소 보장 방식으로 계산</div>
         </div>
       </div>
 
@@ -753,115 +751,36 @@
         <div class="modal-section">
           <div class="settings-list">
             <div class="settings-row">
-              <div class="settings-left">
-                <div class="flag">🇸🇬</div>
-                <div>
-                  <div class="settings-main">싱가포르</div>
-                  <div class="settings-sub">S$ 1 = ? 원</div>
-                </div>
-              </div>
-              <div class="settings-right">
-                <input id="rateWonSG" type="number" step="0.01" value="0" />
-                <div class="settings-unit">원</div>
-              </div>
+              <div class="settings-left"><div class="flag">🇸🇬</div><div><div class="settings-main">싱가포르</div><div class="settings-sub">S$ 1 = ? 원</div></div></div>
+              <div class="settings-right"><input id="rateWonSG" type="number" step="0.01" value="0" /><div class="settings-unit">원</div></div>
             </div>
-
             <div class="settings-row">
-              <div class="settings-left">
-                <div class="flag">🇹🇼</div>
-                <div>
-                  <div class="settings-main">대만</div>
-                  <div class="settings-sub">S$ 1 = ? 원 → TWD 1 = ? 원</div>
-                </div>
-              </div>
-              <div class="settings-right">
-                <input id="rateWonTW" type="number" step="0.01" value="0" />
-                <div class="settings-unit">원</div>
-              </div>
+              <div class="settings-left"><div class="flag">🇹🇼</div><div><div class="settings-main">대만</div><div class="settings-sub">TWD 1 = ? 원</div></div></div>
+              <div class="settings-right"><input id="rateWonTW" type="number" step="0.01" value="0" /><div class="settings-unit">원</div></div>
             </div>
-
             <div class="settings-row">
-              <div class="settings-left">
-                <div class="flag">🇹🇭</div>
-                <div>
-                  <div class="settings-main">태국</div>
-                  <div class="settings-sub">฿ 1 = ? 원</div>
-                </div>
-              </div>
-              <div class="settings-right">
-                <input id="rateWonTH" type="number" step="0.01" value="0" />
-                <div class="settings-unit">원</div>
-              </div>
+              <div class="settings-left"><div class="flag">🇹🇭</div><div><div class="settings-main">태국</div><div class="settings-sub">฿ 1 = ? 원</div></div></div>
+              <div class="settings-right"><input id="rateWonTH" type="number" step="0.01" value="0" /><div class="settings-unit">원</div></div>
             </div>
-
             <div class="settings-row">
-              <div class="settings-left">
-                <div class="flag">🇲🇾</div>
-                <div>
-                  <div class="settings-main">말레이시아</div>
-                  <div class="settings-sub">RM 1 = ? 원</div>
-                </div>
-              </div>
-              <div class="settings-right">
-                <input id="rateWonMY" type="number" step="0.01" value="0" />
-                <div class="settings-unit">원</div>
-              </div>
+              <div class="settings-left"><div class="flag">🇲🇾</div><div><div class="settings-main">말레이시아</div><div class="settings-sub">RM 1 = ? 원</div></div></div>
+              <div class="settings-right"><input id="rateWonMY" type="number" step="0.01" value="0" /><div class="settings-unit">원</div></div>
             </div>
-
             <div class="settings-row">
-              <div class="settings-left">
-                <div class="flag">🇻🇳</div>
-                <div>
-                  <div class="settings-main">베트남</div>
-                  <div class="settings-sub">₫ 100 = ? 원</div>
-                </div>
-              </div>
-              <div class="settings-right">
-                <input id="rateWonVN100" type="number" step="0.01" value="0" />
-                <div class="settings-unit">원</div>
-              </div>
+              <div class="settings-left"><div class="flag">🇻🇳</div><div><div class="settings-main">베트남</div><div class="settings-sub">₫ 100 = ? 원</div></div></div>
+              <div class="settings-right"><input id="rateWonVN100" type="number" step="0.01" value="0" /><div class="settings-unit">원</div></div>
             </div>
-
             <div class="settings-row">
-              <div class="settings-left">
-                <div class="flag">🇵🇭</div>
-                <div>
-                  <div class="settings-main">필리핀</div>
-                  <div class="settings-sub">₱ 1 = ? 원</div>
-                </div>
-              </div>
-              <div class="settings-right">
-                <input id="rateWonPH" type="number" step="0.01" value="0" />
-                <div class="settings-unit">원</div>
-              </div>
+              <div class="settings-left"><div class="flag">🇵🇭</div><div><div class="settings-main">필리핀</div><div class="settings-sub">₱ 1 = ? 원</div></div></div>
+              <div class="settings-right"><input id="rateWonPH" type="number" step="0.01" value="0" /><div class="settings-unit">원</div></div>
             </div>
-
             <div class="settings-row">
-              <div class="settings-left">
-                <div class="flag">🇧🇷</div>
-                <div>
-                  <div class="settings-main">브라질</div>
-                  <div class="settings-sub">R$ 1 = ? 원</div>
-                </div>
-              </div>
-              <div class="settings-right">
-                <input id="rateWonBR" type="number" step="0.01" value="0" />
-                <div class="settings-unit">원</div>
-              </div>
+              <div class="settings-left"><div class="flag">🇧🇷</div><div><div class="settings-main">브라질</div><div class="settings-sub">R$ 1 = ? 원</div></div></div>
+              <div class="settings-right"><input id="rateWonBR" type="number" step="0.01" value="0" /><div class="settings-unit">원</div></div>
             </div>
-
             <div class="settings-row">
-              <div class="settings-left">
-                <div class="flag">🇲🇽</div>
-                <div>
-                  <div class="settings-main">멕시코</div>
-                  <div class="settings-sub">$ 1 = ? 원 → MXN 1 = ? 원</div>
-                </div>
-              </div>
-              <div class="settings-right">
-                <input id="rateWonMX" type="number" step="0.01" value="0" />
-                <div class="settings-unit">원</div>
-              </div>
+              <div class="settings-left"><div class="flag">🇲🇽</div><div><div class="settings-main">멕시코</div><div class="settings-sub">MXN 1 = ? 원</div></div></div>
+              <div class="settings-right"><input id="rateWonMX" type="number" step="0.01" value="0" /><div class="settings-unit">원</div></div>
             </div>
           </div>
         </div>
@@ -874,7 +793,7 @@
 
         <div class="modal-note">
           현재는 수동 입력 기준입니다. 기본값은 0으로 시작합니다.<br>
-          하나은행 환율 자동 불러오기는 버튼 구조만 넣어둔 상태입니다.
+          하나은행 환율 자동 불러오기는 다음 단계에서 실제 연동할 예정입니다.
         </div>
       </div>
     </div>
@@ -926,7 +845,6 @@
     </div>
   </div>
 
-  <!-- 숨김 실제 계산용 환율 -->
   <input id="fxSG" type="hidden" value="0" />
   <input id="fxTW" type="hidden" value="0" />
   <input id="fxTH" type="hidden" value="0" />
@@ -940,14 +858,14 @@
     const MARKETS = ['SG', 'TW', 'TH', 'MY', 'VN', 'PH', 'BR', 'MX'];
 
     const MARKET_INFO = {
-      SG: { name: '싱가포르', currency: 'SGD', flag: '🇸🇬', symbol: 'S$' },
-      TW: { name: '대만', currency: 'TWD', flag: '🇹🇼', symbol: 'TWD' },
-      TH: { name: '태국', currency: 'THB', flag: '🇹🇭', symbol: '฿' },
-      MY: { name: '말레이시아', currency: 'MYR', flag: '🇲🇾', symbol: 'RM' },
-      VN: { name: '베트남', currency: 'VND', flag: '🇻🇳', symbol: '₫' },
-      PH: { name: '필리핀', currency: 'PHP', flag: '🇵🇭', symbol: '₱' },
-      BR: { name: '브라질', currency: 'BRL', flag: '🇧🇷', symbol: 'R$' },
-      MX: { name: '멕시코', currency: 'MXN', flag: '🇲🇽', symbol: 'MXN' }
+      SG: { name: '싱가포르', currency: 'SGD', flag: '🇸🇬' },
+      TW: { name: '대만', currency: 'TWD', flag: '🇹🇼' },
+      TH: { name: '태국', currency: 'THB', flag: '🇹🇭' },
+      MY: { name: '말레이시아', currency: 'MYR', flag: '🇲🇾' },
+      VN: { name: '베트남', currency: 'VND', flag: '🇻🇳' },
+      PH: { name: '필리핀', currency: 'PHP', flag: '🇵🇭' },
+      BR: { name: '브라질', currency: 'BRL', flag: '🇧🇷' },
+      MX: { name: '멕시코', currency: 'MXN', flag: '🇲🇽' }
     };
 
     const JSON_RATE_FILES = {
@@ -964,7 +882,7 @@
       MY: { type: 'per10g', ratePer10g: 0.20 }
     };
 
-    const SETTINGS_STORAGE_KEY = 'shopee_calculator_settings_v4';
+    const SETTINGS_STORAGE_KEY = 'shopee_calculator_settings_v5';
 
     const FEE_PERCENT_FIELDS = [
       { key: 'sellFee', label: '판매수수료 (%)' },
@@ -1028,6 +946,15 @@
       return n;
     }
 
+    function getMinPriceStep(market) {
+      return ['TW', 'TH', 'VN', 'PH'].includes(market) ? 1 : 0.01;
+    }
+
+    function ceilToStep(value, step) {
+      if (step <= 0) return value;
+      return Math.ceil(value / step) * step;
+    }
+
     function ceil10g(weightG) {
       return Math.ceil(num(weightG) / 10) * 10 || 0;
     }
@@ -1066,7 +993,6 @@
 
       MARKETS.forEach((market) => {
         const info = MARKET_INFO[market];
-
         const card = document.createElement('div');
         card.className = 'fee-market-card';
 
@@ -1120,14 +1046,8 @@
     }
 
     function updateFeeSummary(market) {
-      const pctSum = FEE_PERCENT_FIELDS.reduce((sum, field) => {
-        return sum + num($(makeFeeInputId(market, field.key)).value);
-      }, 0);
-
-      const fixedSum = FEE_FIXED_FIELDS.reduce((sum, field) => {
-        return sum + num($(makeFeeInputId(market, field.key)).value);
-      }, 0);
-
+      const pctSum = FEE_PERCENT_FIELDS.reduce((sum, field) => sum + num($(makeFeeInputId(market, field.key)).value), 0);
+      const fixedSum = FEE_FIXED_FIELDS.reduce((sum, field) => sum + num($(makeFeeInputId(market, field.key)).value), 0);
       $(`sumPct_${market}`).textContent = `${fmtSmart(pctSum)}%`;
       $(`sumFixed_${market}`).textContent = `${fmtSmart(fixedSum)} ${MARKET_INFO[market].currency}`;
     }
@@ -1146,14 +1066,8 @@
     }
 
     function getFeeConfig(market) {
-      const feePct = FEE_PERCENT_FIELDS.reduce((sum, field) => {
-        return sum + num($(makeFeeInputId(market, field.key)).value);
-      }, 0) / 100;
-
-      const fixedFee = FEE_FIXED_FIELDS.reduce((sum, field) => {
-        return sum + num($(makeFeeInputId(market, field.key)).value);
-      }, 0);
-
+      const feePct = FEE_PERCENT_FIELDS.reduce((sum, field) => sum + num($(makeFeeInputId(market, field.key)).value), 0) / 100;
+      const fixedFee = FEE_FIXED_FIELDS.reduce((sum, field) => sum + num($(makeFeeInputId(market, field.key)).value), 0);
       return { feePct, fixedFee };
     }
 
@@ -1172,7 +1086,6 @@
 
     async function loadAllShippingJson() {
       const entries = Object.entries(JSON_RATE_FILES);
-
       for (const [market, file] of entries) {
         try {
           const res = await fetch(file, { cache: 'no-store' });
@@ -1223,6 +1136,39 @@
 
     function calcExpectedProfitKRW({ settlementKRW, totalBaseCostKRW, shippingKRW }) {
       return settlementKRW - totalBaseCostKRW - shippingKRW;
+    }
+
+    function findGuaranteedPrice({ market, initialPrice, conf, totalBaseCostKRW, shippingKRW, desiredMarginKRW }) {
+      const step = getMinPriceStep(market);
+      let price = ceilToStep(initialPrice, step);
+      price = roundSellPriceByMarket(market, price);
+
+      for (let i = 0; i < 10000; i++) {
+        const settlementKRW = Math.round(calcSettlementKRW({
+          sellPriceLocal: price,
+          feePct: conf.feePct,
+          fixedFee: conf.fixedFee,
+          fx: conf.fx
+        }));
+
+        const expectedProfitKRW = Math.round(calcExpectedProfitKRW({
+          settlementKRW,
+          totalBaseCostKRW,
+          shippingKRW
+        }));
+
+        if (expectedProfitKRW >= desiredMarginKRW) {
+          return {
+            price,
+            settlementKRW,
+            expectedProfitKRW
+          };
+        }
+
+        price = roundSellPriceByMarket(market, price + step);
+      }
+
+      throw new Error(`${MARKET_INFO[market].name} 최소 마진 보장 가격 계산 실패`);
     }
 
     function getBaseInputs() {
@@ -1311,7 +1257,9 @@
         const base = getBaseInputs();
         const marketConfig = getMarketConfig();
 
-        if (base.appliedWeightG <= 0) throw new Error('무게를 입력해줘.');
+        if (base.appliedWeightG <= 0) {
+          throw new Error('무게를 입력해줘.');
+        }
 
         renderSummary(base);
 
@@ -1333,9 +1281,11 @@
           const shippingKRW = Math.round(shippingLocal / conf.fx);
 
           let sellPriceLocal = 0;
+          let settlementKRW = 0;
+          let expectedProfitKRW = 0;
 
           if (calcMode === 'reverse') {
-            sellPriceLocal = calcTargetPriceLocal({
+            const rawPrice = calcTargetPriceLocal({
               totalBaseCostKRW: base.totalBaseCostKRW,
               shippingKRW,
               desiredMarginKRW: base.desiredMarginKRW,
@@ -1344,23 +1294,34 @@
               fx: conf.fx
             });
 
-            sellPriceLocal = roundSellPriceByMarket(market, sellPriceLocal);
+            const guaranteed = findGuaranteedPrice({
+              market,
+              initialPrice: rawPrice,
+              conf,
+              totalBaseCostKRW: base.totalBaseCostKRW,
+              shippingKRW,
+              desiredMarginKRW: base.desiredMarginKRW
+            });
+
+            sellPriceLocal = guaranteed.price;
+            settlementKRW = guaranteed.settlementKRW;
+            expectedProfitKRW = guaranteed.expectedProfitKRW;
           } else {
             sellPriceLocal = checkSellPrices[market];
+
+            settlementKRW = Math.round(calcSettlementKRW({
+              sellPriceLocal,
+              feePct: conf.feePct,
+              fixedFee: conf.fixedFee,
+              fx: conf.fx
+            }));
+
+            expectedProfitKRW = Math.round(calcExpectedProfitKRW({
+              settlementKRW,
+              totalBaseCostKRW: base.totalBaseCostKRW,
+              shippingKRW
+            }));
           }
-
-          const settlementKRW = Math.round(calcSettlementKRW({
-            sellPriceLocal,
-            feePct: conf.feePct,
-            fixedFee: conf.fixedFee,
-            fx: conf.fx
-          }));
-
-          const expectedProfitKRW = Math.round(calcExpectedProfitKRW({
-            settlementKRW,
-            totalBaseCostKRW: base.totalBaseCostKRW,
-            shippingKRW
-          }));
 
           rows.push({
             market,
@@ -1479,7 +1440,6 @@
       try {
         const raw = localStorage.getItem(SETTINGS_STORAGE_KEY);
         if (!raw) return;
-
         const data = JSON.parse(raw);
         Object.keys(data).forEach(id => {
           if ($(id)) $(id).value = data[id];
