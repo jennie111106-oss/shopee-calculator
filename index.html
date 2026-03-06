@@ -204,7 +204,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 1220px;
+      min-width: 1280px;
       background: var(--panel);
     }
 
@@ -284,6 +284,26 @@
 
     .hidden { display: none !important; }
 
+    .mode-box {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .compare-card {
+      background: #141820;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      margin-top: 14px;
+    }
+
+    .compare-card h3 {
+      margin: 0 0 10px;
+      font-size: 15px;
+    }
+
+    /* Modal */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -550,14 +570,16 @@
   <div class="wrap">
     <h1>Shopee Margin Calculator</h1>
     <div class="sub">
-      배송비 + 수수료 + 환율 + 희망마진 기준 판매가 역산
+      배송비 + 수수료 + 환율 + 희망마진 기준 판매가 역산 / 판매가 기준 검산
     </div>
 
     <div class="card">
       <div class="toolbar">
         <div class="toolbar-left">
-          <button type="button" id="modeReverseBtn" class="btn-secondary">역산 모드</button>
-          <button type="button" id="modeCheckBtn" class="btn-secondary">검산 모드</button>
+          <div class="mode-box">
+            <button type="button" id="modeReverseBtn" class="btn-secondary">역산 모드</button>
+            <button type="button" id="modeCheckBtn" class="btn-secondary">검산 모드</button>
+          </div>
         </div>
         <div class="toolbar-right">
           <button type="button" id="openFxModalBtn" class="btn-ghost">국가별 환율 설정</button>
@@ -677,6 +699,41 @@
       </div>
 
       <div id="status" class="status"></div>
+
+      <div class="compare-card">
+        <h3>판매가 기준 빠른 비교</h3>
+        <div class="muted" style="margin-bottom: 10px;">
+          예: 경쟁자 판매가를 넣고 국가별 예상이익을 빠르게 비교할 때 사용
+        </div>
+        <div class="grid grid-4">
+          <div class="field">
+            <label for="quickComparePrice">비교 판매가</label>
+            <input id="quickComparePrice" type="number" min="0" step="0.01" placeholder="0" />
+          </div>
+          <div class="field">
+            <label for="quickCompareMarket">기준 국가</label>
+            <select id="quickCompareMarket">
+              <option value="SG">🇸🇬 SG</option>
+              <option value="TW">🇹🇼 TW</option>
+              <option value="TH">🇹🇭 TH</option>
+              <option value="MY">🇲🇾 MY</option>
+              <option value="VN">🇻🇳 VN</option>
+              <option value="PH">🇵🇭 PH</option>
+              <option value="BR">🇧🇷 BR</option>
+              <option value="MX">🇲🇽 MX</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <button type="button" id="quickCompareBtn" class="btn-secondary">비교 계산</button>
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <div class="inline-flex small muted" style="height:42px;">선택한 국가 판매가 기준으로 해당 국가 실제이익만 빠르게 확인</div>
+          </div>
+        </div>
+        <div id="quickCompareResult" class="help-line"></div>
+      </div>
     </div>
 
     <div class="card">
@@ -845,6 +902,7 @@
     </div>
   </div>
 
+  <!-- 실제 계산용 환율 hidden -->
   <input id="fxSG" type="hidden" value="0" />
   <input id="fxTW" type="hidden" value="0" />
   <input id="fxTH" type="hidden" value="0" />
@@ -882,7 +940,7 @@
       MY: { type: 'per10g', ratePer10g: 0.20 }
     };
 
-    const SETTINGS_STORAGE_KEY = 'shopee_calculator_settings_v5';
+    const SETTINGS_STORAGE_KEY = 'shopee_calc_settings_full_v1';
 
     const FEE_PERCENT_FIELDS = [
       { key: 'sellFee', label: '판매수수료 (%)' },
@@ -943,7 +1001,7 @@
     function roundSellPriceByMarket(market, value) {
       const n = num(value);
       if (['TW', 'TH', 'VN', 'PH'].includes(market)) return Math.round(n);
-      return n;
+      return Number(n.toFixed(2));
     }
 
     function getMinPriceStep(market) {
@@ -993,6 +1051,7 @@
 
       MARKETS.forEach((market) => {
         const info = MARKET_INFO[market];
+
         const card = document.createElement('div');
         card.className = 'fee-market-card';
 
@@ -1046,8 +1105,14 @@
     }
 
     function updateFeeSummary(market) {
-      const pctSum = FEE_PERCENT_FIELDS.reduce((sum, field) => sum + num($(makeFeeInputId(market, field.key)).value), 0);
-      const fixedSum = FEE_FIXED_FIELDS.reduce((sum, field) => sum + num($(makeFeeInputId(market, field.key)).value), 0);
+      const pctSum = FEE_PERCENT_FIELDS.reduce((sum, field) => {
+        return sum + num($(makeFeeInputId(market, field.key)).value);
+      }, 0);
+
+      const fixedSum = FEE_FIXED_FIELDS.reduce((sum, field) => {
+        return sum + num($(makeFeeInputId(market, field.key)).value);
+      }, 0);
+
       $(`sumPct_${market}`).textContent = `${fmtSmart(pctSum)}%`;
       $(`sumFixed_${market}`).textContent = `${fmtSmart(fixedSum)} ${MARKET_INFO[market].currency}`;
     }
@@ -1066,8 +1131,14 @@
     }
 
     function getFeeConfig(market) {
-      const feePct = FEE_PERCENT_FIELDS.reduce((sum, field) => sum + num($(makeFeeInputId(market, field.key)).value), 0) / 100;
-      const fixedFee = FEE_FIXED_FIELDS.reduce((sum, field) => sum + num($(makeFeeInputId(market, field.key)).value), 0);
+      const feePct = FEE_PERCENT_FIELDS.reduce((sum, field) => {
+        return sum + num($(makeFeeInputId(market, field.key)).value);
+      }, 0) / 100;
+
+      const fixedFee = FEE_FIXED_FIELDS.reduce((sum, field) => {
+        return sum + num($(makeFeeInputId(market, field.key)).value);
+      }, 0);
+
       return { feePct, fixedFee };
     }
 
@@ -1086,6 +1157,7 @@
 
     async function loadAllShippingJson() {
       const entries = Object.entries(JSON_RATE_FILES);
+
       for (const [market, file] of entries) {
         try {
           const res = await fetch(file, { cache: 'no-store' });
@@ -1352,6 +1424,53 @@
       }
     }
 
+    async function quickCompareProfit() {
+      try {
+        syncWonRatesToHiddenFx();
+        saveSettingsToLocalStorage();
+
+        const market = $('quickCompareMarket').value;
+        const sellPriceLocal = num($('quickComparePrice').value);
+
+        if (!sellPriceLocal) {
+          $('quickCompareResult').textContent = '비교 판매가를 입력해줘.';
+          return;
+        }
+
+        const conf = getMarketConfig()[market];
+        if (!conf.fx || conf.fx <= 0) {
+          $('quickCompareResult').textContent = `${MARKET_INFO[market].name} 환율이 0이야.`;
+          return;
+        }
+
+        const base = getBaseInputs();
+        if (base.appliedWeightG <= 0) {
+          $('quickCompareResult').textContent = '먼저 무게를 입력해줘.';
+          return;
+        }
+
+        const shippingLocal = await getShippingCostLocal(market, base.appliedWeightG);
+        const shippingKRW = Math.round(shippingLocal / conf.fx);
+
+        const settlementKRW = Math.round(calcSettlementKRW({
+          sellPriceLocal,
+          feePct: conf.feePct,
+          fixedFee: conf.fixedFee,
+          fx: conf.fx
+        }));
+
+        const expectedProfitKRW = Math.round(calcExpectedProfitKRW({
+          settlementKRW,
+          totalBaseCostKRW: base.totalBaseCostKRW,
+          shippingKRW
+        }));
+
+        $('quickCompareResult').innerHTML = `${MARKET_INFO[market].flag} ${market} 판매가 <strong>${fmtLocalValue(market, sellPriceLocal)} ${MARKET_INFO[market].currency}</strong> 기준 예상이익: <strong>${fmtKRW(expectedProfitKRW)} KRW</strong>`;
+      } catch (err) {
+        $('quickCompareResult').textContent = err.message;
+      }
+    }
+
     function setMode(mode) {
       calcMode = mode;
 
@@ -1392,7 +1511,8 @@
         'checkSellPriceVN',
         'checkSellPricePH',
         'checkSellPriceBR',
-        'checkSellPriceMX'
+        'checkSellPriceMX',
+        'quickComparePrice'
       ].forEach(id => {
         if ($(id)) $(id).value = '';
       });
@@ -1403,6 +1523,7 @@
       $('sumAppliedWeight').textContent = '-';
       $('sumBaseCost').textContent = '-';
       $('sumMode').textContent = calcMode === 'reverse' ? '역산' : '검산';
+      $('quickCompareResult').textContent = '';
       setStatus('');
     }
 
@@ -1440,6 +1561,7 @@
       try {
         const raw = localStorage.getItem(SETTINGS_STORAGE_KEY);
         if (!raw) return;
+
         const data = JSON.parse(raw);
         Object.keys(data).forEach(id => {
           if ($(id)) $(id).value = data[id];
@@ -1533,6 +1655,7 @@
     $('modeCheckBtn').addEventListener('click', () => setMode('check'));
     $('calculateBtn').addEventListener('click', calculateAll);
     $('resetBtn').addEventListener('click', resetInputs);
+    $('quickCompareBtn').addEventListener('click', quickCompareProfit);
 
     $('openFxModalBtn').addEventListener('click', () => {
       syncHiddenFxToWonInputs();
