@@ -62,7 +62,8 @@
 
       const weight = Number(document.getElementById("weight_g").value || 0);
       const vol = Number(document.getElementById("vol_g").value || 0);
-      const applied = Math.max(weight, vol);
+const raw = Math.max(weight, vol);
+const applied = Math.ceil(raw / 10) * 10;
 
       const total = cost + domestic + pack + margin;
 
@@ -72,3 +73,4 @@
   </script>
 </body>
 </html>
+
