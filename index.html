@@ -81,7 +81,6 @@
       // ✅ 싱가포르 배송비: 1) JSON에서 찾고 2) 없으면(1480g 이상) 공식으로 계산
       let sgShip = SG_TABLE[String(applied)] ?? "-";
 
-      // 1480g 이상은 공식 적용 (표를 3만g까지 다 넣지 않기)
       if (sgShip === "-" && applied >= 1480) {
         if (applied <= 1500) {
           sgShip = 11.50;
@@ -91,14 +90,22 @@
           sgShip = 12.20 + 0.70 * steps;
         }
       }
-
       const sgShipText = (sgShip === "-") ? "-" : Number(sgShip).toFixed(2);
+
+      // ✅ 대만 배송비: 10g당 1.30 NTD (표가 완전 선형이라 공식으로 처리)
+      // 10g -> 1.30, 20g -> 2.60 ... 20000g -> 2600.00
+      let twShip = "-";
+      if (applied >= 10 && applied <= 20000) {
+        twShip = (applied / 10) * 1.30;
+      }
+      const twShipText = (twShip === "-") ? "-" : Number(twShip).toFixed(2);
 
       document.getElementById("result").textContent =
         `테스트 결과\n` +
         `- 합계(원가+국내배송+포장+희망마진) = ${total.toLocaleString()} KRW\n` +
         `- 적용무게 = ${applied}g\n` +
-        `- 싱가포르 판매자부담 배송비 = ${sgShipText} SGD`;
+        `- 싱가포르 판매자부담 배송비 = ${sgShipText} SGD\n` +
+        `- 대만 판매자부담 배송비 = ${twShipText} NTD`;
     });
   </script>
 </body>
