@@ -65,12 +65,19 @@
 const raw = Math.max(weight, vol);
 const applied = Math.ceil(raw / 10) * 10;
 
-      const total = cost + domestic + pack + margin;
+const total = cost + domestic + pack + margin;
 
-      document.getElementById("result").textContent =
-        `테스트: 합계 = ${total.toLocaleString()} KRW / 적용무게 = ${applied}g`;
+// ✅ 싱가포르 배송비(테스트): 180g = 1.44 SGD
+let sgShip = "-";
+if (applied === 180) sgShip = "1.44";
+if (applied === 170) sgShip = "1.41";
+if (applied === 160) sgShip = "1.38";
+
+document.getElementById("result").textContent =
+  `테스트: 합계 = ${total.toLocaleString()} KRW / 적용무게 = ${applied}g / 싱가포르 배송비 = ${sgShip} SGD`;
     });
   </script>
 </body>
 </html>
+
 
