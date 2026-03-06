@@ -7,7 +7,7 @@
   <style>
     :root { --border:#d9d9d9; --text:#111; --muted:#666; }
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Apple SD Gothic Neo, Noto Sans KR, sans-serif; color:var(--text); margin:0; background:#fff; }
-    .wrap { max-width: 720px; margin: 0 auto; padding: 24px 16px 40px; }
+    .wrap { max-width: 820px; margin: 0 auto; padding: 24px 16px 40px; }
     h1 { margin: 0 0 6px; font-size: 28px; }
     .sub { margin: 0 0 18px; color:var(--muted); }
     label { display:block; margin: 14px 0 8px; font-weight: 700; }
@@ -20,7 +20,7 @@
       font-size: 16px;
       outline: none;
     }
-    .note { margin: 10px 0 14px; color:var(--muted); font-size: 13px; line-height: 1.4; }
+    .note { margin: 10px 0 14px; color:var(--muted); font-size: 13px; line-height: 1.5; }
     button {
       width: 100%;
       padding: 14px 12px;
@@ -39,7 +39,7 @@
       background: #fff;
     }
     .card h2 { margin: 0 0 10px; font-size: 18px; }
-    .lines { white-space: pre-line; line-height: 1.55; font-size: 15px; }
+    .lines { white-space: pre-line; line-height: 1.6; font-size: 15px; }
     .warn { color:#b00020; font-size: 13px; margin-top: 10px; white-space: pre-line; }
     .ok { color:#0b7; font-size: 13px; margin-top: 10px; white-space: pre-line; }
   </style>
@@ -69,9 +69,9 @@
 
     <p class="note">
       * 적용무게 = max(제품무게, 부피무게) 후 <b>10g 단위 올림</b><br/>
-      * 대만(NTD) / 말레이시아(MYR)는 공식 규칙으로 표 전체 입력 불필요 (10g당 고정 단가)<br/>
-      * 싱가포르(SGD) / 필리핀(PHP) / 베트남(VND)은 표 기반이라
-      <b>shipping_sg.json</b>, <b>shipping_ph.json</b>, <b>shipping_vn.json</b> 파일이 필요
+      * 대만(NTD) / 말레이시아(MYR)는 <b>10g당 고정 단가</b> 규칙으로 계산<br/>
+      * 싱가포르(SGD) / 필리핀(PHP) / 베트남(VND) / 브라질(BRL)은 표 기반이라
+      <b>shipping_sg.json</b>, <b>shipping_ph.json</b>, <b>shipping_vn.json</b>, <b>shipping_br.json</b> 파일이 필요
     </p>
 
     <button id="calcBtn">계산하기(테스트)</button>
@@ -85,14 +85,14 @@
 
   <script>
     // ================================
-    // 1) 표 기반 국가: SG / PH / VN
-    //    - repo 루트에 shipping_sg.json / shipping_ph.json / shipping_vn.json 생성해서 넣으면 자동 로드
-    //    - 형식: { "10": 0.40, "20": 0.40, ... }  (키는 g, 값은 통화)
+    // 0) JSON 표 로드 (SG/PH/VN/BR)
+    //    형식: { "10": 0.40, "20": 0.40, ... }  (키=무게 g, 값=통화)
     // ================================
     const rateTables = {
       sg: null,
       ph: null,
       vn: null,
+      br: null,
     };
 
     async function loadJsonTable(path) {
@@ -103,7 +103,7 @@
       const map = new Map();
       for (const [k, v] of Object.entries(obj)) {
         const kk = Number(String(k).replace(/,/g, ""));
-        const vv = Number(String(v).replace(/,/g, ""));
+        const vv = Number(v);
         if (Number.isFinite(kk) && Number.isFinite(vv)) map.set(kk, vv);
       }
       return map;
@@ -111,17 +111,18 @@
 
     async function ensureTablesLoaded() {
       const errors = [];
-      if (!rateTables.sg) {
-        try { rateTables.sg = await loadJsonTable("./shipping_sg.json"); }
-        catch (e) { errors.push(String(e.message || e)); }
-      }
-      if (!rateTables.ph) {
-        try { rateTables.ph = await loadJsonTable("./shipping_ph.json"); }
-        catch (e) { errors.push(String(e.message || e)); }
-      }
-      if (!rateTables.vn) {
-        try { rateTables.vn = await loadJsonTable("./shipping_vn.json"); }
-        catch (e) { errors.push(String(e.message || e)); }
+      const loaders = [
+        ["sg", "./shipping_sg.json"],
+        ["ph", "./shipping_ph.json"],
+        ["vn", "./shipping_vn.json"],
+        ["br", "./shipping_br.json"],
+      ];
+
+      for (const [key, path] of loaders) {
+        if (!rateTables[key]) {
+          try { rateTables[key] = await loadJsonTable(path); }
+          catch (e) { errors.push(String(e.message || e)); }
+        }
       }
       return errors;
     }
@@ -129,12 +130,14 @@
     function lookupFromMap(map, applied) {
       if (!map) return null;
 
+      // exact match 우선
       if (map.has(applied)) return map.get(applied);
 
+      // 안전장치: 혹시 applied가 10g 단위가 아닐 경우 대비
       const rounded = Math.ceil(applied / 10) * 10;
       if (map.has(rounded)) return map.get(rounded);
 
-      // 안전장치: 표가 끊겨있을 때 대비(가장 가까운 이하 키)
+      // 마지막 안전장치: 가장 가까운 "이하" 키 찾기(표가 끊겨있을 때 대비)
       let bestKey = null;
       for (const k of map.keys()) {
         if (k <= rounded && (bestKey === null || k > bestKey)) bestKey = k;
@@ -145,7 +148,7 @@
     }
 
     // ================================
-    // 2) 규칙 기반 국가: TW / MY
+    // 1) 규칙 기반 국가 (TW / MY)
     // ================================
     function calcTW(applied) { // NTD: 10g = 1.30
       return (applied / 10) * 1.30;
@@ -155,28 +158,33 @@
     }
 
     // ================================
-    // 3) 포맷: .00이면 소수점 제거
+    // 2) 포맷 (뒤가 .00이면 제거)
+    //    - 정수면 "62"
+    //    - 소수면 필요한 만큼만 표시 (예: 11.5, 1.44)
     // ================================
+    function fmtSmart(x) {
+      if (x === null || x === undefined) return "-";
+      const v = Number(x);
+      if (!Number.isFinite(v)) return "-";
+
+      // 소수 둘째자리까지 반올림 후, 불필요 0 제거
+      const s = v.toFixed(2).replace(/\.?0+$/, "");
+      return s;
+    }
+
+    function fmtInt(x) {
+      const v = Math.round(Number(x));
+      return Number.isFinite(v) ? v.toLocaleString() : "0";
+    }
+
     function n(x) {
       const v = Number(x);
       return Number.isFinite(v) ? v : 0;
     }
 
-    function fmtIntNoDecimal(x) {
-      const v = Math.round(Number(x));
-      return Number.isFinite(v) ? v.toLocaleString() : "-";
-    }
-
-    function fmtMoney(x, decimals = 2) {
-      if (x === null || x === undefined) return "-";
-      const v = Number(x);
-      if (!Number.isFinite(v)) return "-";
-      const fixed = v.toFixed(decimals);
-      // 끝이 .00 이면 소수점 제거
-      if (fixed.endsWith(".00")) return String(Math.round(v));
-      return fixed;
-    }
-
+    // ================================
+    // 3) 계산
+    // ================================
     async function onCalc() {
       const cost = n(document.getElementById("cost").value);
       const domestic = n(document.getElementById("domestic").value);
@@ -190,48 +198,56 @@
 
       const total = cost + domestic + pack + margin;
 
+      // 로드 시도 (json 없으면 경고)
       const loadErrors = await ensureTablesLoaded();
 
-      const sg = lookupFromMap(rateTables.sg, applied); // SGD
-      const ph = lookupFromMap(rateTables.ph, applied); // PHP
-      const vn = lookupFromMap(rateTables.vn, applied); // VND (정수)
+      // JSON 기반
+      const sg = lookupFromMap(rateTables.sg, applied);
+      const ph = lookupFromMap(rateTables.ph, applied);
+      const vn = lookupFromMap(rateTables.vn, applied);
+      const br = lookupFromMap(rateTables.br, applied);
 
-      const tw = calcTW(applied); // NTD
-      const my = calcMY(applied); // MYR
+      // 규칙 기반
+      const tw = calcTW(applied);
+      const my = calcMY(applied);
 
       const lines = [
-        `- 합계(원가+국내배송+포장+희망마진) = ${fmtIntNoDecimal(total)} KRW`,
-        `- 적용무게 = ${fmtIntNoDecimal(applied)}g`,
+        `- 합계(원가+국내배송+포장+희망마진) = ${fmtInt(total)} KRW`,
+        `- 적용무게 = ${fmtInt(applied)}g`,
         ``,
-        `- 싱가포르 판매자부담 배송비(hidden fee) = ${fmtMoney(sg, 2)} SGD`,
-        `- 대만 판매자부담 배송비(hidden fee) = ${fmtMoney(tw, 2)} NTD`,
-        `- 말레이시아 판매자부담 배송비(hidden fee) = ${fmtMoney(my, 2)} MYR`,
-        `- 필리핀 판매자부담 배송비(hidden fee) = ${fmtMoney(ph, 2)} PHP`,
-        `- 베트남 판매자부담 배송비(hidden fee) = ${vn === null ? "-" : fmtIntNoDecimal(vn)} VND`,
+        `- 싱가포르 판매자부담 배송비(hidden fee) = ${fmtSmart(sg)} SGD`,
+        `- 대만 판매자부담 배송비(hidden fee) = ${fmtSmart(tw)} NTD`,
+        `- 말레이시아 판매자부담 배송비(hidden fee) = ${fmtSmart(my)} MYR`,
+        `- 필리핀 판매자부담 배송비(hidden fee) = ${fmtSmart(ph)} PHP`,
+        `- 베트남 판매자부담 배송비(hidden fee) = ${fmtSmart(vn)} VND`,
+        `- 브라질 판매자부담 배송비(hidden fee) = ${fmtSmart(br)} BRL`,
       ].join("\n");
 
       document.getElementById("result").textContent = lines;
 
       const statusEl = document.getElementById("status");
+
       if (loadErrors.length) {
         statusEl.className = "warn";
         statusEl.textContent =
-          `⚠️ 참고: 표 기반 파일을 못 불러왔어.\n` +
-          `- shipping_sg.json / shipping_ph.json / shipping_vn.json이 repo에 있어야 정상 표시돼.\n` +
+          `⚠️ 참고: 표 기반 JSON 파일 일부를 못 불러왔어.\n` +
+          `- repo 루트에 shipping_sg.json / shipping_ph.json / shipping_vn.json / shipping_br.json 파일이 있어야 해.\n` +
           `- 에러: ${loadErrors.join(" | ")}`;
-      } else {
-        const missing = [];
-        if (sg === null) missing.push("SG");
-        if (ph === null) missing.push("PH");
-        if (vn === null) missing.push("VN");
+        return;
+      }
 
-        if (missing.length) {
-          statusEl.className = "warn";
-          statusEl.textContent = `⚠️ ${missing.join(", ")}: 적용무게(${applied}g) 키가 JSON에 없어. (해당 무게 행 추가 필요)`;
-        } else {
-          statusEl.className = "ok";
-          statusEl.textContent = `✅ 계산 완료`;
-        }
+      const missing = [];
+      if (sg === null) missing.push("SG");
+      if (ph === null) missing.push("PH");
+      if (vn === null) missing.push("VN");
+      if (br === null) missing.push("BR");
+
+      if (missing.length) {
+        statusEl.className = "warn";
+        statusEl.textContent = `⚠️ ${missing.join(", ")}: 적용무게(${applied}g) 키가 JSON에 없어. (해당 무게 행 추가 필요)`;
+      } else {
+        statusEl.className = "ok";
+        statusEl.textContent = `✅ 계산 완료`;
       }
     }
 
