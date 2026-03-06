@@ -68,15 +68,13 @@
     .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .grid-5 { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-    .grid-8 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
 
     @media (max-width: 1100px) {
-      .grid-4, .grid-5, .grid-8 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     }
 
     @media (max-width: 720px) {
-      .grid-2, .grid-3, .grid-4, .grid-5, .grid-8 { grid-template-columns: 1fr; }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
       .wrap { padding: 14px; }
     }
 
@@ -134,11 +132,6 @@
       background: #2b3240;
       color: var(--text);
       border: 1px solid var(--line);
-    }
-
-    .btn-success {
-      background: var(--accent-2);
-      color: #07160c;
     }
 
     .muted {
@@ -288,7 +281,7 @@
   <div class="wrap">
     <h1>Shopee Margin Calculator</h1>
     <div class="sub">
-      배송비 + 수수료 + 환율 + 희망마진 기준 판매가 역산 / 판매가 검산
+      배송비 + 수수료 + 환율 + 희망마진 기준 판매가 역산
     </div>
 
     <div class="card">
@@ -308,7 +301,7 @@
       <div class="grid grid-4">
         <div class="field">
           <label for="productName">상품명</label>
-          <input id="productName" type="text" placeholder="예: ROM&amp;ND Tint" />
+          <input id="productName" type="text" placeholder="예: ROM&ND Tint" />
         </div>
         <div class="field">
           <label for="purchaseCost">제품구매가 (KRW)</label>
@@ -353,18 +346,12 @@
           <input id="volDivisor" type="number" min="1" step="1" value="6000" />
         </div>
         <div class="field">
-          <label for="roundPriceMode">판매가 반올림 방식</label>
-          <select id="roundPriceMode">
-            <option value="none">반올림 안함</option>
-            <option value="int">정수 반올림</option>
-            <option value="price_9">끝자리를 9로 맞춤</option>
-            <option value="price_90">끝자리를 90으로 맞춤</option>
-            <option value="price_99">끝자리를 99로 맞춤</option>
-          </select>
+          <label>&nbsp;</label>
+          <div class="inline-flex small muted" style="height: 42px;">적용무게 = max(실중량, 부피무게) 후 10g 올림</div>
         </div>
         <div class="field">
           <label>&nbsp;</label>
-          <div class="inline-flex small muted" style="height: 42px;">적용무게 = max(실중량, 부피무게) 후 10g 올림</div>
+          <div class="inline-flex small muted" style="height: 42px;">판매가 반올림 기능은 제외됨</div>
         </div>
       </div>
 
@@ -635,16 +622,15 @@
   </div>
 
   <script>
-    /****************************************************************
-     * 1) 기본 상태 / 상수
-     ****************************************************************/
     const MARKETS = ['SG', 'TW', 'MY', 'PH', 'VN', 'BR', 'TH', 'MX'];
 
     const JSON_RATE_FILES = {
       SG: 'shipping_sg.json',
       PH: 'shipping_ph.json',
       VN: 'shipping_vn.json',
-      BR: 'shipping_br.json'
+      BR: 'shipping_br.json',
+      TH: 'shipping_th.json',
+      MX: 'shipping_mx.json'
     };
 
     const MARKET_CURRENCY = {
@@ -658,18 +644,16 @@
       MX: 'MXN'
     };
 
-    let calcMode = 'reverse'; // reverse | check
+    let calcMode = 'reverse';
     let shippingJsonData = {
       SG: null,
       PH: null,
       VN: null,
-      BR: null
+      BR: null,
+      TH: null,
+      MX: null
     };
 
-    /****************************************************************
-     * 2) 규칙 계산 설정
-     * TH / MX는 네가 현재 쓰는 정확한 규칙값으로 바꿔주면 됨
-     ****************************************************************/
     const RULE_CONFIG = {
       TW: {
         type: 'per10g',
@@ -678,22 +662,9 @@
       MY: {
         type: 'per10g',
         ratePer10g: 0.20
-      },
-
-      // ↓↓↓ 여기 2개는 네가 현재 프로젝트에서 쓰는 실제 값으로 교체 추천
-      TH: {
-        type: 'per10g',
-        ratePer10g: 0.27
-      },
-      MX: {
-        type: 'per10g',
-        ratePer10g: 0.15
       }
     };
 
-    /****************************************************************
-     * 3) 유틸
-     ****************************************************************/
     function $(id) {
       return document.getElementById(id);
     }
@@ -737,48 +708,12 @@
       };
     }
 
-    function roundSellPrice(value, mode) {
-      const v = num(value);
-      if (!Number.isFinite(v) || v <= 0) return 0;
-
-      switch (mode) {
-        case 'int':
-          return Math.round(v);
-
-        case 'price_9': {
-          const base = Math.floor(v);
-          const tens = Math.floor(base / 10) * 10;
-          const candidate = tens + 9;
-          return candidate >= v ? candidate : candidate + 10;
-        }
-
-        case 'price_90': {
-          const base = Math.floor(v / 100) * 100;
-          const candidate = base + 90;
-          return candidate >= v ? candidate : candidate + 100;
-        }
-
-        case 'price_99': {
-          const base = Math.floor(v / 100) * 100;
-          const candidate = base + 99;
-          return candidate >= v ? candidate : candidate + 100;
-        }
-
-        case 'none':
-        default:
-          return v;
-      }
-    }
-
     function setStatus(msg, isError = false) {
       const el = $('status');
       el.textContent = msg || '';
       el.className = `status ${isError ? 'warn' : ''}`;
     }
 
-    /****************************************************************
-     * 4) 국가 설정 읽기
-     ****************************************************************/
     function getMarketConfig() {
       return {
         SG: {
@@ -840,9 +775,6 @@
       };
     }
 
-    /****************************************************************
-     * 5) JSON 로드
-     ****************************************************************/
     async function loadAllShippingJson() {
       const entries = Object.entries(JSON_RATE_FILES);
 
@@ -860,20 +792,11 @@
       }
     }
 
-    /****************************************************************
-     * 6) JSON 요율 조회
-     *
-     * 지원 포맷 예시:
-     * 1) [{ "weight": 10, "price": 1.23 }, ...]
-     * 2) [{ "maxWeight": 10, "price": 1.23 }, ...]
-     * 3) { "10": 1.23, "20": 1.55, ... }
-     ****************************************************************/
     function lookupJsonRate(rateData, appliedWeightG) {
       if (!rateData) {
         throw new Error('배송비 JSON 데이터가 없습니다.');
       }
 
-      // object map 형태
       if (!Array.isArray(rateData) && typeof rateData === 'object') {
         const keys = Object.keys(rateData)
           .map(k => Number(k))
@@ -887,7 +810,6 @@
         return num(rateData[key]);
       }
 
-      // array 형태
       if (Array.isArray(rateData)) {
         const normalized = rateData.map(item => {
           return {
@@ -908,9 +830,6 @@
       throw new Error('지원하지 않는 JSON 형식입니다.');
     }
 
-    /****************************************************************
-     * 7) 규칙 계산
-     ****************************************************************/
     function calcRuleRate(market, appliedWeightG) {
       const conf = RULE_CONFIG[market];
       if (!conf) {
@@ -936,15 +855,17 @@
     }
 
     async function getShippingCostLocal(market, appliedWeightG) {
-      if (JSON_RATE_FILES[market]) {
+      if (shippingJsonData[market]) {
         return lookupJsonRate(shippingJsonData[market], appliedWeightG);
       }
-      return calcRuleRate(market, appliedWeightG);
+
+      if (RULE_CONFIG[market]) {
+        return calcRuleRate(market, appliedWeightG);
+      }
+
+      throw new Error(`${market} 배송비 설정이 없습니다.`);
     }
 
-    /****************************************************************
-     * 8) 수익 계산
-     ****************************************************************/
     function calcTargetPriceLocal({
       totalBaseCostKRW,
       shippingKRW,
@@ -956,8 +877,7 @@
     }) {
       const needKRW = totalBaseCostKRW + shippingKRW + desiredMarginKRW - rebateKRW;
       const localBeforeFee = needKRW * fx;
-      const price = (localBeforeFee + fixedFee) / (1 - feePct);
-      return price;
+      return (localBeforeFee + fixedFee) / (1 - feePct);
     }
 
     function calcSettlementKRW({
@@ -979,9 +899,6 @@
       return settlementKRW - totalBaseCostKRW - shippingKRW + rebateKRW;
     }
 
-    /****************************************************************
-     * 9) 입력값 읽기
-     ****************************************************************/
     function getBaseInputs() {
       const productName = $('productName').value.trim();
       const purchaseCostKRW = num($('purchaseCost').value);
@@ -993,7 +910,6 @@
       const heightCm = num($('heightCm').value);
       const volDivisor = num($('volDivisor').value) || 6000;
       const desiredMarginKRW = num($('desiredMargin').value);
-      const roundPriceMode = $('roundPriceMode').value;
 
       const totalBaseCostKRW = purchaseCostKRW + packingCostKRW + domesticShippingKRW;
       const weights = getAppliedWeightG(productWeightG, lengthCm, widthCm, heightCm, volDivisor);
@@ -1009,7 +925,6 @@
         heightCm,
         volDivisor,
         desiredMarginKRW,
-        roundPriceMode,
         totalBaseCostKRW,
         ...weights
       };
@@ -1028,9 +943,6 @@
       };
     }
 
-    /****************************************************************
-     * 10) 요약 렌더
-     ****************************************************************/
     function renderSummary(base) {
       $('sumActualWeight').textContent = `${fmtSmart(base.actualWeightG)} g`;
       $('sumVolWeight').textContent = `${fmtSmart(base.volumetricWeightG)} g`;
@@ -1039,16 +951,12 @@
       $('sumMode').textContent = calcMode === 'reverse' ? '역산' : '검산';
     }
 
-    /****************************************************************
-     * 11) 결과 테이블 렌더
-     ****************************************************************/
     function renderResults(rows) {
       const tbody = $('resultsTable').querySelector('tbody');
       tbody.innerHTML = '';
 
       rows.forEach(row => {
         const tr = document.createElement('tr');
-
         const profitClass = row.expectedProfitKRW >= 0 ? 'ok' : 'warn';
 
         tr.innerHTML = `
@@ -1068,9 +976,6 @@
       });
     }
 
-    /****************************************************************
-     * 12) 메인 계산
-     ****************************************************************/
     async function calculateAll() {
       try {
         setStatus('계산 중...');
@@ -1111,8 +1016,6 @@
               fx: conf.fx,
               rebateKRW: conf.rebateKRW
             });
-
-            sellPriceLocal = roundSellPrice(sellPriceLocal, base.roundPriceMode);
           } else {
             sellPriceLocal = checkSellPrices[market];
           }
@@ -1163,9 +1066,6 @@
       }
     }
 
-    /****************************************************************
-     * 13) 모드 전환
-     ****************************************************************/
     function setMode(mode) {
       calcMode = mode;
 
@@ -1184,9 +1084,6 @@
       $('sumMode').textContent = mode === 'reverse' ? '역산' : '검산';
     }
 
-    /****************************************************************
-     * 14) 초기화
-     ****************************************************************/
     function resetInputs() {
       [
         'productName',
@@ -1211,7 +1108,6 @@
       });
 
       $('volDivisor').value = 6000;
-      $('roundPriceMode').value = 'none';
 
       $('resultsTable').querySelector('tbody').innerHTML = '';
       $('sumActualWeight').textContent = '-';
@@ -1222,9 +1118,6 @@
       setStatus('');
     }
 
-    /****************************************************************
-     * 15) 초기 실행
-     ****************************************************************/
     async function init() {
       setStatus('배송비 JSON 불러오는 중...');
       await loadAllShippingJson();
