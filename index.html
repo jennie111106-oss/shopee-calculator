@@ -8,40 +8,67 @@
     body { font-family: Arial, "Malgun Gothic", sans-serif; margin: 24px; }
     .box { max-width: 720px; margin: 0 auto; padding: 16px; border: 1px solid #eee; border-radius: 16px; }
     h1 { margin: 0 0 8px; font-size: 22px; }
-    p { margin: 0; color: #555; }
+    p { margin: 0 0 12px; color: #555; }
+    label { display: grid; gap: 6px; }
+    input { width: 100%; padding: 8px; box-sizing: border-box; }
+    button { padding: 10px; cursor: pointer; }
+    .grid { margin-top: 12px; display: grid; gap: 10px; max-width: 360px; }
+    .result { padding: 10px; border: 1px solid #eee; border-radius: 12px; }
   </style>
 </head>
+
 <body>
   <div class="box">
     <h1>쇼피 마진 계산기</h1>
     <p>이 페이지는 테스트입니다. (곧 계산기 붙일 예정)</p>
-    <div style="margin-top:12px; display:grid; gap:8px; max-width:360px;">
-  <label>구입가격 (KRW) <input id="cost" type="number" value="33000" style="width:100%; padding:8px;"></label>
-  <label>국내배송비 (KRW) <input id="domestic" type="number" value="1000" style="width:100%; padding:8px;"></label>
-  <label>기자재/포장비 (KRW) <input id="pack" type="number" value="0" style="width:100%; padding:8px;"></label>
-  <label>희망마진 (KRW) <input id="margin" type="number" value="500" style="width:100%; padding:8px;"></label>
 
-  <button id="calcBtn" style="padding:10px;">계산하기(테스트)</button>
+    <div class="grid">
+      <label>구입가격 (KRW)
+        <input id="cost" type="number" value="33000">
+      </label>
 
-  <div id="result" style="padding:10px; border:1px solid #eee; border-radius:12px;">
-    결과가 여기 뜹니다.
+      <label>국내배송비 (KRW)
+        <input id="domestic" type="number" value="1000">
+      </label>
+
+      <label>기자재/포장비 (KRW)
+        <input id="pack" type="number" value="0">
+      </label>
+
+      <label>희망마진 (KRW)
+        <input id="margin" type="number" value="500">
+      </label>
+
+      <label>제품무게 (g)
+        <input id="weight_g" type="number" value="500">
+      </label>
+
+      <label>부피무게 (g) (없으면 0)
+        <input id="vol_g" type="number" value="0">
+      </label>
+
+      <button id="calcBtn">계산하기(테스트)</button>
+
+      <div id="result" class="result">결과가 여기 뜹니다.</div>
+    </div>
   </div>
-</div>
 
-<script>
-  document.getElementById("calcBtn").addEventListener("click", () => {
-    const cost = Number(document.getElementById("cost").value || 0);
-    const domestic = Number(document.getElementById("domestic").value || 0);
-    const pack = Number(document.getElementById("pack").value || 0);
-    const margin = Number(document.getElementById("margin").value || 0);
+  <script>
+    document.getElementById("calcBtn").addEventListener("click", () => {
+      const cost = Number(document.getElementById("cost").value || 0);
+      const domestic = Number(document.getElementById("domestic").value || 0);
+      const pack = Number(document.getElementById("pack").value || 0);
+      const margin = Number(document.getElementById("margin").value || 0);
 
-    const total = cost + domestic + pack + margin;
-    document.getElementById("result").textContent =
-      `테스트: (원가+국내배송+포장+희망마진) 합계 = ${total.toLocaleString()} KRW`;
-  });
-</script>
-  </div>
+      const weight = Number(document.getElementById("weight_g").value || 0);
+      const vol = Number(document.getElementById("vol_g").value || 0);
+      const applied = Math.max(weight, vol);
+
+      const total = cost + domestic + pack + margin;
+
+      document.getElementById("result").textContent =
+        `테스트: 합계 = ${total.toLocaleString()} KRW / 적용무게 = ${applied}g`;
+    });
+  </script>
 </body>
-
 </html>
-
