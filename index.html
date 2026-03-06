@@ -69,10 +69,10 @@
 
     <p class="note">
       * 적용무게 = max(제품무게, 부피무게) 후 <b>10g 단위 올림</b><br/>
-      * 대만(NTD) / 말레이시아(MYR)는 공식 규칙(10g당 고정 단가)으로 계산<br/>
-      * 싱가포르(SGD) / 필리핀(PHP) / 베트남(VND) / 브라질(BRL)은 표 기반이라
-        <b>shipping_sg.json</b>, <b>shipping_ph.json</b>, <b>shipping_vn.json</b>, <b>shipping_br.json</b> 파일이 필요<br/>
-      * 멕시코(MXN)는 표가 구간별 규칙 형태라 index.html에서 공식처럼 계산 (표 범위 밖은 경고)
+      * 대만(NTD) / 말레이시아(MYR)는 <b>10g 고정 단가</b> 규칙으로 계산<br/>
+      * 태국(THB)은 Zone을 몰라도 hidden fee가 동일하게 나오도록 <b>공식 규칙(NEW)</b>로 계산<br/>
+      * 싱가포르(SGD) / 필리핀(PHP) / 베트남(VND) / 브라질(BRL)은 <b>표(JSON)</b> 기반이라 아래 파일이 repo에 있어야 함:<br/>
+      &nbsp;&nbsp;- <b>shipping_sg.json</b>, <b>shipping_ph.json</b>, <b>shipping_vn.json</b>, <b>shipping_br.json</b>
     </p>
 
     <button id="calcBtn">계산하기(테스트)</button>
@@ -85,21 +85,49 @@
   </div>
 
   <script>
-    // ================================
-    // 1) 표 기반 국가: SG / PH / VN / BR
-    //    - repo에 shipping_XX.json 생성해서 넣으면 자동 로드
-    //    - 형식 예: { "10": 0.40, "20": 0.40, ... }  (키=적용무게(g), 값=통화)
-    // ================================
-    const rateTables = { sg:null, ph:null, vn:null, br:null };
+    // ============================================================
+    // 유틸
+    // ============================================================
+    function n(x) {
+      const v = Number(x);
+      return Number.isFinite(v) ? v : 0;
+    }
+
+    function fmtInt(x) {
+      const v = Math.round(Number(x));
+      return Number.isFinite(v) ? v.toLocaleString() : "0";
+    }
+
+    // .00은 제거, 필요하면 소수 유지 (예: 11.5는 유지)
+    function fmtSmart(x, maxDecimals = 2) {
+      if (x === null || x === undefined) return "-";
+      const v = Number(x);
+      if (!Number.isFinite(v)) return "-";
+      // maxDecimals로 반올림 후, 불필요한 0 제거
+      const s = v.toFixed(maxDecimals);
+      return s.replace(/\.?0+$/, "");
+    }
+
+    // ============================================================
+    // 1) 표(JSON) 기반 국가: SG / PH / VN / BR
+    //    - 형식: { "10": 0.40, "20": 0.40, ... } (키=그램, 값=통화)
+    // ============================================================
+    const rateTables = {
+      sg: null,
+      ph: null,
+      vn: null,
+      br: null,
+    };
 
     async function loadJsonTable(path) {
       const res = await fetch(path, { cache: "no-store" });
       if (!res.ok) throw new Error(`${path} 로드 실패 (${res.status})`);
       const obj = await res.json();
+
       const map = new Map();
       for (const [k, v] of Object.entries(obj)) {
         const kk = Number(String(k).replace(/,/g, ""));
-        const vv = Number(String(v).replace(/,/g, ""));
+        const vv = Number(v);
         if (Number.isFinite(kk) && Number.isFinite(vv)) map.set(kk, vv);
       }
       return map;
@@ -107,33 +135,40 @@
 
     async function ensureTablesLoaded() {
       const errors = [];
-      const loaders = [
-        ["sg", "./shipping_sg.json"],
-        ["ph", "./shipping_ph.json"],
-        ["vn", "./shipping_vn.json"],
-        ["br", "./shipping_br.json"],
-      ];
 
-      for (const [key, path] of loaders) {
-        if (!rateTables[key]) {
-          try { rateTables[key] = await loadJsonTable(path); }
-          catch (e) { errors.push(String(e.message || e)); }
-        }
+      if (!rateTables.sg) {
+        try { rateTables.sg = await loadJsonTable("./shipping_sg.json"); }
+        catch (e) { errors.push(String(e.message || e)); }
       }
+      if (!rateTables.ph) {
+        try { rateTables.ph = await loadJsonTable("./shipping_ph.json"); }
+        catch (e) { errors.push(String(e.message || e)); }
+      }
+      if (!rateTables.vn) {
+        try { rateTables.vn = await loadJsonTable("./shipping_vn.json"); }
+        catch (e) { errors.push(String(e.message || e)); }
+      }
+      if (!rateTables.br) {
+        // ⚠️ 네 파일명이 shipping_br_full.json이면 여기만 바꿔줘:
+        // try { rateTables.br = await loadJsonTable("./shipping_br_full.json"); }
+        try { rateTables.br = await loadJsonTable("./shipping_br.json"); }
+        catch (e) { errors.push(String(e.message || e)); }
+      }
+
       return errors;
     }
 
     function lookupFromMap(map, applied) {
       if (!map) return null;
 
-      // exact match 우선
+      // exact match
       if (map.has(applied)) return map.get(applied);
 
-      // 안전장치: 혹시 applied가 10g 단위가 아닐 경우
+      // 안전장치: 혹시 applied가 10g 단위가 아니면 10g 올림으로 다시 찾기
       const rounded = Math.ceil(applied / 10) * 10;
       if (map.has(rounded)) return map.get(rounded);
 
-      // 마지막 안전장치: 가장 가까운 "이하" 키
+      // 안전장치: 표가 중간에 끊긴 경우 가장 가까운 이하 키
       let bestKey = null;
       for (const k of map.keys()) {
         if (k <= rounded && (bestKey === null || k > bestKey)) bestKey = k;
@@ -143,73 +178,44 @@
       return null;
     }
 
-    // ================================
+    // ============================================================
     // 2) 규칙 기반 국가: TW / MY
-    // ================================
-    function calcTW(applied) { // NTD (10g = 1.30)
+    // ============================================================
+    function calcTW(applied) { // NTD
+      // 10g = 1.30 NTD
       return (applied / 10) * 1.30;
     }
-    function calcMY(applied) { // MYR (10g = 0.20)
+    function calcMY(applied) { // MYR
+      // 10g = 0.20 MYR
       return (applied / 10) * 0.20;
     }
 
-    // ================================
-    // 3) 규칙 기반 국가: MX (멕시코, MXN)
-    //    - 네가 준 MX 표를 보면 "구간별 선형"이라 공식으로 계산 가능
-    //    - 표 제공 범위가 15000g까지이므로 그 이상은 경고
-    //
-    // 구간 요약:
-    // 10/20/30: 29.20 고정
-    // 40~100: 40g=34.20에서 10g마다 +5.00
-    // 110~300: 110g=68.20에서 10g마다 +4.00
-    // 310~15000: 310g=147.20에서 10g마다 +3.00
-    // ================================
+    // ============================================================
+    // 3) 태국(THB) - Zone 몰라도 hidden fee 동일 (NEW: 2024.02.28~)
+    //    총배송비(Zone A NEW) = 37.0 + 1.9*(n-1)
+    //    rebate(Zone A 고정구매자배송비) = 22
+    //    hidden fee = 총배송비 - 22 = 15.0 + 1.9*(n-1)
+    // ============================================================
+    function calcTH(applied) { // THB
+      const n = applied / 10; // 10g 단위 개수
+      if (n <= 0) return 0;
+      return 15.0 + 1.9 * (n - 1);
+    }
+
+    // ============================================================
+    // 4) 멕시코(MXN) - 너가 말한 "표 없이 구간 규칙" 방식
+    //    ⚠️ 여기 값은 네가 index에서 이미 바꿔 넣은 로직 기준으로 쓰는 자리야.
+    //    - 지금은 예시/틀만 넣어둠. (원하면 MX.pdf 기준으로 정확 구간식으로 확정해줄게)
+    // ============================================================
     function calcMX(applied) { // MXN
-      if (applied <= 0) return 0;
-      if (applied <= 30) return 29.20;
-
-      if (applied >= 40 && applied <= 100) {
-        return 34.20 + ((applied - 40) / 10) * 5.00;
-      }
-
-      if (applied >= 110 && applied <= 300) {
-        return 68.20 + ((applied - 110) / 10) * 4.00;
-      }
-
-      if (applied >= 310 && applied <= 15000) {
-        return 147.20 + ((applied - 310) / 10) * 3.00;
-      }
-
-      // 표 범위 밖
+      // TODO: 네가 지금 적용해둔 구간 규칙으로 교체해.
+      // 아래는 placeholder (항상 null 반환)로 두면 결과에 '-' 뜸.
       return null;
     }
 
-    // ================================
-    // format helpers
-    // ================================
-    function n(x) {
-      const v = Number(x);
-      return Number.isFinite(v) ? v : 0;
-    }
-
-    // 소수점 포맷: "2자리까지 표시하되, 뒤 0은 제거"
-    // 예) 23.40 -> 23.4 / 3.60 -> 3.6 / 62.00 -> 62 / 1.44 -> 1.44
-    function fmtSmart2(x) {
-      if (x === null || x === undefined) return "-";
-      const v = Number(x);
-      if (!Number.isFinite(v)) return "-";
-      let s = v.toFixed(2);
-      s = s.replace(/\.?0+$/, (m) => (m === "." ? "" : "")); // 아래에서 재처리
-      // 위 정규식이 애매해서 확실하게 처리:
-      s = v.toFixed(2).replace(/0+$/, "").replace(/\.$/, "");
-      return s;
-    }
-
-    function fmtInt(x) {
-      const v = Math.round(Number(x));
-      return Number.isFinite(v) ? v.toLocaleString() : "0";
-    }
-
+    // ============================================================
+    // 계산 실행
+    // ============================================================
     async function onCalc() {
       const cost = n(document.getElementById("cost").value);
       const domestic = n(document.getElementById("domestic").value);
@@ -220,68 +226,64 @@
 
       const raw = Math.max(weight, vol);
       const applied = Math.ceil(raw / 10) * 10;
+
       const total = cost + domestic + pack + margin;
 
-      // 표 기반 파일 로드 (없으면 경고만 띄움)
+      // JSON 로드 시도
       const loadErrors = await ensureTablesLoaded();
 
+      // JSON 기반
       const sg = lookupFromMap(rateTables.sg, applied);
       const ph = lookupFromMap(rateTables.ph, applied);
       const vn = lookupFromMap(rateTables.vn, applied);
       const br = lookupFromMap(rateTables.br, applied);
 
+      // 규칙 기반
       const tw = calcTW(applied);
       const my = calcMY(applied);
+      const th = calcTH(applied);
+
+      // MX (구간 규칙)
       const mx = calcMX(applied);
 
       const lines = [
         `- 합계(원가+국내배송+포장+희망마진) = ${fmtInt(total)} KRW`,
         `- 적용무게 = ${fmtInt(applied)}g`,
         ``,
-        `- 싱가포르 판매자부담 배송비(hidden fee) = ${fmtSmart2(sg)} SGD`,
-        `- 대만 판매자부담 배송비(hidden fee) = ${fmtSmart2(tw)} NTD`,
-        `- 말레이시아 판매자부담 배송비(hidden fee) = ${fmtSmart2(my)} MYR`,
-        `- 필리핀 판매자부담 배송비(hidden fee) = ${fmtSmart2(ph)} PHP`,
-        `- 베트남 판매자부담 배송비(hidden fee) = ${fmtSmart2(vn)} VND`,
-        `- 브라질 판매자부담 배송비(hidden fee) = ${fmtSmart2(br)} BRL`,
-        `- 멕시코 판매자부담 배송비(hidden fee) = ${fmtSmart2(mx)} MXN`,
+        `- 싱가포르 판매자부담 배송비(hidden fee) = ${fmtSmart(sg)} SGD`,
+        `- 대만 판매자부담 배송비(hidden fee) = ${fmtSmart(tw)} NTD`,
+        `- 말레이시아 판매자부담 배송비(hidden fee) = ${fmtSmart(my)} MYR`,
+        `- 필리핀 판매자부담 배송비(hidden fee) = ${fmtSmart(ph)} PHP`,
+        `- 베트남 판매자부담 배송비(hidden fee) = ${fmtSmart(vn)} VND`,
+        `- 브라질 판매자부담 배송비(hidden fee) = ${fmtSmart(br)} BRL`,
+        `- 태국 판매자부담 배송비(hidden fee) = ${fmtSmart(th)} THB`,
+        `- 멕시코 판매자부담 배송비(hidden fee) = ${fmtSmart(mx)} MXN`,
       ].join("\n");
 
       document.getElementById("result").textContent = lines;
 
       const statusEl = document.getElementById("status");
 
-      // 1) 표 파일 로딩 실패 경고
+      // JSON 파일 로드 실패 경고
       if (loadErrors.length) {
         statusEl.className = "warn";
         statusEl.textContent =
-          `⚠️ 참고: 표 기반 파일을 못 불러왔어.\n` +
-          `- 필요한 파일: shipping_sg.json / shipping_ph.json / shipping_vn.json / shipping_br.json\n` +
+          `⚠️ 참고: 표(JSON) 파일을 일부 못 불러왔어.\n` +
+          `- shipping_sg.json / shipping_ph.json / shipping_vn.json / shipping_br.json이 repo에 있어야 정상 표시돼.\n` +
           `- 에러: ${loadErrors.join(" | ")}`;
         return;
       }
 
-      // 2) 로딩은 됐는데 특정 무게 키가 없을 때 경고
+      // 파일은 불러왔는데 해당 applied 키가 없는 경우 안내
       const missing = [];
       if (sg === null) missing.push("SG");
       if (ph === null) missing.push("PH");
       if (vn === null) missing.push("VN");
       if (br === null) missing.push("BR");
 
-      const extraWarn = [];
-
       if (missing.length) {
-        extraWarn.push(`⚠️ ${missing.join(", ")}: 적용무게(${applied}g) 키가 JSON에 없어. (해당 무게 행 추가 필요)`);
-      }
-
-      // 3) MX는 표 범위(<=15000g) 밖이면 경고
-      if (mx === null) {
-        extraWarn.push(`⚠️ MX: 현재 제공된 MX 표는 15000g까지라서(${applied}g) 계산 불가. (표/자료 추가 필요)`);
-      }
-
-      if (extraWarn.length) {
         statusEl.className = "warn";
-        statusEl.textContent = extraWarn.join("\n");
+        statusEl.textContent = `⚠️ ${missing.join(", ")}: 적용무게(${applied}g) 키가 JSON에 없어. (해당 무게 행 추가 필요)`;
       } else {
         statusEl.className = "ok";
         statusEl.textContent = `✅ 계산 완료`;
