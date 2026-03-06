@@ -2,135 +2,235 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Shopee 마진 계산기</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>쇼피 마진 계산기</title>
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:#fafafa; margin:0; padding:24px; }
-    .card { max-width:720px; margin:0 auto; background:#fff; border:1px solid #eee; border-radius:16px; padding:20px; }
-    h1 { margin:0 0 6px; font-size:28px; }
-    p { margin:0 0 16px; color:#444; }
-    label { display:block; margin:10px 0 8px; font-weight:600; }
-    input { width:100%; padding:10px 12px; border:1px solid #ccc; border-radius:10px; font-size:16px; box-sizing:border-box; }
-    .hint { margin-top:10px; color:#666; font-size:13px; }
-    button { width:100%; margin-top:14px; padding:12px; border-radius:12px; border:1px solid #ccc; background:#f3f3f3; font-size:16px; cursor:pointer; }
-    .result { margin-top:14px; padding:14px; border:1px solid #eee; border-radius:12px; background:#fff; }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    :root { --border:#d9d9d9; --text:#111; --muted:#666; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Apple SD Gothic Neo, Noto Sans KR, sans-serif; color:var(--text); margin:0; background:#fff; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 24px 16px 40px; }
+    h1 { margin: 0 0 6px; font-size: 28px; }
+    .sub { margin: 0 0 18px; color:var(--muted); }
+    label { display:block; margin: 14px 0 8px; font-weight: 700; }
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+    }
+    .note { margin: 10px 0 14px; color:var(--muted); font-size: 13px; line-height: 1.4; }
+    button {
+      width: 100%;
+      padding: 14px 12px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #f6f6f6;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .card {
+      margin-top: 18px;
+      border: 1px solid #eee;
+      border-radius: 14px;
+      padding: 16px 16px;
+      background: #fff;
+    }
+    .card h2 { margin: 0 0 10px; font-size: 18px; }
+    .lines { white-space: pre-line; line-height: 1.55; font-size: 15px; }
+    .warn { color:#b00020; font-size: 13px; margin-top: 10px; white-space: pre-line; }
+    .ok { color:#0b7; font-size: 13px; margin-top: 10px; white-space: pre-line; }
   </style>
 </head>
 <body>
-  <div class="card">
+  <div class="wrap">
     <h1>쇼피 마진 계산기</h1>
-    <p>이 페이지는 테스트입니다. (곧 계산기 붙일 예정)</p>
+    <p class="sub">이 페이지는 테스트입니다. (곧 계산기 붙일 예정)</p>
 
-    <label>구입가격 (KRW)
-      <input id="cost" type="number" value="33000" min="0" step="1" />
-    </label>
+    <label for="cost">구입가격 (KRW)</label>
+    <input id="cost" type="number" inputmode="numeric" value="33000" />
 
-    <label>국내배송비 (KRW)
-      <input id="domestic" type="number" value="1000" min="0" step="1" />
-    </label>
+    <label for="domestic">국내배송비 (KRW)</label>
+    <input id="domestic" type="number" inputmode="numeric" value="1000" />
 
-    <label>기자재/포장비 (KRW)
-      <input id="pack" type="number" value="0" min="0" step="1" />
-    </label>
+    <label for="pack">기자재/포장비 (KRW)</label>
+    <input id="pack" type="number" inputmode="numeric" value="0" />
 
-    <label>희망마진 (KRW)
-      <input id="margin" type="number" value="500" min="0" step="1" />
-    </label>
+    <label for="margin">희망마진 (KRW)</label>
+    <input id="margin" type="number" inputmode="numeric" value="500" />
 
-    <label>제품무게 (g)
-      <input id="weight_g" type="number" value="173" min="0" step="1" />
-    </label>
+    <label for="weight">제품무게 (g)</label>
+    <input id="weight" type="number" inputmode="numeric" value="173" />
 
-    <label>부피무게 (g) (없으면 0)
-      <input id="vol_g" type="number" value="0" min="0" step="1" />
-    </label>
+    <label for="vol">부피무게 (g) (없으면 0)</label>
+    <input id="vol" type="number" inputmode="numeric" value="0" />
 
-    <div class="hint">
+    <p class="note">
       * 적용무게 = max(제품무게, 부피무게) 후 <b>10g 단위 올림</b><br/>
-      * 말레이시아(MYR) / 대만(NTD)은 규칙(공식)이라 표 전체 입력 불필요
-    </div>
+      * 대만(NTD) / 말레이시아(MYR)는 공식 규칙으로 표 전체 입력 불필요 (10g당 고정 단가)<br/>
+      * 싱가포르(SGD) / 필리핀(PHP)은 표 기반이라 <b>shipping_sg.json</b>, <b>shipping_ph.json</b> 파일이 필요
+    </p>
 
-    <button id="btn">계산하기(테스트)</button>
+    <button id="calcBtn">계산하기(테스트)</button>
 
-    <div id="result" class="result">
-      결과가 여기에 뜹니다.
+    <div class="card">
+      <h2>테스트 결과</h2>
+      <div id="result" class="lines">-</div>
+      <div id="status" class="warn"></div>
     </div>
   </div>
 
   <script>
-    function n(v){ return Number(v || 0); }
+    // ================================
+    // 1) 표 기반 국가: SG / PH
+    //    - repo에 shipping_sg.json / shipping_ph.json 생성해서 넣으면 자동 로드
+    //    - 형식: { "10": 0.40, "20": 0.40, ... }  (키는 g, 값은 통화)
+    // ================================
+    const rateTables = {
+      sg: null,
+      ph: null,
+    };
 
-    // 적용무게: 10g 단위 올림
-    function appliedWeightG(w, vw){
-      const raw = Math.max(n(w), n(vw));
-      return Math.ceil(raw / 10) * 10;
-    }
-
-    // ✅ 싱가포르 hidden fee (SGD) : 표를 “공식화”
-    // 1) 10~50g: 0.40 고정
-    // 2) 60~1000g: 60g=0.48에서 10g당 +0.08 (선형)
-    // 3) 1010g 이상: 100g 블록마다 +0.70 (계단식)
-    //    - 1010~1100: 8.70
-    //    - 1110~1200: 9.40
-    //    ...
-    //    - 1410~1500: 11.50
-    //    - 1510~1600: 12.20
-    //    ... (이 구조로 30000g까지 동일하게 계산됨)
-    function sgHiddenFee(appliedG){
-      if (appliedG <= 50) return 0.40;
-      if (appliedG <= 1000){
-        // 60g부터 선형. (50g 입력해도 적용무게는 50g, 51~59는 60으로 올림되니 OK)
-        // 60g => 0.48, 70g => 0.56 ... 1000g => 8.00
-        return 0.48 + ((appliedG - 60) / 10) * 0.08;
+    async function loadJsonTable(path) {
+      const res = await fetch(path, { cache: "no-store" });
+      if (!res.ok) throw new Error(`${path} 로드 실패 (${res.status})`);
+      const obj = await res.json();
+      // 키를 숫자로 정리
+      const map = new Map();
+      for (const [k, v] of Object.entries(obj)) {
+        const kk = Number(String(k).replace(/,/g, ""));
+        const vv = Number(v);
+        if (Number.isFinite(kk) && Number.isFinite(vv)) map.set(kk, vv);
       }
-      // 1010g 이상: 1010~1100 = 8.70, 1110~1200 = 9.40 ...
-      // 공식: 8.70 + 0.70 * ceil((appliedG - 1100)/100)
-      const k = Math.ceil((appliedG - 1100) / 100);
-      return 8.70 + 0.70 * Math.max(0, k);
+      return map;
     }
 
-    // ✅ 대만 hidden fee (NTD): 10g당 1.30
-    function twHiddenFee(appliedG){
-      return (appliedG / 10) * 1.30;
+    async function ensureTablesLoaded() {
+      const errors = [];
+      if (!rateTables.sg) {
+        try { rateTables.sg = await loadJsonTable("./shipping_sg.json"); }
+        catch (e) { errors.push(String(e.message || e)); }
+      }
+      if (!rateTables.ph) {
+        try { rateTables.ph = await loadJsonTable("./shipping_ph.json"); }
+        catch (e) { errors.push(String(e.message || e)); }
+      }
+      return errors;
     }
 
-    // ✅ 말레이시아 hidden fee (MYR): 10g당 0.20
-    function myHiddenFee(appliedG){
-      return (appliedG / 10) * 0.20;
+    function lookupFromMap(map, applied) {
+      if (!map) return null;
+      // exact match 우선
+      if (map.has(applied)) return map.get(applied);
+
+      // 혹시 표가 10g 단위인데 applied가 10g이 아닐 경우 대비(원래는 10g 올림이라 필요 없지만 안전장치)
+      const rounded = Math.ceil(applied / 10) * 10;
+      if (map.has(rounded)) return map.get(rounded);
+
+      // 마지막으로: 가장 가까운 "이하" 키 찾기(표가 끊겨있을 때 대비)
+      // (정확 테이블이 있으면 이 분기 안 타게 됨)
+      let bestKey = null;
+      for (const k of map.keys()) {
+        if (k <= rounded && (bestKey === null || k > bestKey)) bestKey = k;
+      }
+      if (bestKey !== null) return map.get(bestKey);
+
+      return null;
     }
 
-    function fmt2(v){ return Number(v).toFixed(2); }
-    function fmtKRW(v){ return Number(v).toLocaleString('ko-KR'); }
+    // ================================
+    // 2) 규칙 기반 국가: TW / MY
+    //    - 네가 보낸 표가 "10g당 고정 단가"라서 공식 규칙으로 계산
+    // ================================
+    function calcTW(applied) { // NTD
+      // 10g = 1.30 NTD
+      return (applied / 10) * 1.30;
+    }
+    function calcMY(applied) { // MYR
+      // 10g = 0.20 MYR
+      return (applied / 10) * 0.20;
+    }
 
-    document.getElementById("btn").addEventListener("click", () => {
+    // ================================
+    // UI
+    // ================================
+    function n(x) {
+      const v = Number(x);
+      return Number.isFinite(v) ? v : 0;
+    }
+
+    function fmt2(x) {
+      // 통화 소수 2자리 고정
+      if (x === null || x === undefined) return "-";
+      const v = Number(x);
+      if (!Number.isFinite(v)) return "-";
+      return v.toFixed(2);
+    }
+
+    function fmtInt(x) {
+      const v = Math.round(Number(x));
+      return Number.isFinite(v) ? v.toLocaleString() : "0";
+    }
+
+    async function onCalc() {
       const cost = n(document.getElementById("cost").value);
       const domestic = n(document.getElementById("domestic").value);
       const pack = n(document.getElementById("pack").value);
       const margin = n(document.getElementById("margin").value);
+      const weight = n(document.getElementById("weight").value);
+      const vol = n(document.getElementById("vol").value);
 
-      const w = n(document.getElementById("weight_g").value);
-      const vw = n(document.getElementById("vol_g").value);
+      const raw = Math.max(weight, vol);
+      const applied = Math.ceil(raw / 10) * 10;
 
-      const applied = appliedWeightG(w, vw);
+      const total = cost + domestic + pack + margin;
 
-      // 테스트용 합계(원가+국내배송+포장+희망마진)
-      const totalKRW = cost + domestic + pack + margin;
+      // 로드 시도 (SG/PH json 없으면 경고만 띄우고 계산은 계속)
+      const loadErrors = await ensureTablesLoaded();
 
-      const sg = sgHiddenFee(applied);
-      const tw = twHiddenFee(applied);
-      const my = myHiddenFee(applied);
+      const sg = lookupFromMap(rateTables.sg, applied);
+      const ph = lookupFromMap(rateTables.ph, applied);
 
-      document.getElementById("result").innerHTML = `
-        <b>테스트 결과</b><br/>
-        - 합계(원가+국내배송+포장+희망마진) = <b>${fmtKRW(totalKRW)} KRW</b><br/>
-        - 적용무게 = <b>${applied}g</b><br/>
-        <br/>
-        - 싱가포르 판매자부담 배송비(hidden fee) = <b>${fmt2(sg)} SGD</b><br/>
-        - 대만 판매자부담 배송비(hidden fee) = <b>${fmt2(tw)} NTD</b><br/>
-        - 말레이시아 판매자부담 배송비(hidden fee) = <b>${fmt2(my)} MYR</b>
-      `;
-    });
+      const tw = calcTW(applied);
+      const my = calcMY(applied);
+
+      const lines = [
+        `- 합계(원가+국내배송+포장+희망마진) = ${fmtInt(total)} KRW`,
+        `- 적용무게 = ${fmtInt(applied)}g`,
+        ``,
+        `- 싱가포르 판매자부담 배송비(hidden fee) = ${fmt2(sg)} SGD`,
+        `- 대만 판매자부담 배송비(hidden fee) = ${fmt2(tw)} NTD`,
+        `- 말레이시아 판매자부담 배송비(hidden fee) = ${fmt2(my)} MYR`,
+        `- 필리핀 판매자부담 배송비(hidden fee) = ${fmt2(ph)} PHP`,
+      ].join("\n");
+
+      document.getElementById("result").textContent = lines;
+
+      const statusEl = document.getElementById("status");
+      if (loadErrors.length) {
+        statusEl.className = "warn";
+        statusEl.textContent =
+          `⚠️ 참고: 표 기반 파일을 못 불러왔어.\n` +
+          `- shipping_sg.json / shipping_ph.json이 repo에 있어야 싱가포르/필리핀이 정상 표시돼.\n` +
+          `- 에러: ${loadErrors.join(" | ")}`;
+      } else {
+        // 파일은 불러왔는데 값이 null이면(해당 무게 키가 없으면) 따로 안내
+        const missing = [];
+        if (sg === null) missing.push("SG");
+        if (ph === null) missing.push("PH");
+        if (missing.length) {
+          statusEl.className = "warn";
+          statusEl.textContent = `⚠️ ${missing.join(", ")}: 적용무게(${applied}g) 키가 JSON에 없어. (해당 무게 행 추가 필요)`;
+        } else {
+          statusEl.className = "ok";
+          statusEl.textContent = `✅ 계산 완료`;
+        }
+      }
+    }
+
+    document.getElementById("calcBtn").addEventListener("click", onCalc);
   </script>
 </body>
 </html>
