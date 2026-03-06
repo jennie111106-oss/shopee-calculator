@@ -2,110 +2,134 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Shopee 마진 계산기</title>
   <style>
-    body { font-family: Arial, "Malgun Gothic", sans-serif; margin: 24px; }
-    .box { max-width: 720px; margin: 0 auto; padding: 16px; border: 1px solid #eee; border-radius: 16px; }
-    h1 { margin: 0 0 8px; font-size: 22px; }
-    p { margin: 0 0 12px; color: #555; }
-    label { display: grid; gap: 6px; }
-    input { width: 100%; padding: 8px; box-sizing: border-box; }
-    button { padding: 10px; cursor: pointer; }
-    .grid { margin-top: 12px; display: grid; gap: 10px; max-width: 360px; }
-    .result { padding: 10px; border: 1px solid #eee; border-radius: 12px; white-space: pre-line; }
-    .hint { font-size: 12px; color: #777; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; background:#fafafa; margin:0; padding:24px; }
+    .card { max-width:720px; margin:0 auto; background:#fff; border:1px solid #eee; border-radius:16px; padding:20px; }
+    h1 { margin:0 0 6px; font-size:28px; }
+    p { margin:0 0 16px; color:#444; }
+    label { display:block; margin:10px 0 8px; font-weight:600; }
+    input { width:100%; padding:10px 12px; border:1px solid #ccc; border-radius:10px; font-size:16px; box-sizing:border-box; }
+    .hint { margin-top:10px; color:#666; font-size:13px; }
+    button { width:100%; margin-top:14px; padding:12px; border-radius:12px; border:1px solid #ccc; background:#f3f3f3; font-size:16px; cursor:pointer; }
+    .result { margin-top:14px; padding:14px; border:1px solid #eee; border-radius:12px; background:#fff; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
   </style>
 </head>
-
 <body>
-  <div class="box">
+  <div class="card">
     <h1>쇼피 마진 계산기</h1>
     <p>이 페이지는 테스트입니다. (곧 계산기 붙일 예정)</p>
 
-    <div class="grid">
-      <label>구입가격 (KRW)
-        <input id="cost" type="number" value="33000">
-      </label>
+    <label>구입가격 (KRW)
+      <input id="cost" type="number" value="33000" min="0" step="1" />
+    </label>
 
-      <label>국내배송비 (KRW)
-        <input id="domestic" type="number" value="1000">
-      </label>
+    <label>국내배송비 (KRW)
+      <input id="domestic" type="number" value="1000" min="0" step="1" />
+    </label>
 
-      <label>기자재/포장비 (KRW)
-        <input id="pack" type="number" value="0">
-      </label>
+    <label>기자재/포장비 (KRW)
+      <input id="pack" type="number" value="0" min="0" step="1" />
+    </label>
 
-      <label>희망마진 (KRW)
-        <input id="margin" type="number" value="500">
-      </label>
+    <label>희망마진 (KRW)
+      <input id="margin" type="number" value="500" min="0" step="1" />
+    </label>
 
-      <label>제품무게 (g)
-        <input id="weight_g" type="number" value="173">
-      </label>
+    <label>제품무게 (g)
+      <input id="weight_g" type="number" value="173" min="0" step="1" />
+    </label>
 
-      <label>부피무게 (g) (없으면 0)
-        <input id="vol_g" type="number" value="0">
-      </label>
+    <label>부피무게 (g) (없으면 0)
+      <input id="vol_g" type="number" value="0" min="0" step="1" />
+    </label>
 
-      <div class="hint">* 적용무게 = max(제품무게, 부피무게) 후 10g 단위 올림</div>
+    <div class="hint">
+      * 적용무게 = max(제품무게, 부피무게) 후 <b>10g 단위 올림</b><br/>
+      * 말레이시아(MYR) / 대만(NTD)은 규칙(공식)이라 표 전체 입력 불필요
+    </div>
 
-      <button id="calcBtn">계산하기(테스트)</button>
+    <button id="btn">계산하기(테스트)</button>
 
-      <div id="result" class="result">결과가 여기 뜹니다.</div>
+    <div id="result" class="result">
+      결과가 여기에 뜹니다.
     </div>
   </div>
 
   <script>
-    // ✅ 싱가포르 배송표(JSON) 로드 (10g~1470g 등 구간)
-    let SG_TABLE = {};
-    fetch("./shipping_sg.json")
-      .then(res => res.json())
-      .then(data => { SG_TABLE = data || {}; })
-      .catch(() => { SG_TABLE = {}; });
+    function n(v){ return Number(v || 0); }
 
-    document.getElementById("calcBtn").addEventListener("click", () => {
-      const cost = Number(document.getElementById("cost").value || 0);
-      const domestic = Number(document.getElementById("domestic").value || 0);
-      const pack = Number(document.getElementById("pack").value || 0);
-      const margin = Number(document.getElementById("margin").value || 0);
+    // 적용무게: 10g 단위 올림
+    function appliedWeightG(w, vw){
+      const raw = Math.max(n(w), n(vw));
+      return Math.ceil(raw / 10) * 10;
+    }
 
-      const weight = Number(document.getElementById("weight_g").value || 0);
-      const vol = Number(document.getElementById("vol_g").value || 0);
-
-      const raw = Math.max(weight, vol);
-      const applied = Math.ceil(raw / 10) * 10;
-
-      const total = cost + domestic + pack + margin;
-
-      // ✅ 싱가포르 배송비: 1) JSON에서 찾고 2) 없으면(1480g 이상) 공식으로 계산
-      let sgShip = SG_TABLE[String(applied)] ?? "-";
-
-      if (sgShip === "-" && applied >= 1480) {
-        if (applied <= 1500) {
-          sgShip = 11.50;
-        } else {
-          // 1510~1600: 12.20 / 이후 100g마다 +0.70
-          const steps = Math.floor((applied - 1510) / 100);
-          sgShip = 12.20 + 0.70 * steps;
-        }
+    // ✅ 싱가포르 hidden fee (SGD) : 표를 “공식화”
+    // 1) 10~50g: 0.40 고정
+    // 2) 60~1000g: 60g=0.48에서 10g당 +0.08 (선형)
+    // 3) 1010g 이상: 100g 블록마다 +0.70 (계단식)
+    //    - 1010~1100: 8.70
+    //    - 1110~1200: 9.40
+    //    ...
+    //    - 1410~1500: 11.50
+    //    - 1510~1600: 12.20
+    //    ... (이 구조로 30000g까지 동일하게 계산됨)
+    function sgHiddenFee(appliedG){
+      if (appliedG <= 50) return 0.40;
+      if (appliedG <= 1000){
+        // 60g부터 선형. (50g 입력해도 적용무게는 50g, 51~59는 60으로 올림되니 OK)
+        // 60g => 0.48, 70g => 0.56 ... 1000g => 8.00
+        return 0.48 + ((appliedG - 60) / 10) * 0.08;
       }
-      const sgShipText = (sgShip === "-") ? "-" : Number(sgShip).toFixed(2);
+      // 1010g 이상: 1010~1100 = 8.70, 1110~1200 = 9.40 ...
+      // 공식: 8.70 + 0.70 * ceil((appliedG - 1100)/100)
+      const k = Math.ceil((appliedG - 1100) / 100);
+      return 8.70 + 0.70 * Math.max(0, k);
+    }
 
-      // ✅ 대만 배송비: 10g당 1.30 NTD (표가 완전 선형이라 공식으로 처리)
-      // 10g -> 1.30, 20g -> 2.60 ... 20000g -> 2600.00
-      let twShip = "-";
-      if (applied >= 10 && applied <= 20000) {
-        twShip = (applied / 10) * 1.30;
-      }
-      const twShipText = (twShip === "-") ? "-" : Number(twShip).toFixed(2);
+    // ✅ 대만 hidden fee (NTD): 10g당 1.30
+    function twHiddenFee(appliedG){
+      return (appliedG / 10) * 1.30;
+    }
 
-      document.getElementById("result").textContent =
-        `테스트 결과\n` +
-        `- 합계(원가+국내배송+포장+희망마진) = ${total.toLocaleString()} KRW\n` +
-        `- 적용무게 = ${applied}g\n` +
-        `- 싱가포르 판매자부담 배송비 = ${sgShipText} SGD\n` +
-        `- 대만 판매자부담 배송비 = ${twShipText} NTD`;
+    // ✅ 말레이시아 hidden fee (MYR): 10g당 0.20
+    function myHiddenFee(appliedG){
+      return (appliedG / 10) * 0.20;
+    }
+
+    function fmt2(v){ return Number(v).toFixed(2); }
+    function fmtKRW(v){ return Number(v).toLocaleString('ko-KR'); }
+
+    document.getElementById("btn").addEventListener("click", () => {
+      const cost = n(document.getElementById("cost").value);
+      const domestic = n(document.getElementById("domestic").value);
+      const pack = n(document.getElementById("pack").value);
+      const margin = n(document.getElementById("margin").value);
+
+      const w = n(document.getElementById("weight_g").value);
+      const vw = n(document.getElementById("vol_g").value);
+
+      const applied = appliedWeightG(w, vw);
+
+      // 테스트용 합계(원가+국내배송+포장+희망마진)
+      const totalKRW = cost + domestic + pack + margin;
+
+      const sg = sgHiddenFee(applied);
+      const tw = twHiddenFee(applied);
+      const my = myHiddenFee(applied);
+
+      document.getElementById("result").innerHTML = `
+        <b>테스트 결과</b><br/>
+        - 합계(원가+국내배송+포장+희망마진) = <b>${fmtKRW(totalKRW)} KRW</b><br/>
+        - 적용무게 = <b>${applied}g</b><br/>
+        <br/>
+        - 싱가포르 판매자부담 배송비(hidden fee) = <b>${fmt2(sg)} SGD</b><br/>
+        - 대만 판매자부담 배송비(hidden fee) = <b>${fmt2(tw)} NTD</b><br/>
+        - 말레이시아 판매자부담 배송비(hidden fee) = <b>${fmt2(my)} MYR</b>
+      `;
     });
   </script>
 </body>
