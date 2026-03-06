@@ -69,8 +69,9 @@
 
     <p class="note">
       * 적용무게 = max(제품무게, 부피무게) 후 <b>10g 단위 올림</b><br/>
-      * 대만(NTD) / 말레이시아(MYR)는 공식 규칙으로 표 전체 입력 불필요 (10g당 고정 단가)<br/>
-      * 싱가포르(SGD) / 필리핀(PHP)은 표 기반이라 <b>shipping_sg.json</b>, <b>shipping_ph.json</b> 파일이 필요
+      * 대만(NTD) / 말레이시아(MYR)는 공식 규칙 계산 (10g당 고정 단가)<br/>
+      * 필리핀(PHP)은 표(JSON) 기반: <b>shipping_ph.json</b><br/>
+      * 싱가포르(SGD)는 <b>1470g까지는 shipping_sg.json</b>, 그 이상은 <b>공식(자동 계산)</b>
     </p>
 
     <button id="calcBtn">계산하기(테스트)</button>
@@ -83,27 +84,29 @@
   </div>
 
   <script>
-    // ================================
-    // 1) 표 기반 국가: SG / PH
-    //    - repo에 shipping_sg.json / shipping_ph.json 생성해서 넣으면 자동 로드
-    //    - 형식: { "10": 0.40, "20": 0.40, ... }  (키는 g, 값은 통화)
-    // ================================
-    const rateTables = {
-      sg: null,
-      ph: null,
-    };
+    // =========================================
+    // 1) 표(JSON) 기반: SG(<=1470) / PH(전체)
+    //    파일 형식: { "10": 0.40, "20": 0.48, ... }
+    // =========================================
+    const rateTables = { sg: null, ph: null };
 
     async function loadJsonTable(path) {
       const res = await fetch(path, { cache: "no-store" });
       if (!res.ok) throw new Error(`${path} 로드 실패 (${res.status})`);
       const obj = await res.json();
-      // 키를 숫자로 정리
+
+      if (!obj || typeof obj !== "object" || Array.isArray(obj)) {
+        throw new Error(`${path} 형식이 올바르지 않음 (예: { "10": 23.00, "20": 26.00 })`);
+      }
+
       const map = new Map();
       for (const [k, v] of Object.entries(obj)) {
         const kk = Number(String(k).replace(/,/g, ""));
         const vv = Number(v);
         if (Number.isFinite(kk) && Number.isFinite(vv)) map.set(kk, vv);
       }
+
+      if (map.size === 0) throw new Error(`${path}에서 유효한 (무게→금액) 데이터가 없음`);
       return map;
     }
 
@@ -122,57 +125,54 @@
 
     function lookupFromMap(map, applied) {
       if (!map) return null;
-      // exact match 우선
+
+      // exact match
       if (map.has(applied)) return map.get(applied);
 
-      // 혹시 표가 10g 단위인데 applied가 10g이 아닐 경우 대비(원래는 10g 올림이라 필요 없지만 안전장치)
+      // safety: 10g 단위 올림
       const rounded = Math.ceil(applied / 10) * 10;
       if (map.has(rounded)) return map.get(rounded);
 
-      // 마지막으로: 가장 가까운 "이하" 키 찾기(표가 끊겨있을 때 대비)
-      // (정확 테이블이 있으면 이 분기 안 타게 됨)
+      // fallback: 가장 가까운 이하 키
       let bestKey = null;
       for (const k of map.keys()) {
         if (k <= rounded && (bestKey === null || k > bestKey)) bestKey = k;
       }
-      if (bestKey !== null) return map.get(bestKey);
-
-      return null;
+      return bestKey !== null ? map.get(bestKey) : null;
     }
 
-    // ================================
-    // 2) 규칙 기반 국가: TW / MY
-    //    - 네가 보낸 표가 "10g당 고정 단가"라서 공식 규칙으로 계산
-    // ================================
-    function calcTW(applied) { // NTD
-      // 10g = 1.30 NTD
-      return (applied / 10) * 1.30;
-    }
-    function calcMY(applied) { // MYR
-      // 10g = 0.20 MYR
-      return (applied / 10) * 0.20;
+    // =========================================
+    // 2) 규칙 기반: TW / MY
+    // =========================================
+    function calcTW(applied) { return (applied / 10) * 1.30; } // NTD
+    function calcMY(applied) { return (applied / 10) * 0.20; } // MYR
+
+    // =========================================
+    // 3) SG 공식(1470g 초과)
+    //    - 너랑 이미 검증했던 구조:
+    //      1480~1500 => 11.50
+    //      1510~1600 => 12.20
+    //      1610~1700 => 12.90
+    //      ... 100g 블록마다 +0.70
+    // =========================================
+    function calcSGFromFormula(applied) { // SGD
+      if (applied < 1480) return null;
+      if (applied <= 1500) return 11.50;
+      const blocks = Math.floor((applied - 1510) / 100); // 1510~1600 => 0
+      return 12.20 + 0.70 * Math.max(0, blocks);
     }
 
-    // ================================
-    // UI
-    // ================================
-    function n(x) {
-      const v = Number(x);
-      return Number.isFinite(v) ? v : 0;
-    }
-
+    // =========================================
+    // 4) UI Helpers
+    // =========================================
+    function n(x) { const v = Number(x); return Number.isFinite(v) ? v : 0; }
     function fmt2(x) {
-      // 통화 소수 2자리 고정
       if (x === null || x === undefined) return "-";
       const v = Number(x);
       if (!Number.isFinite(v)) return "-";
       return v.toFixed(2);
     }
-
-    function fmtInt(x) {
-      const v = Math.round(Number(x));
-      return Number.isFinite(v) ? v.toLocaleString() : "0";
-    }
+    function fmtInt(x) { const v = Math.round(Number(x)); return Number.isFinite(v) ? v.toLocaleString() : "0"; }
 
     async function onCalc() {
       const cost = n(document.getElementById("cost").value);
@@ -187,10 +187,16 @@
 
       const total = cost + domestic + pack + margin;
 
-      // 로드 시도 (SG/PH json 없으면 경고만 띄우고 계산은 계속)
       const loadErrors = await ensureTablesLoaded();
 
-      const sg = lookupFromMap(rateTables.sg, applied);
+      // SG: 먼저 JSON(<=1470)에서 찾고, 없으면 공식으로 계산
+      let sg = lookupFromMap(rateTables.sg, applied);
+      if (sg === null) {
+        const sgFormula = calcSGFromFormula(applied);
+        if (sgFormula !== null) sg = sgFormula;
+      }
+
+      // PH: 전체 JSON에서 찾음
       const ph = lookupFromMap(rateTables.ph, applied);
 
       const tw = calcTW(applied);
@@ -203,7 +209,7 @@
         `- 싱가포르 판매자부담 배송비(hidden fee) = ${fmt2(sg)} SGD`,
         `- 대만 판매자부담 배송비(hidden fee) = ${fmt2(tw)} NTD`,
         `- 말레이시아 판매자부담 배송비(hidden fee) = ${fmt2(my)} MYR`,
-        `- 필리핀 판매자부담 배송비(hidden fee) = ${fmt2(ph)} PHP`,
+        `- 필리핀 판매자부담 배송비(hidden fee) = ${fmt2(ph)} PHP`
       ].join("\n");
 
       document.getElementById("result").textContent = lines;
@@ -212,25 +218,30 @@
       if (loadErrors.length) {
         statusEl.className = "warn";
         statusEl.textContent =
-          `⚠️ 참고: 표 기반 파일을 못 불러왔어.\n` +
-          `- shipping_sg.json / shipping_ph.json이 repo에 있어야 싱가포르/필리핀이 정상 표시돼.\n` +
+          `⚠️ 표 기반 파일 로드 실패\n` +
+          `- shipping_sg.json / shipping_ph.json 파일이 repo 루트에 있어야 함\n` +
           `- 에러: ${loadErrors.join(" | ")}`;
+        return;
+      }
+
+      // SG는 공식이 있으니 missing 체크는 PH만 엄격히(원하면 SG도 체크 가능)
+      const missing = [];
+      if (ph === null) missing.push("PH");
+      if (missing.length) {
+        statusEl.className = "warn";
+        statusEl.textContent =
+          `⚠️ ${missing.join(", ")}: 적용무게(${applied}g) 키가 JSON에 없음\n` +
+          `- 해당 무게 행을 JSON에 추가해야 정확함`;
       } else {
-        // 파일은 불러왔는데 값이 null이면(해당 무게 키가 없으면) 따로 안내
-        const missing = [];
-        if (sg === null) missing.push("SG");
-        if (ph === null) missing.push("PH");
-        if (missing.length) {
-          statusEl.className = "warn";
-          statusEl.textContent = `⚠️ ${missing.join(", ")}: 적용무게(${applied}g) 키가 JSON에 없어. (해당 무게 행 추가 필요)`;
-        } else {
-          statusEl.className = "ok";
-          statusEl.textContent = `✅ 계산 완료`;
-        }
+        statusEl.className = "ok";
+        statusEl.textContent = `✅ 계산 완료`;
       }
     }
 
     document.getElementById("calcBtn").addEventListener("click", onCalc);
+
+    // 페이지 로딩 시 테이블 미리 로드(선택)
+    ensureTablesLoaded().catch(() => {});
   </script>
 </body>
 </html>
