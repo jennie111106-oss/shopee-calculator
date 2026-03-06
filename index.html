@@ -13,7 +13,8 @@
     input { width: 100%; padding: 8px; box-sizing: border-box; }
     button { padding: 10px; cursor: pointer; }
     .grid { margin-top: 12px; display: grid; gap: 10px; max-width: 360px; }
-    .result { padding: 10px; border: 1px solid #eee; border-radius: 12px; }
+    .result { padding: 10px; border: 1px solid #eee; border-radius: 12px; white-space: pre-line; }
+    .hint { font-size: 12px; color: #777; }
   </style>
 </head>
 
@@ -40,12 +41,14 @@
       </label>
 
       <label>제품무게 (g)
-        <input id="weight_g" type="number" value="500">
+        <input id="weight_g" type="number" value="173">
       </label>
 
       <label>부피무게 (g) (없으면 0)
         <input id="vol_g" type="number" value="0">
       </label>
+
+      <div class="hint">* 적용무게 = max(제품무게, 부피무게) 후 10g 단위 올림</div>
 
       <button id="calcBtn">계산하기(테스트)</button>
 
@@ -54,6 +57,13 @@
   </div>
 
   <script>
+    // ✅ 싱가포르 배송표(JSON) 로드
+    let SG_TABLE = {};
+    fetch("./shipping_sg.json")
+      .then(res => res.json())
+      .then(data => { SG_TABLE = data || {}; })
+      .catch(() => { SG_TABLE = {}; });
+
     document.getElementById("calcBtn").addEventListener("click", () => {
       const cost = Number(document.getElementById("cost").value || 0);
       const domestic = Number(document.getElementById("domestic").value || 0);
@@ -62,22 +72,21 @@
 
       const weight = Number(document.getElementById("weight_g").value || 0);
       const vol = Number(document.getElementById("vol_g").value || 0);
-const raw = Math.max(weight, vol);
-const applied = Math.ceil(raw / 10) * 10;
 
-const total = cost + domestic + pack + margin;
+      const raw = Math.max(weight, vol);
+      const applied = Math.ceil(raw / 10) * 10;
 
-// ✅ 싱가포르 배송비(테스트): 180g = 1.44 SGD
-let sgShip = "-";
-if (applied === 180) sgShip = "1.44";
-if (applied === 170) sgShip = "1.41";
-if (applied === 160) sgShip = "1.38";
+      const total = cost + domestic + pack + margin;
 
-document.getElementById("result").textContent =
-  `테스트: 합계 = ${total.toLocaleString()} KRW / 적용무게 = ${applied}g / 싱가포르 배송비 = ${sgShip} SGD`;
+      // ✅ 싱가포르 배송비 (테스트: JSON에 있는 값만 표시)
+      const sgShip = (SG_TABLE[String(applied)] ?? "-");
+
+      document.getElementById("result").textContent =
+        `테스트 결과\n` +
+        `- 합계(원가+국내배송+포장+희망마진) = ${total.toLocaleString()} KRW\n` +
+        `- 적용무게 = ${applied}g\n` +
+        `- 싱가포르 판매자부담 배송비 = ${sgShip} SGD`;
     });
   </script>
 </body>
 </html>
-
-
