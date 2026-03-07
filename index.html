@@ -356,6 +356,57 @@ input[type="number"]{
       background-clip:padding-box;
     }
 
+
+.ad-slot{
+  margin-top:14px;
+  min-height:220px;
+  border:none;
+  background:transparent;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.ad-inner{
+  width:85%;
+  padding:22px;
+  border-radius:14px;
+  border:1px dashed rgba(255,255,255,0.25);
+  text-align:center;
+  background:rgba(15,25,60,0.35);
+}
+.ad-title{
+  font-weight:700;
+  font-size:16px;
+  margin-bottom:8px;
+}
+.ad-desc{
+  font-size:12px;
+  opacity:.8;
+  margin-bottom:12px;
+}
+.ad-btn{
+  padding:8px 14px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.2);
+  background:rgba(70,100,200,0.25);
+  color:white;
+  cursor:pointer;
+}
+
+
+    .side-top{
+      min-height:312px;
+    }
+    .ad-slot{
+      margin-top:14px;
+      min-height:220px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border:none;
+      background:transparent;
+    }
+
 </style>
 </head>
 <body>
@@ -441,9 +492,18 @@ input[type="number"]{
           <button class="btn" id="openFx">⚙️</button>
         </div>
         <div class="card-body">
-          <div class="grid summary-grid" id="fxSummary"></div>
-          <div class="toolbar">
-            <button class="btn live-fx" id="hanaBtn">LIVE 환율 보기</button>
+          <div class="side-top">
+            <div class="grid summary-grid" id="fxSummary"></div>
+            <div class="toolbar">
+              <button class="btn live-fx" id="hanaBtn">LIVE 환율 보기</button>
+            </div>
+          </div>
+          <div class="ad-slot">
+            <div class="ad-inner">
+              <div class="ad-title">광고 영역</div>
+              <div class="ad-desc">쿠팡 파트너스 광고를 여기에 넣을 수 있습니다.</div>
+              <button class="ad-btn" onclick="window.open('https://partners.coupang.com','_blank')">광고 링크</button>
+            </div>
           </div>
         </div>
       </article>
@@ -457,8 +517,17 @@ input[type="number"]{
           <button class="btn" id="openFee">⚙️</button>
         </div>
         <div class="card-body">
-          <div class="grid summary-grid" id="feeSummary"></div>
-          <p class="note" style="margin-top:14px">비율(%) 항목과 고정금액 항목을 각각 입력해 주세요.</p>
+          <div class="side-top">
+            <div class="grid summary-grid" id="feeSummary"></div>
+            <p class="note" style="margin-top:14px">비율(%) 항목과 고정금액 항목을 각각 입력해 주세요.</p>
+          </div>
+          <div class="ad-slot">
+            <div class="ad-inner">
+              <div class="ad-title">광고 영역</div>
+              <div class="ad-desc">쿠팡 파트너스 광고를 여기에 넣을 수 있습니다.</div>
+              <button class="ad-btn" onclick="window.open('https://partners.coupang.com','_blank')">광고 링크</button>
+            </div>
+          </div>
         </div>
       </article>
     </section>
@@ -783,12 +852,8 @@ input[type="number"]{
     });
     document.getElementById('openFx').addEventListener('click', () => { buildFxTable(); openModal('fxModalWrap'); });
     document.getElementById('openFee').addEventListener('click', () => { buildFeeTable(); openModal('feeModalWrap'); });
-    document.getElementById('hanaBtn').addEventListener('click', () => {
-      window.open('https://www.kebhana.com/cont/mall/mall15/mall1501/index.jsp', '_blank');
-    });
-    document.getElementById('fxLiveBtn')?.addEventListener('click', () => {
-      window.open('https://www.kebhana.com/cont/mall/mall15/mall1501/index.jsp', '_blank');
-    });
+    document.getElementById('hanaBtn').addEventListener('click', applyLiveFx);
+    document.getElementById('fxLiveBtn')?.addEventListener('click', applyLiveFx);
 
     document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', e => closeModal(e.currentTarget.dataset.close)));
     document.getElementById('saveFx').addEventListener('click', () => {
