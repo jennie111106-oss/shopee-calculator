@@ -63,7 +63,6 @@
     .btn.live-fx{background:linear-gradient(135deg,#ff8b7c,#ff6cab 58%,#8a7dff);color:#fff;border:1px solid rgba(255,255,255,.14);box-shadow:0 10px 24px rgba(255,108,171,.18)}
     .btn.live-fx:hover{transform:translateY(-1px);filter:brightness(1.06)}
 
-    
     .vol-box{
       margin-top:16px;
       padding:16px;
@@ -71,7 +70,7 @@
       border-radius:18px;
       background:linear-gradient(180deg,rgba(20,33,69,.55),rgba(12,20,42,.65));
     }
-    
+
     .vol-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
     .vol-head-inline{display:flex;align-items:center;gap:8px}
     .help-btn{
@@ -181,17 +180,6 @@
       .top-grid,.summary-grid,.input-grid,.result-grid,.field-grid{grid-template-columns:1fr}
       .hero{flex-direction:column}
     }
-  
-input[type="number"]::-webkit-outer-spin-button,
-input[type="number"]::-webkit-inner-spin-button{
-  -webkit-appearance:none;
-  margin:0;
-}
-input[type="number"]{
-  -moz-appearance:textfield;
-  appearance:textfield;
-}
-
 
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button{
@@ -267,7 +255,7 @@ input[type="number"]{
       color:#bff3ff;
       font-weight:800;
     }
-    
+
     #volGuideWrap tbody td{
       background:rgba(8,16,37,.42);
       text-align:center;
@@ -330,9 +318,6 @@ input[type="number"]{
       }
     }
 
-
-
-    /* subtle scrollbars */
     *{
       scrollbar-width:thin;
       scrollbar-color:rgba(159,176,218,.28) transparent;
@@ -356,43 +341,41 @@ input[type="number"]{
       background-clip:padding-box;
     }
 
-
-.ad-slot{
-  margin-top:14px;
-  min-height:220px;
-  border:none;
-  background:transparent;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.ad-inner{
-  width:85%;
-  padding:22px;
-  border-radius:14px;
-  border:1px dashed rgba(255,255,255,0.25);
-  text-align:center;
-  background:rgba(15,25,60,0.35);
-}
-.ad-title{
-  font-weight:700;
-  font-size:16px;
-  margin-bottom:8px;
-}
-.ad-desc{
-  font-size:12px;
-  opacity:.8;
-  margin-bottom:12px;
-}
-.ad-btn{
-  padding:8px 14px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,0.2);
-  background:rgba(70,100,200,0.25);
-  color:white;
-  cursor:pointer;
-}
-
+    .ad-slot{
+      margin-top:14px;
+      min-height:220px;
+      border:none;
+      background:transparent;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .ad-inner{
+      width:85%;
+      padding:22px;
+      border-radius:14px;
+      border:1px dashed rgba(255,255,255,0.25);
+      text-align:center;
+      background:rgba(15,25,60,0.35);
+    }
+    .ad-title{
+      font-weight:700;
+      font-size:16px;
+      margin-bottom:8px;
+    }
+    .ad-desc{
+      font-size:12px;
+      opacity:.8;
+      margin-bottom:12px;
+    }
+    .ad-btn{
+      padding:8px 14px;
+      border-radius:10px;
+      border:1px solid rgba(255,255,255,0.2);
+      background:rgba(70,100,200,0.25);
+      color:white;
+      cursor:pointer;
+    }
 
     .side-top{
       min-height:312px;
@@ -406,8 +389,7 @@ input[type="number"]{
       border:none;
       background:transparent;
     }
-
-</style>
+  </style>
 </head>
 <body>
   <div class="wrap">
@@ -456,21 +438,18 @@ input[type="number"]{
                   <label>가로 <span style="color:var(--muted);font-size:12px;font-weight:700">cm</span></label>
                   <div class="dim-wrap">
                     <input id="length" type="number" min="0" step="0.1" value="0" />
-                    
                   </div>
                 </div>
                 <div class="dim-field">
                   <label>세로 <span style="color:var(--muted);font-size:12px;font-weight:700">cm</span></label>
                   <div class="dim-wrap">
                     <input id="width" type="number" min="0" step="0.1" value="0" />
-                    
                   </div>
                 </div>
                 <div class="dim-field">
                   <label>높이 <span style="color:var(--muted);font-size:12px;font-weight:700">cm</span></label>
                   <div class="dim-wrap">
                     <input id="height" type="number" min="0" step="0.1" value="0" />
-                    
                   </div>
                 </div>
               </div>
@@ -677,10 +656,20 @@ input[type="number"]{
       if (country === 'TW') return Math.ceil(weight / 10) * 1.30;
       if (country === 'MY') return Math.ceil(weight / 10) * 0.20;
 
+      // SG는 JSON 대신 공식 계산
+      // 1000g 이하: 10g당 0.08 SGD
+      // 1000g 초과: 1000g = 8.00 SGD, 이후 100g당 0.70 SGD 증가
+      if (country === 'SG'){
+        const w = Math.ceil((Number(weight) || 0) / 10) * 10 || 0;
+        if (!w) return 0;
+        if (w <= 1000) return Number((w * 0.008).toFixed(2));
+        const extraBlocks = Math.ceil((w - 1000) / 100);
+        return Number((8 + extraBlocks * 0.7).toFixed(2));
+      }
+
       const data = shippingTables[country];
       if (!data || !weight) return 0;
 
-      // object 형태: { "400": 3.2, "500": 3.8 }
       if (!Array.isArray(data) && typeof data === 'object'){
         const keys = Object.keys(data).map(Number).filter(Number.isFinite).sort((a,b)=>a-b);
         const matchedKey = keys.find(k => weight <= k);
@@ -688,7 +677,6 @@ input[type="number"]{
         return Number(data[String(matchedKey)] ?? data[matchedKey] ?? 0);
       }
 
-      // array 형태: [{ max_weight:400, cost:3.2 }]
       if (Array.isArray(data)){
         if (!data.length) return 0;
         const found = data.find(row => weight <= Number(row.max_weight || row.maxWeight || row.weight || 0));
@@ -785,7 +773,6 @@ input[type="number"]{
       });
     }
 
-    
     const volWeightPreviewEl = document.getElementById('volWeightPreview');
     function renderFxSummary(){
       const box = document.getElementById('fxSummary');
@@ -828,7 +815,11 @@ input[type="number"]{
 
     async function loadShippingTables(){
       const fileMap = {
-        SG:'shipping_sg.json', PH:'shipping_ph.json', VN:'shipping_vn.json', BR:'shipping_br.json', TH:'shipping_th.json', MX:'shipping_mx.json'
+        PH:'shipping_ph.json',
+        VN:'shipping_vn.json',
+        BR:'shipping_br.json',
+        TH:'shipping_th.json',
+        MX:'shipping_mx.json'
       };
       await Promise.all(Object.entries(fileMap).map(async ([code, file]) => {
         try{
@@ -841,7 +832,6 @@ input[type="number"]{
       }));
     }
 
-    
     async function applyLiveFx(){
       const triggerButtons = [document.getElementById('hanaBtn'), document.getElementById('fxLiveBtn')].filter(Boolean);
       triggerButtons.forEach(btn => { btn.disabled = true; btn.textContent = '불러오는 중...'; });
@@ -866,9 +856,6 @@ input[type="number"]{
         saveJson(storageKeyFx, fxRates);
         buildFxTable();
         renderFxSummary();
-    
-    [lengthInput, widthInput, heightInput].forEach(el => el && el.addEventListener('input', updateVolWeightPreview));
-    updateVolWeightPreview();
 
         renderResults();
         alert('LIVE 환율이 반영됐어요.');
@@ -876,7 +863,7 @@ input[type="number"]{
         console.error(err);
         alert('LIVE 환율을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.');
       }finally{
-        triggerButtons.forEach(btn => { btn.disabled = false; btn.textContent = 'LIVE 환율'; });
+        triggerButtons.forEach(btn => { btn.disabled = false; btn.textContent = 'LIVE 환율 보기'; });
       }
     }
 
@@ -897,13 +884,19 @@ input[type="number"]{
     document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', e => closeModal(e.currentTarget.dataset.close)));
     document.getElementById('saveFx').addEventListener('click', () => {
       document.querySelectorAll('[data-fx]').forEach(el => fxRates[el.dataset.fx] = +el.value || 0);
-      saveJson(storageKeyFx, fxRates); renderFxSummary(); renderResults(); closeModal('fxModalWrap');
+      saveJson(storageKeyFx, fxRates);
+      renderFxSummary();
+      renderResults();
+      closeModal('fxModalWrap');
     });
     document.getElementById('saveFee').addEventListener('click', () => {
       document.querySelectorAll('[data-fee-code]').forEach(el => {
         feeRates[el.dataset.feeCode][el.dataset.feeKey] = +el.value || 0;
       });
-      saveJson(storageKeyFee, feeRates); renderFeeSummary(); renderResults(); closeModal('feeModalWrap');
+      saveJson(storageKeyFee, feeRates);
+      renderFeeSummary();
+      renderResults();
+      closeModal('feeModalWrap');
     });
 
     document.querySelectorAll('.modal-backdrop').forEach(bg => bg.addEventListener('click', e => {
@@ -915,7 +908,7 @@ input[type="number"]{
       renderFeeSummary();
       renderResults();
     });
-  
+
     document.addEventListener('click', (e) => {
       const openBtn = e.target.closest('#openVolGuide');
       if (openBtn) {
@@ -948,10 +941,8 @@ input[type="number"]{
       document.getElementById(id)?.addEventListener('input', updateVolWeightPreview);
     });
     updateVolWeightPreview();
+  </script>
 
-</script>
-
-  
   <div class="modal-backdrop" id="volGuideWrap">
     <div class="modal vol-guide-modal">
       <div class="modal-head">
@@ -1130,7 +1121,5 @@ input[type="number"]{
       </div>
     </div>
   </div>
-
-
 </body>
 </html>
