@@ -333,7 +333,14 @@
       </div>
       <div class="modal-body">
         <table>
-          <thead><tr><th>국가</th><th>통화</th><th>환율</th></tr></thead>
+          <thead>
+  <tr>
+    <th>국가</th>
+    <th>통화</th>
+    <th>기준</th>
+    <th>환율</th>
+  </tr>
+</thead>
           <tbody id="fxTable"></tbody>
         </table>
         <div class="toolbar" style="margin-top:14px;margin-bottom:4px">
@@ -678,28 +685,41 @@
     }
 
     function buildFxTable(){
-      const tb = document.getElementById('fxTable');
-      tb.innerHTML = countries.map(c => {
-        const label = c.code === 'VN' ? '100 VND = KRW' : `1 ${c.currency} = KRW`;
-        return `
-          <tr>
-            <td>${c.name}</td>
-            <td>${c.currency}</td>
-            <td><input type="number" step="0.0001" data-fx="${c.code}" value="${fxRates[c.code] ?? ''}" placeholder="${label}"></td>
-          </tr>
-        `;
-      }).join('');
-    }
+  const tb = document.getElementById('fxTable');
 
-    function buildFeeTable(){
-      const tb = document.getElementById('feeTable');
-      tb.innerHTML = feeStructure.map(row => `
-        <tr>
-          <td>${row.label}</td>
-          ${countries.map(c => `<td><input type="number" step="0.01" data-fee-code="${c.code}" data-fee-key="${row.key}" value="${feeRates[c.code]?.[row.key] ?? 0}"></td>`).join('')}
-        </tr>
-      `).join('');
-    }
+  const fxBaseMap = {
+    SG: 'S$ 1 =',
+    TW: '$ 1 =',
+    TH: '฿ 1 =',
+    MY: 'RM 1 =',
+    VN: '₫ 100 =',
+    PH: '₱ 1 =',
+    BR: 'R$ 1 =',
+    MX: '$ 1 ='
+  };
+
+  tb.innerHTML = countries.map(c => {
+    return `
+      <tr>
+        <td>${c.name}</td>
+        <td>${c.currency}</td>
+        <td style="color:var(--muted);font-weight:700;white-space:nowrap;">${fxBaseMap[c.code] || `${c.currency} 1 =`}</td>
+        <td>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <input
+              type="number"
+              step="0.0001"
+              data-fx="${c.code}"
+              value="${fxRates[c.code] ?? ''}"
+              style="flex:1"
+            >
+            <span style="color:var(--muted);font-size:12px;font-weight:700;white-space:nowrap;">원</span>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
 
     async function loadShippingTables(){
       const fileMap = {
@@ -782,3 +802,4 @@
   </script>
 </body>
 </html>
+
