@@ -73,6 +73,17 @@
 
     .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
 
+    .section-slab{
+      margin-top:16px;padding:16px;border:1px solid var(--line);border-radius:16px;
+      background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));
+    }
+    .section-slab-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:14px}
+    .section-slab-title{font-size:13px;font-weight:800;color:#dfe8ff}
+    .section-slab-sub{font-size:11px;color:var(--muted);margin-top:4px}
+    .vol-grid{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:end}
+    .vol-dims{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .unit{color:var(--muted);font-size:12px;margin-left:4px}
+
     .results-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:24px 0 12px}
     .results-title h2{margin:0;font-size:18px}
     .results-title p{margin:4px 0 0;color:var(--muted);font-size:13px}
@@ -109,7 +120,7 @@
     }
     @media (max-width:760px){
       .wrap{padding:18px 14px 40px}
-      .top-grid,.summary-grid,.input-grid,.result-grid,.field-grid{grid-template-columns:1fr}
+      .top-grid,.summary-grid,.input-grid,.result-grid,.field-grid,.vol-grid,.vol-dims{grid-template-columns:1fr}
       .hero{flex-direction:column}
     }
   </style>
@@ -139,10 +150,28 @@
             <div class="field"><label>국내배송비 (KRW)</label><input id="domestic" type="number" min="0" step="1" value="0" /></div>
             <div class="field"><label>희망 마진율 (%)</label><input id="margin" type="number" min="0" step="0.1" value="25" /></div>
             <div class="field"><label>실중량 (g)</label><input id="actualWeight" type="number" min="0" step="1" value="0" /></div>
-            <div class="field"><label>가로 (cm)</label><input id="length" type="number" min="0" step="0.1" value="0" /></div>
-            <div class="field"><label>세로 (cm)</label><input id="width" type="number" min="0" step="0.1" value="0" /></div>
-            <div class="field"><label>높이 (cm)</label><input id="height" type="number" min="0" step="0.1" value="0" /></div>
           </div>
+
+          <div class="section-slab">
+            <div class="section-slab-head">
+              <div>
+                <div class="section-slab-title">부피무게 입력</div>
+                <div class="section-slab-sub">가로 × 세로 × 높이 기준 · cm 단위</div>
+              </div>
+            </div>
+            <div class="vol-grid">
+              <div class="field">
+                <label>부피무게</label>
+                <small>내부 divisor 6000 기준 자동 반영</small>
+              </div>
+              <div class="vol-dims">
+                <div class="field"><label>가로 <span class="unit">cm</span></label><input id="length" type="number" min="0" step="0.1" value="0" /></div>
+                <div class="field"><label>세로 <span class="unit">cm</span></label><input id="width" type="number" min="0" step="0.1" value="0" /></div>
+                <div class="field"><label>높이 <span class="unit">cm</span></label><input id="height" type="number" min="0" step="0.1" value="0" /></div>
+              </div>
+            </div>
+          </div>
+
           <div class="toolbar">
             <button class="btn primary" id="calcBtn">계산하기</button>
             <button class="btn ghost" id="resetBtn">초기화</button>
