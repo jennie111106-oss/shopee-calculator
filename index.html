@@ -176,14 +176,20 @@
   padding:18px;
 }
 
-.side-top{
-  min-height:312px;
+.top-grid > .card{
+  display:flex;
+  flex-direction:column;
 }
 
 .top-grid > .card .card-body{
   display:flex;
   flex-direction:column;
-  height:100%;
+  flex:1;
+  min-height:0;
+}
+
+.side-top{
+  min-height:0;
 }
 
 .ad-slot{
@@ -194,16 +200,18 @@
   justify-content:center;
   border:none;
   background:transparent;
-  padding-top:14px;
+  padding-top:18px;
 }
-    .ad-inner{
-      width:85%;
-      padding:22px;
-      border-radius:14px;
-      border:1px dashed rgba(255,255,255,0.25);
-      text-align:center;
-      background:rgba(15,25,60,0.35);
-    }
+
+.ad-inner{
+  width:100%;
+  max-width:330px;
+  padding:22px;
+  border-radius:14px;
+  border:1px dashed rgba(255,255,255,0.25);
+  text-align:center;
+  background:rgba(15,25,60,0.35);
+}
     .ad-title{font-weight:700;font-size:16px;margin-bottom:8px}
     .ad-desc{font-size:12px;opacity:.8;margin-bottom:12px}
     .ad-btn{
@@ -797,4 +805,5 @@
   </script>
 </body>
 </html>
+
 
