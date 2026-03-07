@@ -687,7 +687,7 @@
     function renderFxSummary(){
       const box = document.getElementById('fxSummary');
       box.innerHTML = countries.map(c => {
-        const label = c.code === 'VN' ? `${c.code} (100 ${c.currency})` : `${c.code} (${c.currency})`;
+        const label = `${c.code} (${c.currency})`;
         return `<div class="summary-item"><div class="label">${label}</div><div class="value">${fmtSmart(fxRates[c.code] || 0, c.code)}</div></div>`;
       }).join('');
     }
@@ -805,5 +805,6 @@
   </script>
 </body>
 </html>
+
 
 
