@@ -240,6 +240,47 @@ input[type="number"]{
       appearance:textfield;
     }
 
+
+    #volGuideWrap table th,
+    #volGuideWrap table td{
+      padding:10px 12px;
+      border-bottom:1px solid rgba(159,176,218,.12);
+      font-size:13px;
+      vertical-align:middle;
+      white-space:nowrap;
+    }
+    #volGuideWrap thead th{
+      background:rgba(35,55,111,.65);
+      color:#eef3ff;
+      font-weight:800;
+      text-align:center;
+    }
+    #volGuideWrap tbody td{
+      background:rgba(8,16,37,.42);
+      color:#eef3ff;
+    }
+    #volGuideWrap tbody td:nth-child(3),
+    #volGuideWrap tbody td:nth-child(4){
+      background:rgba(255,214,120,.12);
+      color:#ffe8a8;
+      text-align:center;
+      font-weight:700;
+    }
+    #volGuideWrap tbody td:nth-child(5),
+    #volGuideWrap tbody td:nth-child(6){
+      background:rgba(141,231,255,.12);
+      color:#bff3ff;
+      text-align:center;
+      font-weight:700;
+    }
+    #volGuideWrap tbody td:first-child{
+      font-weight:800;
+      color:#ffffff;
+    }
+    #volGuideWrap tbody tr:last-child td{
+      border-bottom:none;
+    }
+
 </style>
 </head>
 <body>
@@ -281,7 +322,7 @@ input[type="number"]{
             </div>
             <div class="vol-grid">
               <div class="vol-side">
-                <div class="label">부피무게</div>
+                <div class="label">부피무게</div><div class="sub">(가로 × 세로 × 높이) / 6000</div>
                 <div class="value" id="volWeightPreview">-</div>
               </div>
               <div class="dim-row">
@@ -568,8 +609,8 @@ input[type="number"]{
       const l = Number(lengthInput?.value || 0);
       const w = Number(widthInput?.value || 0);
       const h = Number(heightInput?.value || 0);
-      const vol = (l > 0 && w > 0 && h > 0) ? (l * w * h / 6) : 0;
-      if (volWeightPreviewEl) volWeightPreviewEl.textContent = vol > 0 ? fmtKrw(Math.ceil(vol)) + ' g' : '-';
+      const vol = (l > 0 && w > 0 && h > 0) ? (l * w * h / 6000) : 0;
+      if (volWeightPreviewEl) volWeightPreviewEl.textContent = vol > 0 ? fmtKrw(Math.ceil(vol * 1000) / 1000) + ' kg' : '-';
     }
 
     function renderFxSummary(){
@@ -712,24 +753,59 @@ input[type="number"]{
         <button class="close" data-close="volGuideWrap">×</button>
       </div>
       <div class="modal-body">
+        
         <div class="hint-list">
           <div class="hint-card">
-            <div class="t">입력 전 확인</div>
-            <div class="d">아래 표는 메모/참고용 영역이야. 실제 제한값은 배송사 정책 변경 가능성이 있으니 네가 사용하는 최신 표 기준으로 업데이트해서 쓰면 돼.</div>
-          </div>
-          <div class="hint-card">
-            <div class="t">예시 표기 형식</div>
-            <div class="d">
-              SG / Standard Express: 최대 한 변 60cm · 세 변 합 120cm<br>
-              TH / Economy: 최대 한 변 80cm · 세 변 합 150cm<br>
-              TW / Standard: 최대 한 변 45cm · 세 변 합 105cm
-            </div>
-          </div>
-          <div class="hint-card">
-            <div class="t">원하는 방향</div>
-            <div class="d">지금은 팝업 틀만 먼저 넣어놨어. 다음 단계에서 네가 정리한 국가별/채널별 실제 제한표를 넣으면 돼.</div>
+            <div class="t">부피무게 최대 용량표</div>
+            <div class="d">Shopee 표 기준 내용을 그대로 정리했어요.</div>
           </div>
         </div>
+
+        <div style="margin-top:14px; overflow:auto; border:1px solid rgba(159,176,218,.14); border-radius:16px;">
+          <table style="min-width:720px;">
+            <thead>
+              <tr>
+                <th rowspan="2">마켓</th>
+                <th rowspan="2">채널명</th>
+                <th colspan="2">단위 · cm</th>
+                <th colspan="2">단위 · kg</th>
+              </tr>
+              <tr>
+                <th>최대 세변의 합</th>
+                <th>최대 한변</th>
+                <th>최대 중량</th>
+                <th>최대 부피 중량</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td rowspan="3">싱가포르</td><td>Doorstep delivery - Korea</td><td>300</td><td>100</td><td>30</td><td>30</td></tr>
+              <tr><td>5 Day Delivery</td><td>240</td><td>120</td><td>30</td><td>30</td></tr>
+              <tr><td>Collection Point</td><td>120</td><td>40</td><td>6</td><td>6</td></tr>
+
+              <tr><td rowspan="2">말레이시아</td><td>Doorstep delivery - Korea</td><td>300</td><td>125</td><td>30</td><td>30</td></tr>
+              <tr><td>5 Day Delivery</td><td>300</td><td>125</td><td>30</td><td>30</td></tr>
+
+              <tr><td>태국</td><td>International Express - ส่งจากต่างประเทศ</td><td>175</td><td>100</td><td>20</td><td>20</td></tr>
+
+              <tr><td rowspan="2">필리핀</td><td>Standard International</td><td>240</td><td>180</td><td>50</td><td>50</td></tr>
+              <tr><td>Express International</td><td>240</td><td>180</td><td>50</td><td>50</td></tr>
+
+              <tr><td>브라질</td><td>Expresso Padrão - Coréia</td><td>200</td><td>100</td><td>30</td><td>30</td></tr>
+
+              <tr><td>멕시코</td><td>Envío Estándar - Productos Especiales - Corea</td><td>300</td><td>100</td><td>10</td><td>10</td></tr>
+
+              <tr><td rowspan="5">대만</td><td>蝦皮韓國 - 宅配</td><td>150</td><td>70</td><td>20</td><td>20</td></tr>
+              <tr><td>蝦皮韓國 - 711</td><td>105</td><td>45</td><td>10</td><td>10</td></tr>
+              <tr><td>蝦皮韓國 - 萊爾富</td><td>105</td><td>45</td><td>10</td><td>10</td></tr>
+              <tr><td>蝦皮韓國 - 蝦皮店到店</td><td>105</td><td>45</td><td>10</td><td>10</td></tr>
+              <tr><td>蝦皮韓國 - 快速到貨（蝦皮店到店）</td><td>105</td><td>45</td><td>10</td><td>10</td></tr>
+
+              <tr><td rowspan="2">베트남</td><td>Standard Express - Korea</td><td>180</td><td>60</td><td>15</td><td>15</td></tr>
+              <tr><td>5 Day Delivery</td><td>180</td><td>60</td><td>15</td><td>15</td></tr>
+            </tbody>
+          </table>
+        </div>
+
         <div class="footer-actions">
           <button class="btn ghost" data-close="volGuideWrap">닫기</button>
         </div>
