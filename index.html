@@ -443,7 +443,7 @@ input[type="number"]{
         <div class="card-body">
           <div class="grid summary-grid" id="fxSummary"></div>
           <div class="toolbar">
-            <button class="btn live-fx" id="hanaBtn">LIVE 환율</button>
+            <button class="btn live-fx" id="hanaBtn">LIVE 환율 보기</button>
           </div>
         </div>
       </article>
@@ -486,7 +486,7 @@ input[type="number"]{
           <thead><tr><th>국가</th><th>통화</th><th>환율</th></tr></thead>
           <tbody id="fxTable"></tbody>
         </table>
-        <div class="toolbar" style="margin-top:14px;margin-bottom:4px"><button class="btn live-fx" id="fxLiveBtn">LIVE 환율</button></div>
+        <div class="toolbar" style="margin-top:14px;margin-bottom:4px"><button class="btn live-fx" id="fxLiveBtn">LIVE 환율 보기</button></div>
         <div class="footer-actions">
           <button class="btn ghost" data-close="fxModalWrap">닫기</button>
           <button class="btn primary" id="saveFx">저장</button>
@@ -783,8 +783,12 @@ input[type="number"]{
     });
     document.getElementById('openFx').addEventListener('click', () => { buildFxTable(); openModal('fxModalWrap'); });
     document.getElementById('openFee').addEventListener('click', () => { buildFeeTable(); openModal('feeModalWrap'); });
-    document.getElementById('hanaBtn').addEventListener('click', applyLiveFx);
-    document.getElementById('fxLiveBtn')?.addEventListener('click', applyLiveFx);
+    document.getElementById('hanaBtn').addEventListener('click', () => {
+      window.open('https://www.kebhana.com/cont/mall/mall15/mall1501/index.jsp', '_blank');
+    });
+    document.getElementById('fxLiveBtn')?.addEventListener('click', () => {
+      window.open('https://www.kebhana.com/cont/mall/mall15/mall1501/index.jsp', '_blank');
+    });
 
     document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', e => closeModal(e.currentTarget.dataset.close)));
     document.getElementById('saveFx').addEventListener('click', () => {
