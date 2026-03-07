@@ -1,329 +1,817 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shopee Margin Calculator</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shopee Margin Calculator</title>
+  <style>
+    :root{
+      --bg:#081021;
+      --panel:#101a35;
+      --panel-2:#162245;
+      --line:#22376f;
+      --line-soft:#1a2d5a;
+      --text:#eef3ff;
+      --muted:#9fb0da;
+      --accent:#7aa2ff;
+      --accent-2:#7cf2d3;
+      --danger:#ff7b7b;
+      --shadow:0 14px 34px rgba(0,0,0,.28);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter,"Pretendard","Noto Sans KR",system-ui,sans-serif;
+      background:radial-gradient(circle at top,#14224b 0%,#081021 42%,#050a16 100%);
+      color:var(--text);
+    }
+    .wrap{max-width:1380px;margin:0 auto;padding:24px 20px 48px}
+    .hero{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}
+    .hero h1{margin:0;font-size:28px;font-weight:800;letter-spacing:-.03em}
+    .hero p{margin:8px 0 0;color:var(--muted);font-size:14px}
 
-<style>
-:root{
---bg:#081021;
---panel:#101a35;
---panel-2:#162245;
---line:#22376f;
---line-soft:#1a2d5a;
---text:#eef3ff;
---muted:#9fb0da;
---accent:#7aa2ff;
---accent-2:#7cf2d3;
---danger:#ff7b7b;
---shadow:0 14px 34px rgba(0,0,0,.28);
---radius:18px;
+    .grid{display:grid;gap:16px}
+    .top-grid{grid-template-columns:1.2fr 1fr 1fr}
+    .summary-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .input-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .result-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+
+    .card{
+      background:linear-gradient(180deg,rgba(20,33,69,.94),rgba(12,20,42,.98));
+      border:1px solid var(--line-soft);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:18px 18px 0}
+    .card-body{padding:18px}
+    .card h2,.card h3{margin:0;font-size:15px;font-weight:800;letter-spacing:-.02em}
+    .sub{color:var(--muted);font-size:12px}
+
+    .summary-item{padding:18px;border:1px solid var(--line);border-radius:16px;background:rgba(8,16,37,.4)}
+    .summary-item .label{color:var(--muted);font-size:12px;margin-bottom:10px}
+    .summary-item .value{font-size:18px;font-weight:800;color:#8de7ff}
+
+    .btn{
+      border:none;border-radius:12px;padding:11px 14px;font-weight:700;cursor:pointer;
+      background:#24396f;color:var(--text);transition:.16s ease;white-space:nowrap;
+    }
+    .btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
+    .btn.primary{background:linear-gradient(135deg,#ff8b7c,#ff6cab)}
+    .btn.ghost{background:#18264d;border:1px solid var(--line)}
+    .btn.link{background:#19264d;color:#c9d9ff;border:1px solid var(--line)}
+    .btn.live-fx{background:linear-gradient(135deg,#ff8b7c,#ff6cab 58%,#8a7dff);color:#fff;border:1px solid rgba(255,255,255,.14);box-shadow:0 10px 24px rgba(255,108,171,.18)}
+    .btn.live-fx:hover{transform:translateY(-1px);filter:brightness(1.06)}
+
+    
+    .vol-box{
+      margin-top:16px;
+      padding:16px;
+      border:1px solid var(--line);
+      border-radius:18px;
+      background:linear-gradient(180deg,rgba(20,33,69,.55),rgba(12,20,42,.65));
+    }
+    
+    .vol-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+    .vol-head-inline{display:flex;align-items:center;gap:8px}
+    .help-btn{
+      width:26px;height:26px;border-radius:50%;
+      border:1px solid var(--line);
+      background:#18264d;color:#d7e4ff;
+      font-size:14px;font-weight:800;cursor:pointer;
+      display:inline-flex;align-items:center;justify-content:center;
+    }
+    .help-btn:hover{filter:brightness(1.08)}
+    .dim-row{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(110px,1fr));
+      gap:12px;
+      align-items:end;
+    }
+    .dim-wrap input{
+      text-align:left;
+      padding:0 46px 0 16px;
+      font-size:18px;
+      font-weight:700;
+    }
+    .dim-wrap .unit{
+      right:12px;
+      font-size:12px;
+    }
+    .hint-list{
+      display:grid;
+      gap:10px;
+      margin-top:10px;
+    }
+    .hint-card{
+      border:1px solid rgba(159,176,218,.14);
+      border-radius:14px;
+      background:rgba(8,16,37,.35);
+      padding:12px 14px;
+    }
+    .hint-card .t{font-size:13px;font-weight:800;margin-bottom:6px}
+    .hint-card .d{font-size:12px;color:var(--muted);line-height:1.5}
+
+    .vol-top h3{margin:0 0 6px;font-size:16px;font-weight:800;letter-spacing:-.02em}
+    .vol-grid{
+      display:grid;
+      grid-template-columns:1.05fr 1.45fr;
+      gap:18px;
+      align-items:end;
+    }
+    .vol-side .label{
+      font-size:13px;
+      color:#dfe8ff;
+      font-weight:700;
+      margin-bottom:8px;
+    }
+    .vol-side .value{
+      min-height:46px;
+      display:flex;
+      align-items:center;
+      font-size:24px;
+      font-weight:800;
+      color:#ffffff;
+    }
+    .dim-row{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:12px;
+      align-items:end;
+    }
+    .dim-field{display:flex;flex-direction:column;gap:8px}
+    .dim-field label{font-size:13px;color:#dfe8ff;font-weight:700}
+    .dim-wrap{position:relative}
+    .dim-wrap input{
+      width:100%;
+      height:46px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#0c1632;
+      color:var(--text);
+      padding:0 42px 0 14px;
+      font-size:15px;
+      outline:none;
+    }
+    .dim-wrap .unit{
+      position:absolute;
+      right:14px;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:12px;
+      color:var(--muted);
+      font-weight:700;
+      pointer-events:none;
+    }
+    @media (max-width: 900px){
+      .vol-grid{grid-template-columns:1fr}
+    }
+
+    .field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .field{display:flex;flex-direction:column;gap:8px}
+    .field label{font-size:13px;color:#dfe8ff;font-weight:700}
+    .field input{
+      width:100%;height:46px;border-radius:14px;border:1px solid var(--line);
+      background:#0c1632;color:var(--text);padding:0 14px;font-size:15px;outline:none;
+    }
+    .field input:focus{border-color:#5a81df;box-shadow:0 0 0 3px rgba(122,162,255,.15)}
+    .field small{color:var(--muted);font-size:11px}
+
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+
+    .results-title{display:flex;align-items:end;justify-content:space-between;gap:16px;margin:24px 0 12px}
+    .results-title h2{margin:0;font-size:18px}
+    .results-title p{margin:4px 0 0;color:var(--muted);font-size:13px}
+
+    .result-card{padding:16px;border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,rgba(8,16,37,.3),rgba(8,16,37,.55))}
+    .result-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:8px}
+    .flag{width:22px;height:22px;border-radius:50%;object-fit:cover;border:1px solid rgba(255,255,255,.15)}
+    .result-name{display:flex;align-items:center;gap:10px;font-weight:800}
+    .currency{font-size:12px;color:var(--muted)}
+    .metric{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-top:1px dashed rgba(159,176,218,.18)}
+    .metric:first-of-type{border-top:none;padding-top:0}
+    .metric .k{font-size:12px;color:var(--muted)}
+    .metric .v{font-size:15px;font-weight:800;text-align:right}
+    .metric .v.em{color:#fff0c6}
+
+    .modal-backdrop{position:fixed;inset:0;background:rgba(1,5,12,.64);display:none;align-items:center;justify-content:center;padding:18px;z-index:50}
+    .modal-backdrop.show{display:flex}
+    .modal{width:min(980px,100%);max-height:88vh;overflow:auto;background:#0c1631;border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow)}
+    .modal-head{position:sticky;top:0;background:#0c1631;border-bottom:1px solid var(--line);padding:18px 20px;display:flex;justify-content:space-between;align-items:center;z-index:2}
+    .modal-body{padding:18px 20px 22px}
+    .close{background:transparent;border:none;color:#d7e4ff;font-size:24px;cursor:pointer}
+
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:11px 10px;border-bottom:1px solid rgba(159,176,218,.14);text-align:left;font-size:13px;vertical-align:middle}
+    th{color:#dce7ff;background:rgba(255,255,255,.03);position:sticky;top:0}
+    td input{width:100%;height:38px;border-radius:10px;border:1px solid var(--line);background:#0b1430;color:var(--text);padding:0 10px}
+    .cat-row td{background:rgba(255,255,255,.03);font-weight:800;color:#dce7ff}
+    .footer-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px;flex-wrap:wrap}
+
+    .note{color:var(--muted);font-size:12px;line-height:1.45}
+
+    @media (max-width:1200px){
+      .top-grid,.summary-grid,.input-grid,.result-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width:760px){
+      .wrap{padding:18px 14px 40px}
+      .top-grid,.summary-grid,.input-grid,.result-grid,.field-grid{grid-template-columns:1fr}
+      .hero{flex-direction:column}
+    }
+  
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button{
+  -webkit-appearance:none;
+  margin:0;
+}
+input[type="number"]{
+  -moz-appearance:textfield;
+  appearance:textfield;
 }
 
-*{box-sizing:border-box}
 
-body{
-margin:0;
-font-family:Inter,"Pretendard","Noto Sans KR",system-ui,sans-serif;
-background:radial-gradient(circle at top,#14224b 0%,#081021 42%,#050a16 100%);
-color:var(--text);
-}
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button{
+      -webkit-appearance:none;
+      margin:0;
+    }
+    input[type="number"]{
+      -moz-appearance:textfield;
+      appearance:textfield;
+    }
 
-.wrap{max-width:1380px;margin:0 auto;padding:24px 20px 48px}
 
-.hero h1{margin:0;font-size:28px;font-weight:800}
-.hero p{margin:8px 0 0;color:var(--muted);font-size:14px}
-
-.grid{display:grid;gap:16px}
-.top-grid{grid-template-columns:1.2fr 1fr 1fr}
-.result-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
-
-.card{
-background:linear-gradient(180deg,rgba(20,33,69,.94),rgba(12,20,42,.98));
-border:1px solid var(--line-soft);
-border-radius:var(--radius);
-box-shadow:var(--shadow);
-}
-
-.card-head{padding:18px 18px 0}
-.card-body{padding:18px}
-
-.field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-
-.field label{font-size:13px;color:#dfe8ff;font-weight:700}
-
-.field input{
-width:100%;
-height:46px;
-border-radius:14px;
-border:1px solid var(--line);
-background:#0c1632;
-color:var(--text);
-padding:0 14px;
-font-size:15px;
-}
-
-.vol-box{
-margin-top:16px;
-padding:16px;
-border:1px solid var(--line);
-border-radius:18px;
-background:linear-gradient(180deg,rgba(20,33,69,.55),rgba(12,20,42,.65));
-}
-
-.vol-grid{
-display:grid;
-grid-template-columns:1.05fr 1.45fr;
-gap:18px;
-align-items:end;
-}
-
-.vol-side .value{
-min-height:46px;
-display:flex;
-align-items:center;
-font-size:24px;
-font-weight:800;
-}
-
-.dim-row{
-display:grid;
-grid-template-columns:repeat(3,minmax(0,1fr));
-gap:12px;
-}
-
-.dim-wrap input{
-width:100%;
-height:46px;
-border-radius:14px;
-border:1px solid var(--line);
-background:#0c1632;
-color:var(--text);
-padding:0 14px;
-}
-
-.btn{
-border:none;
-border-radius:12px;
-padding:11px 14px;
-font-weight:700;
-cursor:pointer;
-background:#24396f;
-color:var(--text);
-}
-
-.btn.primary{
-background:linear-gradient(135deg,#ff8b7c,#ff6cab);
-}
-
-.result-card{
-padding:16px;
-border:1px solid var(--line);
-border-radius:16px;
-background:linear-gradient(180deg,rgba(8,16,37,.3),rgba(8,16,37,.55));
-}
-
-.metric{
-display:flex;
-justify-content:space-between;
-padding:8px 0;
-border-top:1px dashed rgba(159,176,218,.18);
-}
-
-.metric .v{font-weight:800}
+    #volGuideWrap table th,
+    #volGuideWrap table td{
+      padding:10px 12px;
+      border-bottom:1px solid rgba(159,176,218,.12);
+      font-size:13px;
+      vertical-align:middle;
+      white-space:nowrap;
+    }
+    #volGuideWrap thead th{
+      background:rgba(35,55,111,.65);
+      color:#eef3ff;
+      font-weight:800;
+      text-align:center;
+    }
+    #volGuideWrap tbody td{
+      background:rgba(8,16,37,.42);
+      color:#eef3ff;
+    }
+    #volGuideWrap tbody td:nth-child(3),
+    #volGuideWrap tbody td:nth-child(4){
+      background:rgba(255,214,120,.12);
+      color:#ffe8a8;
+      text-align:center;
+      font-weight:700;
+    }
+    #volGuideWrap tbody td:nth-child(5),
+    #volGuideWrap tbody td:nth-child(6){
+      background:rgba(141,231,255,.12);
+      color:#bff3ff;
+      text-align:center;
+      font-weight:700;
+    }
+    #volGuideWrap tbody td:first-child{
+      font-weight:800;
+      color:#ffffff;
+    }
+    #volGuideWrap tbody tr:last-child td{
+      border-bottom:none;
+    }
 
 </style>
 </head>
-
 <body>
+  <div class="wrap">
+    <section class="hero">
+      <div>
+        <h1>Shopee Margin Calculator</h1>
+        <p>한눈에 보는 다크톤 구조 · 설정은 카드 안에서만 관리</p>
+      </div>
+    </section>
 
-<div class="wrap">
+    <section class="grid top-grid">
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2>상품 정보</h2>
+            <div class="sub">필수 값만 간단하게 입력</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="field-grid">
+            <div class="field"><label>상품명</label><input id="productName" placeholder="예: 향수 50ml" /></div>
+            <div class="field"><label>제품구매가 (KRW)</label><input id="cost" type="number" min="0" step="1" value="0" /></div>
+            <div class="field"><label>포장비용 (KRW)</label><input id="pack" type="number" min="0" step="1" value="0" /></div>
+            <div class="field"><label>국내배송비 (KRW)</label><input id="domestic" type="number" min="0" step="1" value="0" /></div>
+            <div class="field"><label>희망 마진율 (%)</label><input id="margin" type="number" min="0" step="0.1" value="25" /></div>
+            <div class="field"><label>실중량 (g)</label><input id="actualWeight" type="number" min="0" step="1" value="0" /></div>
+          </div>
 
-<section class="hero">
-<h1>Shopee Margin Calculator</h1>
-<p>다크톤 구조 · 설정은 카드 안에서 관리</p>
-</section>
+          <div class="vol-box">
+            <div class="vol-top">
+              <div>
+                <div class="vol-head-inline">
+                  <h3>부피무게 입력</h3>
+                  <button class="help-btn" id="openVolGuide" type="button" aria-label="부피무게 최대 용량표 보기">?</button>
+                </div>
+                <div class="sub">가로 × 세로 × 높이 기준 · cm 단위</div>
+              </div>
+            </div>
+            <div class="vol-grid">
+              <div class="vol-side">
+                <div class="label">부피무게</div><div class="sub">(가로 × 세로 × 높이) / 6000</div>
+                <div class="value" id="volWeightPreview">-</div>
+              </div>
+              <div class="dim-row">
+                <div class="dim-field">
+                  <label>가로</label>
+                  <div class="dim-wrap">
+                    <input id="length" type="number" min="0" step="0.1" value="0" />
+                    <span class="unit">cm</span>
+                  </div>
+                </div>
+                <div class="dim-field">
+                  <label>세로</label>
+                  <div class="dim-wrap">
+                    <input id="width" type="number" min="0" step="0.1" value="0" />
+                    <span class="unit">cm</span>
+                  </div>
+                </div>
+                <div class="dim-field">
+                  <label>높이</label>
+                  <div class="dim-wrap">
+                    <input id="height" type="number" min="0" step="0.1" value="0" />
+                    <span class="unit">cm</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="toolbar">
+            <button class="btn primary" id="calcBtn">계산하기</button>
+            <button class="btn ghost" id="resetBtn">초기화</button>
+          </div>
+        </div>
+      </article>
 
-<section class="grid top-grid">
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2>환율 요약</h2>
+            <div class="sub">기본값 0 / 저장 후 반영</div>
+          </div>
+          <button class="btn" id="openFx">⚙️</button>
+        </div>
+        <div class="card-body">
+          <div class="grid summary-grid" id="fxSummary"></div>
+          <div class="toolbar">
+            <button class="btn live-fx" id="hanaBtn">LIVE 환율</button>
+          </div>
+        </div>
+      </article>
 
-<article class="card">
-<div class="card-head">
-<h2>상품 정보</h2>
-</div>
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2>수수료 요약</h2>
+            <div class="sub">국가별 주요 수수료 묶음 확인</div>
+          </div>
+          <button class="btn" id="openFee">⚙️</button>
+        </div>
+        <div class="card-body">
+          <div class="grid summary-grid" id="feeSummary"></div>
+          <p class="note" style="margin-top:14px">비율(%) 항목과 고정금액 항목을 각각 입력해 주세요.</p>
+        </div>
+      </article>
+    </section>
 
-<div class="card-body">
+    <section class="results-title">
+      <div>
+        <h2>국가별 계산 결과</h2>
+        <p>최종판매가 = 실제 판매 기준 가격 / 추천등록가 = 최종판매가의 30% 인상</p>
+      </div>
+    </section>
+    <section class="grid result-grid" id="results"></section>
+  </div>
 
-<div class="field-grid">
+  <div class="modal-backdrop" id="fxModalWrap">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <h3>환율 설정</h3>
+          <div class="sub">저장 전 기본값 0 / LIVE 환율 또는 수동 입력</div>
+        </div>
+        <button class="close" data-close="fxModalWrap">×</button>
+      </div>
+      <div class="modal-body">
+        <table>
+          <thead><tr><th>국가</th><th>통화</th><th>환율</th></tr></thead>
+          <tbody id="fxTable"></tbody>
+        </table>
+        <div class="toolbar" style="margin-top:14px;margin-bottom:4px"><button class="btn live-fx" id="fxLiveBtn">LIVE 환율</button></div>
+        <div class="footer-actions">
+          <button class="btn ghost" data-close="fxModalWrap">닫기</button>
+          <button class="btn primary" id="saveFx">저장</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<div class="field">
-<label>상품명</label>
-<input id="productName">
-</div>
+  <div class="modal-backdrop" id="feeModalWrap">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <h3>국가별 수수료 설정</h3>
+          <div class="sub">카테고리별 상세 항목 입력</div>
+        </div>
+        <button class="close" data-close="feeModalWrap">×</button>
+      </div>
+      <div class="modal-body">
+        <table>
+          <thead>
+            <tr>
+              <th style="width:280px">항목</th>
+              <th>SG</th><th>TW</th><th>TH</th><th>MY</th><th>VN</th><th>PH</th><th>BR</th><th>MX</th>
+            </tr>
+          </thead>
+          <tbody id="feeTable"></tbody>
+        </table>
+        <div class="footer-actions">
+          <button class="btn ghost" data-close="feeModalWrap">닫기</button>
+          <button class="btn primary" id="saveFee">저장</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<div class="field">
-<label>제품구매가 (KRW)</label>
-<input id="cost" type="number" value="0">
-</div>
+  <script>
+    const countries = [
+      { code:'SG', name:'싱가포르', currency:'SGD', flag:'https://flagcdn.com/w40/sg.png' },
+      { code:'TW', name:'대만', currency:'TWD', flag:'https://flagcdn.com/w40/tw.png' },
+      { code:'TH', name:'태국', currency:'THB', flag:'https://flagcdn.com/w40/th.png' },
+      { code:'MY', name:'말레이시아', currency:'MYR', flag:'https://flagcdn.com/w40/my.png' },
+      { code:'VN', name:'베트남', currency:'VND', flag:'https://flagcdn.com/w40/vn.png' },
+      { code:'PH', name:'필리핀', currency:'PHP', flag:'https://flagcdn.com/w40/ph.png' },
+      { code:'BR', name:'브라질', currency:'BRL', flag:'https://flagcdn.com/w40/br.png' },
+      { code:'MX', name:'멕시코', currency:'MXN', flag:'https://flagcdn.com/w40/mx.png' },
+    ];
 
-<div class="field">
-<label>포장비용 (KRW)</label>
-<input id="pack" type="number" value="0">
-</div>
+    const roundIntMarkets = new Set(['TW','TH','VN','PH']);
+    const storageKeyFx = 'shopeeCalcFx_v3';
+    const storageKeyFee = 'shopeeCalcFee_v3';
 
-<div class="field">
-<label>국내배송비 (KRW)</label>
-<input id="domestic" type="number" value="0">
-</div>
+    const defaultFx = { SG:0, TW:0, TH:0, MY:0, VN:0, PH:0, BR:0, MX:0 };
 
-<div class="field">
-<label>희망 마진 (KRW)</label>
-<input id="margin" type="number" value="0">
-</div>
+    const feeStructure = [
+      { key:'selling_fee', label:'판매수수료 (%)' },
+      { key:'transaction_fee', label:'거래수수료 (%)' },
+      { key:'ccb_fee', label:'CCB (%)' },
+      { key:'fsp_fee', label:'FSP (%)' },
+      { key:'withdrawal_fee', label:'인출수수료 (%)' },
+      { key:'traffic_growth_fee', label:'트래픽 성장 수수료 (%)' },
+      { key:'platform_shipping_fee', label:'플랫폼 배송비 (%)' },
+      { key:'seller_pit', label:'개인 사업자(셀러) PIT (%)' },
+      { key:'platform_support_fee_fixed', label:'플랫폼 지원 수수료 (고정금액)' },
+      { key:'platform_infra_service_fixed', label:'플랫폼 인프라 서비스 (고정금액)' },
+      { key:'customs_fee_fixed', label:'세관 수수료 (고정금액)' },
+    ];
 
-<div class="field">
-<label>실중량 (g)</label>
-<input id="actualWeight" type="number" value="0">
-</div>
+    const defaultFeeValue = {
+      selling_fee:0,
+      transaction_fee:0,
+      ccb_fee:0,
+      fsp_fee:0,
+      withdrawal_fee:0,
+      traffic_growth_fee:0,
+      platform_shipping_fee:0,
+      seller_pit:0,
+      platform_support_fee_fixed:0,
+      platform_infra_service_fixed:0,
+      customs_fee_fixed:0
+    };
 
-</div>
+    const defaultFees = Object.fromEntries(countries.map(c => [c.code, { ...defaultFeeValue }]));
 
-<div class="vol-box">
+    let fxRates = loadJson(storageKeyFx, defaultFx);
+    let feeRates = loadJson(storageKeyFee, defaultFees);
+    const shippingTables = {};
 
-<div class="vol-grid">
+    function loadJson(key, fallback){
+      try{
+        const raw = localStorage.getItem(key);
+        return raw ? { ...fallback, ...JSON.parse(raw) } : structuredClone(fallback);
+      }catch{ return structuredClone(fallback); }
+    }
 
-<div class="vol-side">
-<div>부피무게</div>
-<div id="volWeightPreview">-</div>
-</div>
+    function saveJson(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
 
-<div class="dim-row">
+    function fmtSmart(num, countryCode){
+      if (!isFinite(num)) return '-';
+      if (countryCode === 'KRW') return Math.round(num).toLocaleString('ko-KR');
+      if (roundIntMarkets.has(countryCode)) return Math.round(num).toLocaleString('ko-KR');
+      const fixed = Math.abs(num) >= 100 ? 2 : 3;
+      return Number(num.toFixed(fixed)).toLocaleString('ko-KR');
+    }
 
-<div class="dim-field">
-<label>가로</label>
-<div class="dim-wrap">
-<input id="length" type="number" value="0">
-</div>
-</div>
+    function getAppliedWeight(){
+      const actual = +document.getElementById('actualWeight').value || 0;
+      const l = +document.getElementById('length').value || 0;
+      const w = +document.getElementById('width').value || 0;
+      const h = +document.getElementById('height').value || 0;
+      const volumetric = (l*w*h/6000) * 1000;
+      return Math.ceil(Math.max(actual, volumetric) / 10) * 10 || 0;
+    }
 
-<div class="dim-field">
-<label>세로</label>
-<div class="dim-wrap">
-<input id="width" type="number" value="0">
-</div>
-</div>
+    function getBaseCost(){
+      return (+document.getElementById('cost').value || 0) + (+document.getElementById('pack').value || 0) + (+document.getElementById('domestic').value || 0);
+    }
 
-<div class="dim-field">
-<label>높이</label>
-<div class="dim-wrap">
-<input id="height" type="number" value="0">
-</div>
-</div>
+    function getShippingCost(country, weight){
+      if (country === 'TW') return Math.ceil(weight / 10) * 1.30;
+      if (country === 'MY') return Math.ceil(weight / 10) * 0.20;
+      const rows = shippingTables[country];
+      if (!rows || !rows.length || !weight) return 0;
+      const found = rows.find(row => weight <= Number(row.max_weight || row.maxWeight || row.weight || 0));
+      const row = found || rows[rows.length - 1];
+      return Number(row.cost ?? row.price ?? row.rate ?? 0);
+    }
 
-</div>
-</div>
-</div>
+    function totalPercentFee(code){
+      const f = feeRates[code] || defaultFeeValue;
+      return (
+        f.selling_fee +
+        f.transaction_fee +
+        f.ccb_fee +
+        f.fsp_fee +
+        f.withdrawal_fee +
+        f.traffic_growth_fee +
+        f.platform_shipping_fee +
+        f.seller_pit
+      ) / 100;
+    }
 
-<button class="btn primary" id="calcBtn">계산하기</button>
+    function totalFixedFee(code){
+      const f = feeRates[code] || defaultFeeValue;
+      return (
+        (f.platform_support_fee_fixed || 0) +
+        (f.platform_infra_service_fixed || 0) +
+        (f.customs_fee_fixed || 0)
+      );
+    }
 
-</div>
-</article>
+    function calculateCountry(code){
+      const appliedWeight = getAppliedWeight();
+      const baseKrw = getBaseCost();
+      const marginRate = (+document.getElementById('margin').value || 0) / 100;
+      const fx = +fxRates[code] || 0;
+      const shippingLocal = getShippingCost(code, appliedWeight);
+      const shippingKrw = fx ? (shippingLocal / fx) : 0;
+      const percentFee = totalPercentFee(code);
+      const fixedLocal = totalFixedFee(code);
+      const fixedKrw = fx ? (fixedLocal / fx) : 0;
+      const costKrw = baseKrw + shippingKrw + fixedKrw;
+      const denominator = Math.max(0.01, 1 - marginRate - percentFee);
+      let finalLocal = fx ? (costKrw / denominator) * fx : 0;
+      if (roundIntMarkets.has(code)) finalLocal = Math.round(finalLocal);
+      else finalLocal = Number(finalLocal.toFixed(2));
+      const recommended = roundIntMarkets.has(code) ? Math.round(finalLocal * 1.3) : Number((finalLocal * 1.3).toFixed(2));
+      const feeAmtLocal = finalLocal * percentFee + fixedLocal;
+      return { appliedWeight, baseKrw, shippingLocal, shippingKrw, finalLocal, recommended, feeAmtLocal };
+    }
 
-</section>
+    function renderResults(){
+      const box = document.getElementById('results');
+      box.innerHTML = '';
+      countries.forEach(c => {
+        const r = calculateCountry(c.code);
+        const item = document.createElement('article');
+        item.className = 'result-card';
+        item.innerHTML = `
+          <div class="result-head">
+            <div class="result-name"><img class="flag" src="${c.flag}" alt="${c.code}"><span>${c.name}</span></div>
+            <div class="currency">${c.currency}</div>
+          </div>
+          <div class="metric"><div class="k">최종판매가</div><div class="v em">${fmtSmart(r.finalLocal, c.code)} ${c.currency}</div></div>
+          <div class="metric"><div class="k">추천등록가</div><div class="v">${fmtSmart(r.recommended, c.code)} ${c.currency}</div></div>
+          <div class="metric"><div class="k">판매자 배송비</div><div class="v">${fmtSmart(r.shippingLocal, c.code)} ${c.currency}</div></div>
+          <div class="metric"><div class="k">총 기본원가</div><div class="v">${fmtSmart(r.baseKrw + r.shippingKrw, 'KRW')} KRW</div></div>
+        `;
+        box.appendChild(item);
+      });
+    }
 
-<section class="grid result-grid" id="results"></section>
+    
+    const volWeightPreviewEl = document.getElementById('volWeightPreview');
+    function updateVolWeightPreview(){
+      const l = Number(lengthInput?.value || 0);
+      const w = Number(widthInput?.value || 0);
+      const h = Number(heightInput?.value || 0);
+      const vol = (l > 0 && w > 0 && h > 0) ? (l * w * h / 6000) : 0;
+      if (volWeightPreviewEl) volWeightPreviewEl.textContent = vol > 0 ? fmtKrw(Math.ceil(vol * 1000) / 1000) + ' kg' : '-';
+    }
 
-</div>
+    function renderFxSummary(){
+      const box = document.getElementById('fxSummary');
+      box.innerHTML = countries.slice(0,6).map(c => `
+        <div class="summary-item"><div class="label">${c.code} (${c.currency})</div><div class="value">${fmtSmart(fxRates[c.code] || 0, c.code)}</div></div>
+      `).join('');
+    }
 
-<script>
+    function renderFeeSummary(){
+      const box = document.getElementById('feeSummary');
+      box.innerHTML = countries.slice(0,6).map(c => {
+        const t = (totalPercentFee(c.code) * 100).toFixed(2);
+        return `<div class="summary-item"><div class="label">${c.code} 총 비율</div><div class="value">${t}%</div></div>`;
+      }).join('');
+    }
 
-const countries=[
-{code:"SG",name:"싱가포르",currency:"SGD"},
-{code:"TW",name:"대만",currency:"TWD"},
-{code:"TH",name:"태국",currency:"THB"},
-{code:"MY",name:"말레이시아",currency:"MYR"},
-{code:"VN",name:"베트남",currency:"VND"},
-{code:"PH",name:"필리핀",currency:"PHP"},
-{code:"BR",name:"브라질",currency:"BRL"},
-{code:"MX",name:"멕시코",currency:"MXN"}
-]
+    function buildFxTable(){
+      const tb = document.getElementById('fxTable');
+      tb.innerHTML = countries.map(c => `
+        <tr>
+          <td>${c.name}</td>
+          <td>${c.currency}</td>
+          <td><input type="number" step="0.0001" data-fx="${c.code}" value="${fxRates[c.code] ?? ''}"></td>
+        </tr>
+      `).join('');
+    }
 
-function getBaseCost(){
-return (
-(+document.getElementById("cost").value||0)+
-(+document.getElementById("pack").value||0)+
-(+document.getElementById("domestic").value||0)
-)
-}
+    function buildFeeTable(){
+      const tb = document.getElementById('feeTable');
+      let html = '';
+      feeStructure.forEach(row => {
+        if (row.type === 'category') {
+          html += `<tr class="cat-row"><td colspan="9">${row.label}</td></tr>`;
+        } else {
+          html += `<tr><td>${row.label}</td>${countries.map(c => `<td><input type="number" step="0.01" data-fee-code="${c.code}" data-fee-key="${row.key}" value="${feeRates[c.code]?.[row.key] ?? 0}"></td>`).join('')}</tr>`;
+        }
+      });
+      tb.innerHTML = html;
+    }
 
-function updateVolWeight(){
+    async function loadShippingTables(){
+      const fileMap = {
+        SG:'shipping_sg.json', PH:'shipping_ph.json', VN:'shipping_vn.json', BR:'shipping_br.json', TH:'shipping_th.json', MX:'shipping_mx.json'
+      };
+      await Promise.all(Object.entries(fileMap).map(async ([code, file]) => {
+        try{
+          const res = await fetch(file);
+          if (!res.ok) throw new Error(file);
+          shippingTables[code] = await res.json();
+        }catch{
+          shippingTables[code] = [];
+        }
+      }));
+    }
 
-const l=Number(document.getElementById("length").value||0)
-const w=Number(document.getElementById("width").value||0)
-const h=Number(document.getElementById("height").value||0)
+    
+    async function applyLiveFx(){
+      const triggerButtons = [document.getElementById('hanaBtn'), document.getElementById('fxLiveBtn')].filter(Boolean);
+      triggerButtons.forEach(btn => { btn.disabled = true; btn.textContent = '불러오는 중...'; });
 
-const vol=(l*w*h)/6000
+      try{
+        const res = await fetch('/api/live-fx', { cache:'no-store' });
+        if (!res.ok) throw new Error('live-fx');
+        const data = await res.json();
 
-document.getElementById("volWeightPreview").innerText=
-vol?vol.toFixed(3)+" kg":"-"
+        const nextRates = {
+          SG: Number(data.rates?.SG || 0),
+          TW: Number(data.rates?.TW || 0),
+          TH: Number(data.rates?.TH || 0),
+          MY: Number(data.rates?.MY || 0),
+          VN: Number(data.rates?.VN || 0),
+          PH: Number(data.rates?.PH || 0),
+          BR: Number(data.rates?.BR || 0),
+          MX: Number(data.rates?.MX || 0),
+        };
 
-}
+        fxRates = { ...fxRates, ...nextRates };
+        saveJson(storageKeyFx, fxRates);
+        buildFxTable();
+        renderFxSummary();
+    
+    [lengthInput, widthInput, heightInput].forEach(el => el && el.addEventListener('input', updateVolWeightPreview));
+    updateVolWeightPreview();
 
-["length","width","height"].forEach(id=>{
-document.getElementById(id).addEventListener("input",updateVolWeight)
-})
+        renderResults();
+        alert('LIVE 환율이 반영됐어요.');
+      }catch(err){
+        console.error(err);
+        alert('LIVE 환율을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.');
+      }finally{
+        triggerButtons.forEach(btn => { btn.disabled = false; btn.textContent = 'LIVE 환율'; });
+      }
+    }
 
-function calculateCountry(code){
+    function openModal(id){ document.getElementById(id).classList.add('show'); }
+    function closeModal(id){ document.getElementById(id).classList.remove('show'); }
 
-const base=getBaseCost()
-const margin=+document.getElementById("margin").value||0
+    document.getElementById('calcBtn').addEventListener('click', renderResults);
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      ['productName','cost','pack','domestic','margin','actualWeight','length','width','height'].forEach(id => document.getElementById(id).value = (id==='margin' ? 25 : ''));
+      ['cost','pack','domestic','actualWeight','length','width','height'].forEach(id => document.getElementById(id).value ||= 0);
+      renderResults();
+    });
+    document.getElementById('openFx').addEventListener('click', () => { buildFxTable(); openModal('fxModalWrap'); });
+    document.getElementById('openFee').addEventListener('click', () => { buildFeeTable(); openModal('feeModalWrap'); });
+    document.getElementById('hanaBtn').addEventListener('click', applyLiveFx);
+    document.getElementById('fxLiveBtn')?.addEventListener('click', applyLiveFx);
 
-const percentFee=0
+    document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', e => closeModal(e.currentTarget.dataset.close)));
+    document.getElementById('saveFx').addEventListener('click', () => {
+      document.querySelectorAll('[data-fx]').forEach(el => fxRates[el.dataset.fx] = +el.value || 0);
+      saveJson(storageKeyFx, fxRates); renderFxSummary(); renderResults(); closeModal('fxModalWrap');
+    });
+    document.getElementById('saveFee').addEventListener('click', () => {
+      document.querySelectorAll('[data-fee-code]').forEach(el => {
+        feeRates[el.dataset.feeCode][el.dataset.feeKey] = +el.value || 0;
+      });
+      saveJson(storageKeyFee, feeRates); renderFeeSummary(); renderResults(); closeModal('feeModalWrap');
+    });
 
-let final=(base+margin)/(1-percentFee)
+    document.querySelectorAll('.modal-backdrop').forEach(bg => bg.addEventListener('click', e => {
+      if (e.target === bg) bg.classList.remove('show');
+    }));
 
-return{
-finalLocal:final,
-recommended:final*1.3
-}
+    loadShippingTables().then(() => {
+      renderFxSummary();
+      renderFeeSummary();
+      renderResults();
+    });
+  </script>
 
-}
+  <div class="modal-backdrop" id="volGuideWrap">
+    <div class="modal" style="max-width:760px">
+      <div class="modal-head">
+        <div>
+          <h3>부피무게 최대 용량표</h3>
+          <div class="sub">국가 / 배송채널별 최대 한 변, 세 변 합 기준을 확인용으로 적어둘 수 있어요.</div>
+        </div>
+        <button class="close" data-close="volGuideWrap">×</button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="hint-list">
+          <div class="hint-card">
+            <div class="t">부피무게 최대 용량표</div>
+            <div class="d">Shopee 표 기준 내용을 그대로 정리했어요.</div>
+          </div>
+        </div>
 
-function renderResults(){
+        <div style="margin-top:14px; overflow:auto; border:1px solid rgba(159,176,218,.14); border-radius:16px;">
+          <table style="min-width:720px;">
+            <thead>
+              <tr>
+                <th rowspan="2">마켓</th>
+                <th rowspan="2">채널명</th>
+                <th colspan="2">단위 · cm</th>
+                <th colspan="2">단위 · kg</th>
+              </tr>
+              <tr>
+                <th>최대 세변의 합</th>
+                <th>최대 한변</th>
+                <th>최대 중량</th>
+                <th>최대 부피 중량</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td rowspan="3">싱가포르</td><td>Doorstep delivery - Korea</td><td>300</td><td>100</td><td>30</td><td>30</td></tr>
+              <tr><td>5 Day Delivery</td><td>240</td><td>120</td><td>30</td><td>30</td></tr>
+              <tr><td>Collection Point</td><td>120</td><td>40</td><td>6</td><td>6</td></tr>
 
-const box=document.getElementById("results")
-box.innerHTML=""
+              <tr><td rowspan="2">말레이시아</td><td>Doorstep delivery - Korea</td><td>300</td><td>125</td><td>30</td><td>30</td></tr>
+              <tr><td>5 Day Delivery</td><td>300</td><td>125</td><td>30</td><td>30</td></tr>
 
-countries.forEach(c=>{
+              <tr><td>태국</td><td>International Express - ส่งจากต่างประเทศ</td><td>175</td><td>100</td><td>20</td><td>20</td></tr>
 
-const r=calculateCountry(c.code)
+              <tr><td rowspan="2">필리핀</td><td>Standard International</td><td>240</td><td>180</td><td>50</td><td>50</td></tr>
+              <tr><td>Express International</td><td>240</td><td>180</td><td>50</td><td>50</td></tr>
 
-const el=document.createElement("div")
-el.className="result-card"
+              <tr><td>브라질</td><td>Expresso Padrão - Coréia</td><td>200</td><td>100</td><td>30</td><td>30</td></tr>
 
-el.innerHTML=`
+              <tr><td>멕시코</td><td>Envío Estándar - Productos Especiales - Corea</td><td>300</td><td>100</td><td>10</td><td>10</td></tr>
 
-<div class="metric">
-<div>최종판매가</div>
-<div class="v">${Math.round(r.finalLocal)}</div>
-</div>
+              <tr><td rowspan="5">대만</td><td>蝦皮韓國 - 宅配</td><td>150</td><td>70</td><td>20</td><td>20</td></tr>
+              <tr><td>蝦皮韓國 - 711</td><td>105</td><td>45</td><td>10</td><td>10</td></tr>
+              <tr><td>蝦皮韓國 - 萊爾富</td><td>105</td><td>45</td><td>10</td><td>10</td></tr>
+              <tr><td>蝦皮韓國 - 蝦皮店到店</td><td>105</td><td>45</td><td>10</td><td>10</td></tr>
+              <tr><td>蝦皮韓國 - 快速到貨（蝦皮店到店）</td><td>105</td><td>45</td><td>10</td><td>10</td></tr>
 
-<div class="metric">
-<div>추천등록가</div>
-<div class="v">${Math.round(r.recommended)}</div>
-</div>
+              <tr><td rowspan="2">베트남</td><td>Standard Express - Korea</td><td>180</td><td>60</td><td>15</td><td>15</td></tr>
+              <tr><td>5 Day Delivery</td><td>180</td><td>60</td><td>15</td><td>15</td></tr>
+            </tbody>
+          </table>
+        </div>
 
-`
-
-box.appendChild(el)
-
-})
-
-}
-
-document.getElementById("calcBtn").addEventListener("click",renderResults)
-
-</script>
+        <div class="footer-actions">
+          <button class="btn ghost" data-close="volGuideWrap">닫기</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
 </body>
 </html>
