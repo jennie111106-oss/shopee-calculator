@@ -50,7 +50,7 @@
 
     .summary-item{padding:18px;border:1px solid var(--line);border-radius:16px;background:rgba(8,16,37,.4)}
     .summary-item .label{color:var(--muted);font-size:12px;margin-bottom:10px}
-    .summary-item .value{font-size:18px;font-weight:800;color:#8de7ff}
+    .summary-item .value{font-size:18px;font-weight:800}
 
     .btn{
       border:none;border-radius:12px;padding:11px 14px;font-weight:700;cursor:pointer;
@@ -60,83 +60,8 @@
     .btn.primary{background:linear-gradient(135deg,#ff8b7c,#ff6cab)}
     .btn.ghost{background:#18264d;border:1px solid var(--line)}
     .btn.link{background:#19264d;color:#c9d9ff;border:1px solid var(--line)}
-    
-
-    
-    .summary-item .value{font-size:18px;font-weight:800;color:#8de7ff}
-
-    .btn.live-fx{
-      background:linear-gradient(135deg,#ff8b7c,#ff6cab 60%, #8a7dff);
-      color:#fff;
-      border:1px solid rgba(255,255,255,.12);
-      box-shadow:0 10px 24px rgba(255,108,171,.18);
-    }
+    .btn.live-fx{background:linear-gradient(135deg,#34d1ff,#5f8cff 55%,#b06cff);color:#fff;border:1px solid rgba(255,255,255,.12);box-shadow:0 10px 24px rgba(66,207,255,.22)}
     .btn.live-fx:hover{filter:brightness(1.05);transform:translateY(-1px)}
-
-    .vol-box{
-      margin-top:16px;
-      padding:16px;
-      border:1px solid var(--line);
-      border-radius:18px;
-      background:linear-gradient(180deg,rgba(20,33,69,.55),rgba(12,20,42,.65));
-    }
-    .vol-top{margin-bottom:14px}
-    .vol-top h3{margin:0 0 6px;font-size:16px;font-weight:800;letter-spacing:-.02em}
-    .vol-top .sub{font-size:12px}
-    .vol-grid{
-      display:grid;
-      grid-template-columns:1.05fr 1.45fr;
-      gap:18px;
-      align-items:end;
-    }
-    .vol-side .label{
-      font-size:13px;
-      color:#dfe8ff;
-      font-weight:700;
-      margin-bottom:8px;
-    }
-    .vol-side .value{
-      min-height:46px;
-      display:flex;
-      align-items:center;
-      font-size:24px;
-      font-weight:800;
-      color:#ffffff;
-    }
-    .dim-row{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:12px;
-      align-items:end;
-    }
-    .dim-field{display:flex;flex-direction:column;gap:8px}
-    .dim-field label{font-size:13px;color:#dfe8ff;font-weight:700}
-    .dim-wrap{position:relative}
-    .dim-wrap input{
-      width:100%;
-      height:46px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      background:#0c1632;
-      color:var(--text);
-      padding:0 42px 0 14px;
-      font-size:15px;
-      outline:none;
-    }
-    .dim-wrap .unit{
-      position:absolute;
-      right:14px;
-      top:50%;
-      transform:translateY(-50%);
-      font-size:12px;
-      color:var(--muted);
-      font-weight:700;
-      pointer-events:none;
-    }
-
-    @media (max-width: 900px){
-      .vol-grid{grid-template-columns:1fr}
-    }
 
     .field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
     .field{display:flex;flex-direction:column;gap:8px}
@@ -238,42 +163,9 @@ input[type="number"]{
             <div class="field"><label>국내배송비 (KRW)</label><input id="domestic" type="number" min="0" step="1" value="0" /></div>
             <div class="field"><label>희망 마진율 (%)</label><input id="margin" type="number" min="0" step="0.1" value="25" /></div>
             <div class="field"><label>실중량 (g)</label><input id="actualWeight" type="number" min="0" step="1" value="0" /></div>
-          </div>
-
-          <div class="vol-box">
-            <div class="vol-top">
-              <h3>부피무게 입력</h3>
-              <div class="sub">가로 × 세로 × 높이 기준 · cm 단위</div>
-            </div>
-            <div class="vol-grid">
-              <div class="vol-side">
-                <div class="label">부피무게</div>
-                <div class="value" id="volWeightPreview">-</div>
-              </div>
-              <div class="dim-row">
-                <div class="dim-field">
-                  <label>가로</label>
-                  <div class="dim-wrap">
-                    <input id="length" type="number" min="0" step="0.1" value="0" />
-                    <span class="unit">cm</span>
-                  </div>
-                </div>
-                <div class="dim-field">
-                  <label>세로</label>
-                  <div class="dim-wrap">
-                    <input id="width" type="number" min="0" step="0.1" value="0" />
-                    <span class="unit">cm</span>
-                  </div>
-                </div>
-                <div class="dim-field">
-                  <label>높이</label>
-                  <div class="dim-wrap">
-                    <input id="height" type="number" min="0" step="0.1" value="0" />
-                    <span class="unit">cm</span>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <div class="field"><label>가로 (cm)</label><input id="length" type="number" min="0" step="0.1" value="0" /></div>
+            <div class="field"><label>세로 (cm)</label><input id="width" type="number" min="0" step="0.1" value="0" /></div>
+            <div class="field"><label>높이 (cm)</label><input id="height" type="number" min="0" step="0.1" value="0" /></div>
           </div>
           <div class="toolbar">
             <button class="btn primary" id="calcBtn">계산하기</button>
@@ -286,14 +178,14 @@ input[type="number"]{
         <div class="card-head">
           <div>
             <h2>환율 요약</h2>
-            <div class="sub">국가별 KRW → 현지통화 환산</div>
+            <div class="sub">기본값 0 / 저장 후 반영</div>
           </div>
           <button class="btn" id="openFx">⚙️</button>
         </div>
         <div class="card-body">
           <div class="grid summary-grid" id="fxSummary"></div>
           <div class="toolbar">
-            <button class="btn live-fx" id="hanaBtn">LIVE 환율</button>
+            <button class="btn link" id="hanaBtn">LIVE 환율</button>
           </div>
         </div>
       </article>
@@ -308,7 +200,7 @@ input[type="number"]{
         </div>
         <div class="card-body">
           <div class="grid summary-grid" id="feeSummary"></div>
-          <p class="note" style="margin-top:14px">판매수수료부터 세관 수수료까지 모든 항목은 설정 창에서 개별 입력 가능</p>
+          <p class="note" style="margin-top:14px">비율(%) 항목과 고정금액 항목을 각각 입력해 주세요.</p>
         </div>
       </article>
     </section>
@@ -336,7 +228,6 @@ input[type="number"]{
           <thead><tr><th>국가</th><th>통화</th><th>환율</th></tr></thead>
           <tbody id="fxTable"></tbody>
         </table>
-        <div class="toolbar" style="margin-bottom:14px"><button class="btn live-fx" id="liveFxBtn">LIVE 환율</button></div>
         <div class="footer-actions">
           <button class="btn ghost" data-close="fxModalWrap">닫기</button>
           <button class="btn primary" id="saveFx">저장</button>
@@ -385,10 +276,10 @@ input[type="number"]{
     ];
 
     const roundIntMarkets = new Set(['TW','TH','VN','PH']);
-    const storageKeyFx = 'shopeeCalcFx_v2';
-    const storageKeyFee = 'shopeeCalcFee_v2';
+    const storageKeyFx = 'shopeeCalcFx_v3';
+    const storageKeyFee = 'shopeeCalcFee_v3';
 
-    const defaultFx = { SG:0.0010, TW:0.0235, TH:0.0260, MY:0.0035, VN:18.2, PH:0.041, BR:0.0037, MX:0.0124 };
+    const defaultFx = { SG:0, TW:0, TH:0, MY:0, VN:0, PH:0, BR:0, MX:0 };
 
     const feeStructure = [
       { key:'selling_fee', label:'판매수수료 (%)' },
@@ -399,9 +290,9 @@ input[type="number"]{
       { key:'traffic_growth_fee', label:'트래픽 성장 수수료 (%)' },
       { key:'platform_shipping_fee', label:'플랫폼 배송비 (%)' },
       { key:'seller_pit', label:'개인 사업자(셀러) PIT (%)' },
-      { key:'platform_support_fee', label:'플랫폼 지원 수수료' },
-      { key:'platform_infra_service_fee', label:'플랫폼 인프라 서비스' },
-      { key:'customs_fee', label:'세관 수수료' },
+      { key:'platform_support_fee_fixed', label:'플랫폼 지원 수수료 (고정금액)' },
+      { key:'platform_infra_service_fixed', label:'플랫폼 인프라 서비스 (고정금액)' },
+      { key:'customs_fee_fixed', label:'세관 수수료 (고정금액)' },
     ];
 
     const defaultFeeValue = {
@@ -413,9 +304,9 @@ input[type="number"]{
       traffic_growth_fee:0,
       platform_shipping_fee:0,
       seller_pit:0,
-      platform_support_fee:0,
-      platform_infra_service_fee:0,
-      customs_fee:0,
+      platform_support_fee_fixed:0,
+      platform_infra_service_fixed:0,
+      customs_fee_fixed:0
     };
 
     const defaultFees = Object.fromEntries(countries.map(c => [c.code, { ...defaultFeeValue }]));
@@ -467,23 +358,23 @@ input[type="number"]{
     function totalPercentFee(code){
       const f = feeRates[code] || defaultFeeValue;
       return (
-        Number(f.selling_fee || 0) +
-        Number(f.transaction_fee || 0) +
-        Number(f.ccb_fee || 0) +
-        Number(f.fsp_fee || 0) +
-        Number(f.withdrawal_fee || 0) +
-        Number(f.traffic_growth_fee || 0) +
-        Number(f.platform_shipping_fee || 0) +
-        Number(f.seller_pit || 0)
+        f.selling_fee +
+        f.transaction_fee +
+        f.ccb_fee +
+        f.fsp_fee +
+        f.withdrawal_fee +
+        f.traffic_growth_fee +
+        f.platform_shipping_fee +
+        f.seller_pit
       ) / 100;
     }
 
     function totalFixedFee(code){
       const f = feeRates[code] || defaultFeeValue;
       return (
-        Number(f.platform_support_fee || 0) +
-        Number(f.platform_infra_service_fee || 0) +
-        Number(f.customs_fee || 0)
+        (f.platform_support_fee_fixed || 0) +
+        (f.platform_infra_service_fixed || 0) +
+        (f.customs_fee_fixed || 0)
       );
     }
 
@@ -531,7 +422,7 @@ input[type="number"]{
     function renderFxSummary(){
       const box = document.getElementById('fxSummary');
       box.innerHTML = countries.slice(0,6).map(c => `
-        <div class="summary-item"><div class="label">${c.code} (${c.currency})</div><div class="value">${fmtSmart(fxRates[c.code], c.code)}</div></div>
+        <div class="summary-item"><div class="label">${c.code} (${c.currency})</div><div class="value">${fmtSmart(fxRates[c.code] || 0, c.code)}</div></div>
       `).join('');
     }
 
@@ -593,7 +484,7 @@ input[type="number"]{
     });
     document.getElementById('openFx').addEventListener('click', () => { buildFxTable(); openModal('fxModalWrap'); });
     document.getElementById('openFee').addEventListener('click', () => { buildFeeTable(); openModal('feeModalWrap'); });
-    document.getElementById('hanaBtn').addEventListener('click', () => window.open('https://www.kebhana.com/', '_blank'));
+    document.getElementById('hanaBtn').addEventListener('click', () => window.open('https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=%ED%99%98%EC%9C%A8&ackey=umg33s7c', '_blank'));
 
     document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', e => closeModal(e.currentTarget.dataset.close)));
     document.getElementById('saveFx').addEventListener('click', () => {
@@ -616,26 +507,6 @@ input[type="number"]{
       renderFeeSummary();
       renderResults();
     });
-  
-    const volWeightPreviewEl = document.getElementById('volWeightPreview');
-    function updateVolWeightPreview(){
-      const l = Number(lengthInput?.value || 0);
-      const w = Number(widthInput?.value || 0);
-      const h = Number(heightInput?.value || 0);
-      const vol = (l > 0 && w > 0 && h > 0) ? (l * w * h / 6) : 0;
-      if (volWeightPreviewEl) volWeightPreviewEl.textContent = vol > 0 ? fmtKrw(vol) + ' g' : '-';
-    }
-    [lengthInput, widthInput, heightInput].forEach(el => el && el.addEventListener('input', updateVolWeightPreview));
-    updateVolWeightPreview();
-
-    const hanaBtn = document.getElementById('hanaBtn');
-    const liveFxBtn = document.getElementById('liveFxBtn');
-    [hanaBtn, liveFxBtn].forEach(btn => {
-      if (btn) btn.addEventListener('click', () => {
-        window.open('https://search.naver.com/search.naver?where=nexearch&sm=top_hty&fbm=0&ie=utf8&query=%ED%99%98%EC%9C%A8&ackey=umg33s7c', '_blank');
-      });
-    });
-
-</script>
+  </script>
 </body>
 </html>
