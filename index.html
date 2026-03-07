@@ -60,6 +60,8 @@
     .btn.primary{background:linear-gradient(135deg,#ff8b7c,#ff6cab)}
     .btn.ghost{background:#18264d;border:1px solid var(--line)}
     .btn.link{background:#19264d;color:#c9d9ff;border:1px solid var(--line)}
+    .btn.live-fx{background:linear-gradient(135deg,#34d1ff,#5f8cff 55%,#b06cff);color:#fff;border:1px solid rgba(255,255,255,.12);box-shadow:0 10px 24px rgba(66,207,255,.22)}
+    .btn.live-fx:hover{filter:brightness(1.05);transform:translateY(-1px)}
 
     .field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
     .field{display:flex;flex-direction:column;gap:8px}
@@ -122,6 +124,17 @@ input[type="number"]{
   -moz-appearance:textfield;
   appearance:textfield;
 }
+
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button{
+      -webkit-appearance:none;
+      margin:0;
+    }
+    input[type="number"]{
+      -moz-appearance:textfield;
+      appearance:textfield;
+    }
 
 </style>
 </head>
