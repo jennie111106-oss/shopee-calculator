@@ -203,45 +203,157 @@ input[type="number"]{
       appearance:textfield;
     }
 
+    .vol-guide-modal{
+      width:min(1080px,96vw);
+      max-height:92vh;
+    }
+    .vol-guide-modal .modal-body{
+      padding:10px 18px 16px;
+    }
+    .vol-table-wrap{
+      margin-top:14px;
+      border:1px solid rgba(159,176,218,.14);
+      border-radius:16px;
+      overflow:hidden;
+      background:rgba(8,16,37,.28);
+    }
+    .vol-guide-table{
+      width:100%;
+      table-layout:fixed;
+      border-collapse:collapse;
+    }
+    .vol-guide-table col.col-market{width:12%}
+    .vol-guide-table col.col-channel{width:40%}
+    .vol-guide-table col.col-cm{width:12%}
+    .vol-guide-table col.col-kg{width:12%}
 
     #volGuideWrap table th,
     #volGuideWrap table td{
-      padding:10px 12px;
+      padding:8px 10px;
       border-bottom:1px solid rgba(159,176,218,.12);
-      font-size:13px;
+      font-size:12px;
       vertical-align:middle;
-      white-space:nowrap;
     }
     #volGuideWrap thead th{
-      background:rgba(35,55,111,.65);
-      color:#eef3ff;
       font-weight:800;
       text-align:center;
+      white-space:normal;
+      line-height:1.35;
     }
-    #volGuideWrap tbody td{
-      background:rgba(8,16,37,.42);
+    #volGuideWrap thead th[rowspan="2"]{
+      background:rgba(30,44,88,.95);
       color:#eef3ff;
     }
-    #volGuideWrap tbody td:nth-child(3),
-    #volGuideWrap tbody td:nth-child(4){
-      background:rgba(255,214,120,.12);
-      color:#ffe8a8;
-      text-align:center;
-      font-weight:700;
+    #volGuideWrap thead th[colspan="2"]{
+      font-weight:800;
     }
-    #volGuideWrap tbody td:nth-child(5),
-    #volGuideWrap tbody td:nth-child(6){
-      background:rgba(141,231,255,.12);
+    #volGuideWrap thead th[colspan="2"]:first-of-type{
+      background:rgba(111,82,16,.38);
+      color:#ffe8a8;
+      font-weight:800;
+    }
+    #volGuideWrap thead th[colspan="2"]:last-of-type{
+      background:rgba(24,72,108,.48);
       color:#bff3ff;
+      font-weight:800;
+    }
+    #volGuideWrap thead th.cm-head{
+      background:rgba(111,82,16,.38);
+      color:#ffe8a8;
+      font-weight:800;
+    }
+    #volGuideWrap thead th.kg-head{
+      background:rgba(24,72,108,.48);
+      color:#bff3ff;
+      font-weight:800;
+    }
+    
+    #volGuideWrap tbody td{
+      background:rgba(8,16,37,.42);
       text-align:center;
-      font-weight:700;
+      font-weight:600;
+      color:#dfe8ff;
+    }
+    #volGuideWrap tbody td:nth-child(2){
+      text-align:center;
+      white-space:normal;
+      word-break:break-word;
+      line-height:1.4;
+      font-weight:600;
+      color:#dfe8ff;
     }
     #volGuideWrap tbody td:first-child{
       font-weight:800;
       color:#ffffff;
+      white-space:normal;
+      line-height:1.35;
+      text-align:center;
+    }
+    .vol-guide-table col.col-cm{
+      background:rgba(255,214,120,.12);
+    }
+    .vol-guide-table col.col-kg{
+      background:rgba(141,231,255,.12);
+    }
+    #volGuideWrap td.cm-val{
+      color:#ffe8a8;
+      font-weight:800;
+      text-align:center;
+    }
+    #volGuideWrap td.kg-val{
+      color:#bff3ff;
+      font-weight:800;
+      text-align:center;
     }
     #volGuideWrap tbody tr:last-child td{
       border-bottom:none;
+    }
+    @media (max-width: 900px){
+      .vol-guide-modal{
+        width:min(96vw,96vw);
+        max-height:94vh;
+      }
+      .vol-guide-modal .modal-head{
+        padding:16px;
+      }
+      .vol-guide-modal .modal-body{
+        padding:12px 12px 16px;
+      }
+      .vol-guide-table col.col-market{width:14%}
+      .vol-guide-table col.col-channel{width:34%}
+      .vol-guide-table col.col-cm{width:13%}
+      .vol-guide-table col.col-kg{width:13%}
+      #volGuideWrap table th,
+      #volGuideWrap table td{
+        padding:7px 8px;
+        font-size:11px;
+      }
+    }
+
+
+
+    /* subtle scrollbars */
+    *{
+      scrollbar-width:thin;
+      scrollbar-color:rgba(159,176,218,.28) transparent;
+    }
+    *::-webkit-scrollbar{
+      width:10px;
+      height:10px;
+    }
+    *::-webkit-scrollbar-track{
+      background:transparent;
+    }
+    *::-webkit-scrollbar-thumb{
+      background:rgba(159,176,218,.22);
+      border-radius:999px;
+      border:2px solid transparent;
+      background-clip:padding-box;
+    }
+    *::-webkit-scrollbar-thumb:hover{
+      background:rgba(159,176,218,.32);
+      border:2px solid transparent;
+      background-clip:padding-box;
     }
 
 </style>
@@ -696,20 +808,23 @@ input[type="number"]{
       renderResults();
     });
   
-    const volGuideBtn = document.getElementById('openVolGuide');
-    const volGuideWrap = document.getElementById('volGuideWrap');
-    if (volGuideBtn && volGuideWrap) {
-      volGuideBtn.addEventListener('click', () => {
-        volGuideWrap.classList.add('show');
-      });
-    }
+    document.addEventListener('click', (e) => {
+      const openBtn = e.target.closest('#openVolGuide');
+      if (openBtn) {
+        document.getElementById('volGuideWrap')?.classList.add('show');
+        return;
+      }
 
-    volGuideWrap?.addEventListener('click', (e) => {
-      if (e.target === volGuideWrap) volGuideWrap.classList.remove('show');
-    });
+      const closeBtn = e.target.closest('[data-close="volGuideWrap"]');
+      if (closeBtn) {
+        document.getElementById('volGuideWrap')?.classList.remove('show');
+        return;
+      }
 
-    document.querySelectorAll('[data-close="volGuideWrap"]').forEach(btn => {
-      btn.addEventListener('click', () => volGuideWrap?.classList.remove('show'));
+      const wrap = document.getElementById('volGuideWrap');
+      if (wrap && e.target === wrap) {
+        wrap.classList.remove('show');
+      }
     });
 
     function updateVolWeightPreview(){
@@ -729,25 +844,25 @@ input[type="number"]{
 </script>
 
   <div class="modal-backdrop" id="volGuideWrap">
-    <div class="modal" style="max-width:760px">
+    <div class="modal vol-guide-modal">
       <div class="modal-head">
         <div>
           <h3>부피무게 최대 용량표</h3>
-          <div class="sub">국가 / 배송채널별 최대 한 변, 세 변 합 기준을 확인용으로 적어둘 수 있어요.</div>
+          
         </div>
         <button class="close" data-close="volGuideWrap">×</button>
       </div>
       <div class="modal-body">
-        
-        <div class="hint-list">
-          <div class="hint-card">
-            <div class="t">부피무게 최대 용량표</div>
-            <div class="d">Shopee 표 기준 내용을 그대로 정리했어요.</div>
-          </div>
-        </div>
-
-        <div style="margin-top:14px; overflow:auto; border:1px solid rgba(159,176,218,.14); border-radius:16px;">
-          <table style="min-width:720px;">
+        <div class="vol-table-wrap">
+          <table class="vol-guide-table">
+            <colgroup>
+              <col class="col-market">
+              <col class="col-channel">
+              <col class="col-cm">
+              <col class="col-cm">
+              <col class="col-kg">
+              <col class="col-kg">
+            </colgroup>
             <thead>
               <tr>
                 <th rowspan="2">마켓</th>
@@ -756,37 +871,37 @@ input[type="number"]{
                 <th colspan="2">단위 · kg</th>
               </tr>
               <tr>
-                <th>최대 세변의 합</th>
-                <th>최대 한변</th>
-                <th>최대 중량</th>
-                <th>최대 부피 중량</th>
+                <th class="cm-head">최대 세변의 합</th>
+                <th class="cm-head">최대 한변</th>
+                <th class="kg-head">최대 중량</th>
+                <th class="kg-head">최대 부피 중량</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td rowspan="3">싱가포르</td><td>Doorstep delivery - Korea</td><td>300</td><td>100</td><td>30</td><td>30</td></tr>
-              <tr><td>5 Day Delivery</td><td>240</td><td>120</td><td>30</td><td>30</td></tr>
-              <tr><td>Collection Point</td><td>120</td><td>40</td><td>6</td><td>6</td></tr>
+              <tr><td rowspan="3">싱가포르</td><td>Doorstep delivery - Korea</td><td class="cm-val">300</td><td class="cm-val">100</td><td class="kg-val">30</td><td class="kg-val">30</td></tr>
+              <tr><td>5 Day Delivery</td><td class="cm-val">240</td><td class="cm-val">120</td><td class="kg-val">30</td><td class="kg-val">30</td></tr>
+              <tr><td>Collection Point</td><td class="cm-val">120</td><td class="cm-val">40</td><td class="kg-val">6</td><td class="kg-val">6</td></tr>
 
-              <tr><td rowspan="2">말레이시아</td><td>Doorstep delivery - Korea</td><td>300</td><td>125</td><td>30</td><td>30</td></tr>
-              <tr><td>5 Day Delivery</td><td>300</td><td>125</td><td>30</td><td>30</td></tr>
+              <tr><td rowspan="2">말레이시아</td><td>Doorstep delivery - Korea</td><td class="cm-val">300</td><td class="cm-val">125</td><td class="kg-val">30</td><td class="kg-val">30</td></tr>
+              <tr><td>5 Day Delivery</td><td class="cm-val">300</td><td class="cm-val">125</td><td class="kg-val">30</td><td class="kg-val">30</td></tr>
 
-              <tr><td>태국</td><td>International Express - ส่งจากต่างประเทศ</td><td>175</td><td>100</td><td>20</td><td>20</td></tr>
+              <tr><td>태국</td><td>International Express - ส่งจากต่างประเทศ</td><td class="cm-val">175</td><td class="cm-val">100</td><td class="kg-val">20</td><td class="kg-val">20</td></tr>
 
-              <tr><td rowspan="2">필리핀</td><td>Standard International</td><td>240</td><td>180</td><td>50</td><td>50</td></tr>
-              <tr><td>Express International</td><td>240</td><td>180</td><td>50</td><td>50</td></tr>
+              <tr><td rowspan="2">필리핀</td><td>Standard International</td><td class="cm-val">240</td><td class="cm-val">180</td><td class="kg-val">50</td><td class="kg-val">50</td></tr>
+              <tr><td>Express International</td><td class="cm-val">240</td><td class="cm-val">180</td><td class="kg-val">50</td><td class="kg-val">50</td></tr>
 
-              <tr><td>브라질</td><td>Expresso Padrão - Coréia</td><td>200</td><td>100</td><td>30</td><td>30</td></tr>
+              <tr><td>브라질</td><td>Expresso Padrão - Coréia</td><td class="cm-val">200</td><td class="cm-val">100</td><td class="kg-val">30</td><td class="kg-val">30</td></tr>
 
-              <tr><td>멕시코</td><td>Envío Estándar - Productos Especiales - Corea</td><td>300</td><td>100</td><td>10</td><td>10</td></tr>
+              <tr><td>멕시코</td><td>Envío Estándar - Productos Especiales - Corea</td><td class="cm-val">300</td><td class="cm-val">100</td><td class="kg-val">10</td><td class="kg-val">10</td></tr>
 
-              <tr><td rowspan="5">대만</td><td>蝦皮韓國 - 宅配</td><td>150</td><td>70</td><td>20</td><td>20</td></tr>
-              <tr><td>蝦皮韓國 - 711</td><td>105</td><td>45</td><td>10</td><td>10</td></tr>
-              <tr><td>蝦皮韓國 - 萊爾富</td><td>105</td><td>45</td><td>10</td><td>10</td></tr>
-              <tr><td>蝦皮韓國 - 蝦皮店到店</td><td>105</td><td>45</td><td>10</td><td>10</td></tr>
-              <tr><td>蝦皮韓國 - 快速到貨（蝦皮店到店）</td><td>105</td><td>45</td><td>10</td><td>10</td></tr>
+              <tr><td rowspan="5">대만</td><td>蝦皮韓國 - 宅配</td><td class="cm-val">150</td><td class="cm-val">70</td><td class="kg-val">20</td><td class="kg-val">20</td></tr>
+              <tr><td>蝦皮韓國 - 711</td><td class="cm-val">105</td><td class="cm-val">45</td><td class="kg-val">10</td><td class="kg-val">10</td></tr>
+              <tr><td>蝦皮韓國 - 萊爾富</td><td class="cm-val">105</td><td class="cm-val">45</td><td class="kg-val">10</td><td class="kg-val">10</td></tr>
+              <tr><td>蝦皮韓國 - 蝦皮店到店</td><td class="cm-val">105</td><td class="cm-val">45</td><td class="kg-val">10</td><td class="kg-val">10</td></tr>
+              <tr><td>蝦皮韓國 - 快速到貨（蝦皮店到店）</td><td class="cm-val">105</td><td class="cm-val">45</td><td class="kg-val">10</td><td class="kg-val">10</td></tr>
 
-              <tr><td rowspan="2">베트남</td><td>Standard Express - Korea</td><td>180</td><td>60</td><td>15</td><td>15</td></tr>
-              <tr><td>5 Day Delivery</td><td>180</td><td>60</td><td>15</td><td>15</td></tr>
+              <tr><td rowspan="2">베트남</td><td>Standard Express - Korea</td><td class="cm-val">180</td><td class="cm-val">60</td><td class="kg-val">15</td><td class="kg-val">15</td></tr>
+              <tr><td>5 Day Delivery</td><td class="cm-val">180</td><td class="cm-val">60</td><td class="kg-val">15</td><td class="kg-val">15</td></tr>
             </tbody>
           </table>
         </div>
