@@ -272,6 +272,7 @@ input[type="number"]{
       background:rgba(8,16,37,.42);
       text-align:center;
       font-weight:600;
+      color:#dfe8ff;
     }
     #volGuideWrap tbody td:nth-child(2){
       text-align:center;
@@ -295,12 +296,12 @@ input[type="number"]{
       background:rgba(141,231,255,.12);
     }
     #volGuideWrap td.cm-val{
-      color:#ffe8a8;
+      color:#ffe8a8 !important;
       font-weight:800;
       text-align:center;
     }
     #volGuideWrap td.kg-val{
-      color:#bff3ff;
+      color:#bff3ff !important;
       font-weight:800;
       text-align:center;
     }
@@ -842,12 +843,12 @@ input[type="number"]{
 
 </script>
 
+  
   <div class="modal-backdrop" id="volGuideWrap">
     <div class="modal vol-guide-modal">
       <div class="modal-head">
         <div>
           <h3>부피무게 최대 용량표</h3>
-          
         </div>
         <button class="close" data-close="volGuideWrap">×</button>
       </div>
@@ -877,30 +878,140 @@ input[type="number"]{
               </tr>
             </thead>
             <tbody>
-              <tr><td rowspan="3">싱가포르</td><td>Doorstep delivery - Korea</td><td class="cm-val">300</td><td class="cm-val">100</td><td class="kg-val">30</td><td class="kg-val">30</td></tr>
-              <tr><td>5 Day Delivery</td><td class="cm-val">240</td><td class="cm-val">120</td><td class="kg-val">30</td><td class="kg-val">30</td></tr>
-              <tr><td>Collection Point</td><td class="cm-val">120</td><td class="cm-val">40</td><td class="kg-val">6</td><td class="kg-val">6</td></tr>
+              <tr>
+                <td rowspan="3">싱가포르</td>
+                <td>Doorstep delivery - Korea</td>
+                <td class="cm-val">300</td>
+                <td class="cm-val">100</td>
+                <td class="kg-val">30</td>
+                <td class="kg-val">30</td>
+              </tr>
+              <tr>
+                <td>5 Day Delivery</td>
+                <td class="cm-val">240</td>
+                <td class="cm-val">120</td>
+                <td class="kg-val">30</td>
+                <td class="kg-val">30</td>
+              </tr>
+              <tr>
+                <td>Collection Point</td>
+                <td class="cm-val">120</td>
+                <td class="cm-val">40</td>
+                <td class="kg-val">6</td>
+                <td class="kg-val">6</td>
+              </tr>
 
-              <tr><td rowspan="2">말레이시아</td><td>Doorstep delivery - Korea</td><td class="cm-val">300</td><td class="cm-val">125</td><td class="kg-val">30</td><td class="kg-val">30</td></tr>
-              <tr><td>5 Day Delivery</td><td class="cm-val">300</td><td class="cm-val">125</td><td class="kg-val">30</td><td class="kg-val">30</td></tr>
+              <tr>
+                <td rowspan="2">말레이시아</td>
+                <td>Doorstep delivery - Korea</td>
+                <td class="cm-val">300</td>
+                <td class="cm-val">125</td>
+                <td class="kg-val">30</td>
+                <td class="kg-val">30</td>
+              </tr>
+              <tr>
+                <td>5 Day Delivery</td>
+                <td class="cm-val">300</td>
+                <td class="cm-val">125</td>
+                <td class="kg-val">30</td>
+                <td class="kg-val">30</td>
+              </tr>
 
-              <tr><td>태국</td><td>International Express - ส่งจากต่างประเทศ</td><td class="cm-val">175</td><td class="cm-val">100</td><td class="kg-val">20</td><td class="kg-val">20</td></tr>
+              <tr>
+                <td>태국</td>
+                <td>International Express - ส่งจากต่างประเทศ</td>
+                <td class="cm-val">175</td>
+                <td class="cm-val">100</td>
+                <td class="kg-val">20</td>
+                <td class="kg-val">20</td>
+              </tr>
 
-              <tr><td rowspan="2">필리핀</td><td>Standard International</td><td class="cm-val">240</td><td class="cm-val">180</td><td class="kg-val">50</td><td class="kg-val">50</td></tr>
-              <tr><td>Express International</td><td class="cm-val">240</td><td class="cm-val">180</td><td class="kg-val">50</td><td class="kg-val">50</td></tr>
+              <tr>
+                <td rowspan="2">필리핀</td>
+                <td>Standard International</td>
+                <td class="cm-val">240</td>
+                <td class="cm-val">180</td>
+                <td class="kg-val">50</td>
+                <td class="kg-val">50</td>
+              </tr>
+              <tr>
+                <td>Express International</td>
+                <td class="cm-val">240</td>
+                <td class="cm-val">180</td>
+                <td class="kg-val">50</td>
+                <td class="kg-val">50</td>
+              </tr>
 
-              <tr><td>브라질</td><td>Expresso Padrão - Coréia</td><td class="cm-val">200</td><td class="cm-val">100</td><td class="kg-val">30</td><td class="kg-val">30</td></tr>
+              <tr>
+                <td>브라질</td>
+                <td>Expresso Padrão - Coréia</td>
+                <td class="cm-val">200</td>
+                <td class="cm-val">100</td>
+                <td class="kg-val">30</td>
+                <td class="kg-val">30</td>
+              </tr>
 
-              <tr><td>멕시코</td><td>Envío Estándar - Productos Especiales - Corea</td><td class="cm-val">300</td><td class="cm-val">100</td><td class="kg-val">10</td><td class="kg-val">10</td></tr>
+              <tr>
+                <td>멕시코</td>
+                <td>Envío Estándar - Productos Especiales - Corea</td>
+                <td class="cm-val">300</td>
+                <td class="cm-val">100</td>
+                <td class="kg-val">10</td>
+                <td class="kg-val">10</td>
+              </tr>
 
-              <tr><td rowspan="5">대만</td><td>蝦皮韓國 - 宅配</td><td class="cm-val">150</td><td class="cm-val">70</td><td class="kg-val">20</td><td class="kg-val">20</td></tr>
-              <tr><td>蝦皮韓國 - 711</td><td class="cm-val">105</td><td class="cm-val">45</td><td class="kg-val">10</td><td class="kg-val">10</td></tr>
-              <tr><td>蝦皮韓國 - 萊爾富</td><td class="cm-val">105</td><td class="cm-val">45</td><td class="kg-val">10</td><td class="kg-val">10</td></tr>
-              <tr><td>蝦皮韓國 - 蝦皮店到店</td><td class="cm-val">105</td><td class="cm-val">45</td><td class="kg-val">10</td><td class="kg-val">10</td></tr>
-              <tr><td>蝦皮韓國 - 快速到貨（蝦皮店到店）</td><td class="cm-val">105</td><td class="cm-val">45</td><td class="kg-val">10</td><td class="kg-val">10</td></tr>
+              <tr>
+                <td rowspan="5">대만</td>
+                <td>蝦皮韓國 - 宅配</td>
+                <td class="cm-val">150</td>
+                <td class="cm-val">70</td>
+                <td class="kg-val">20</td>
+                <td class="kg-val">20</td>
+              </tr>
+              <tr>
+                <td>蝦皮韓國 - 711</td>
+                <td class="cm-val">105</td>
+                <td class="cm-val">45</td>
+                <td class="kg-val">10</td>
+                <td class="kg-val">10</td>
+              </tr>
+              <tr>
+                <td>蝦皮韓國 - 萊爾富</td>
+                <td class="cm-val">105</td>
+                <td class="cm-val">45</td>
+                <td class="kg-val">10</td>
+                <td class="kg-val">10</td>
+              </tr>
+              <tr>
+                <td>蝦皮韓國 - 蝦皮店到店</td>
+                <td class="cm-val">105</td>
+                <td class="cm-val">45</td>
+                <td class="kg-val">10</td>
+                <td class="kg-val">10</td>
+              </tr>
+              <tr>
+                <td>蝦皮韓國 - 快速到貨（蝦皮店到店）</td>
+                <td class="cm-val">105</td>
+                <td class="cm-val">45</td>
+                <td class="kg-val">10</td>
+                <td class="kg-val">10</td>
+              </tr>
 
-              <tr><td rowspan="2">베트남</td><td>Standard Express - Korea</td><td class="cm-val">180</td><td class="cm-val">60</td><td class="kg-val">15</td><td class="kg-val">15</td></tr>
-              <tr><td>5 Day Delivery</td><td class="cm-val">180</td><td class="cm-val">60</td><td class="kg-val">15</td><td class="kg-val">15</td></tr>
+              <tr>
+                <td rowspan="2">베트남</td>
+                <td>Standard Express - Korea</td>
+                <td class="cm-val">180</td>
+                <td class="cm-val">60</td>
+                <td class="kg-val">15</td>
+                <td class="kg-val">15</td>
+              </tr>
+              <tr>
+                <td>5 Day Delivery</td>
+                <td class="cm-val">180</td>
+                <td class="cm-val">60</td>
+                <td class="kg-val">15</td>
+                <td class="kg-val">15</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -911,6 +1022,7 @@ input[type="number"]{
       </div>
     </div>
   </div>
+
 
 </body>
 </html>
