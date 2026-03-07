@@ -82,22 +82,9 @@
       display:inline-flex;align-items:center;justify-content:center;
     }
     .help-btn:hover{filter:brightness(1.08)}
-    .dim-row{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(110px,1fr));
-      gap:12px;
-      align-items:end;
-    }
-    .dim-wrap input{
-      text-align:left;
-      padding:0 46px 0 16px;
-      font-size:18px;
-      font-weight:700;
-    }
-    .dim-wrap .unit{
-      right:12px;
-      font-size:12px;
-    }
+    .dim-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:end}
+    .dim-wrap input{width:100%;height:52px;border-radius:14px;border:1px solid var(--line);background:#0c1632;color:var(--text);padding:0 18px;font-size:20px;font-weight:800;outline:none;text-align:center}
+    .dim-wrap .unit{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted);font-weight:700;pointer-events:none;background:transparent}
     .hint-list{
       display:grid;
       gap:10px;
@@ -133,36 +120,12 @@
       font-weight:800;
       color:#ffffff;
     }
-    .dim-row{
-      display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
-      gap:12px;
-      align-items:end;
-    }
+    .dim-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:end}
     .dim-field{display:flex;flex-direction:column;gap:8px}
     .dim-field label{font-size:13px;color:#dfe8ff;font-weight:700}
     .dim-wrap{position:relative}
-    .dim-wrap input{
-      width:100%;
-      height:46px;
-      border-radius:14px;
-      border:1px solid var(--line);
-      background:#0c1632;
-      color:var(--text);
-      padding:0 42px 0 14px;
-      font-size:15px;
-      outline:none;
-    }
-    .dim-wrap .unit{
-      position:absolute;
-      right:14px;
-      top:50%;
-      transform:translateY(-50%);
-      font-size:12px;
-      color:var(--muted);
-      font-weight:700;
-      pointer-events:none;
-    }
+    .dim-wrap input{width:100%;height:52px;border-radius:14px;border:1px solid var(--line);background:#0c1632;color:var(--text);padding:0 18px;font-size:20px;font-weight:800;outline:none;text-align:center}
+    .dim-wrap .unit{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--muted);font-weight:700;pointer-events:none;background:transparent}
     @media (max-width: 900px){
       .vol-grid{grid-template-columns:1fr}
     }
@@ -327,24 +290,24 @@ input[type="number"]{
               </div>
               <div class="dim-row">
                 <div class="dim-field">
-                  <label>가로</label>
+                  <label>가로 <span style="color:var(--muted);font-size:12px;font-weight:700">cm</span></label>
                   <div class="dim-wrap">
                     <input id="length" type="number" min="0" step="0.1" value="0" />
-                    <span class="unit">cm</span>
+                    
                   </div>
                 </div>
                 <div class="dim-field">
-                  <label>세로</label>
+                  <label>세로 <span style="color:var(--muted);font-size:12px;font-weight:700">cm</span></label>
                   <div class="dim-wrap">
                     <input id="width" type="number" min="0" step="0.1" value="0" />
-                    <span class="unit">cm</span>
+                    
                   </div>
                 </div>
                 <div class="dim-field">
-                  <label>높이</label>
+                  <label>높이 <span style="color:var(--muted);font-size:12px;font-weight:700">cm</span></label>
                   <div class="dim-wrap">
                     <input id="height" type="number" min="0" step="0.1" value="0" />
-                    <span class="unit">cm</span>
+                    
                   </div>
                 </div>
               </div>
@@ -605,14 +568,6 @@ input[type="number"]{
 
     
     const volWeightPreviewEl = document.getElementById('volWeightPreview');
-    function updateVolWeightPreview(){
-      const l = Number(lengthInput?.value || 0);
-      const w = Number(widthInput?.value || 0);
-      const h = Number(heightInput?.value || 0);
-      const vol = (l > 0 && w > 0 && h > 0) ? (l * w * h / 6000) : 0;
-      if (volWeightPreviewEl) volWeightPreviewEl.textContent = vol > 0 ? fmtKrw(Math.ceil(vol * 1000) / 1000) + ' kg' : '-';
-    }
-
     function renderFxSummary(){
       const box = document.getElementById('fxSummary');
       box.innerHTML = countries.slice(0,6).map(c => `
@@ -741,7 +696,38 @@ input[type="number"]{
       renderFeeSummary();
       renderResults();
     });
-  </script>
+  
+    const volGuideBtn = document.getElementById('openVolGuide');
+    const volGuideWrap = document.getElementById('volGuideWrap');
+    if (volGuideBtn && volGuideWrap) {
+      volGuideBtn.addEventListener('click', () => {
+        volGuideWrap.classList.add('show');
+      });
+    }
+
+    volGuideWrap?.addEventListener('click', (e) => {
+      if (e.target === volGuideWrap) volGuideWrap.classList.remove('show');
+    });
+
+    document.querySelectorAll('[data-close="volGuideWrap"]').forEach(btn => {
+      btn.addEventListener('click', () => volGuideWrap?.classList.remove('show'));
+    });
+
+    function updateVolWeightPreview(){
+      const l = Number(document.getElementById('length')?.value || 0);
+      const w = Number(document.getElementById('width')?.value || 0);
+      const h = Number(document.getElementById('height')?.value || 0);
+      const vol = (l > 0 && w > 0 && h > 0) ? (l * w * h / 6000) : 0;
+      const el = document.getElementById('volWeightPreview');
+      if (el) el.textContent = vol > 0 ? String(Number(vol.toFixed(3))) + ' kg' : '-';
+    }
+
+    ['length','width','height'].forEach(id => {
+      document.getElementById(id)?.addEventListener('input', updateVolWeightPreview);
+    });
+    updateVolWeightPreview();
+
+</script>
 
   <div class="modal-backdrop" id="volGuideWrap">
     <div class="modal" style="max-width:760px">
