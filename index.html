@@ -172,15 +172,23 @@
     input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
     input[type="number"]{-moz-appearance:textfield;appearance:textfield}
 
-    .ad-slot{
-      margin-top:14px;
-      min-height:220px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      border:none;
-      background:transparent;
-    }
+.side-top{
+  min-height:312px;
+}
+
+.ad-slot{
+  margin-top:14px;
+  min-height:220px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border:none;
+  background:transparent;
+}
+
+#adSlotFee{
+  margin-top:70px;
+}
     .ad-inner{
       width:85%;
       padding:22px;
@@ -279,7 +287,7 @@
               <button class="btn live-fx" id="hanaBtn" type="button">LIVE 환율 보기</button>
             </div>
           </div>
-          <div class="ad-slot">
+          <div class="ad-slot" id="adSlotFee">
             <div class="ad-inner">
               <div class="ad-title">광고 영역</div>
               <div class="ad-desc">쿠팡 파트너스 광고를 여기에 넣을 수 있습니다.</div>
@@ -802,4 +810,5 @@
   </script>
 </body>
 </html>
+
 
