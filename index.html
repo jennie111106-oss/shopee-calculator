@@ -1268,7 +1268,7 @@ input[type="number"]{
 
     async function loadShippingTables(){
       const fileMap = {
-        PH:'shipping_ph (1).json', VN:'shipping_vn (1).json', BR:'shipping_br.json', TH:'shipping_th.json', MX:'shipping_mx (1).json'
+        PH:'shipping_ph.json', VN:'shipping_vn.json', BR:'shipping_br.json', TH:'shipping_th.json', MX:'shipping_mx.json'
       };
       await Promise.all(Object.entries(fileMap).map(async ([code, file]) => {
         try{
@@ -1541,3 +1541,4 @@ input[type="number"]{
 
 </body>
 </html>
+
