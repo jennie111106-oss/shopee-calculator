@@ -430,7 +430,7 @@ input[type="number"]{
       font-size:11px !important;
       color:#b9c7ea !important;
     }
-    #results .result-card .metric:nth-of-type(1) .v{
+    #results .result-card .metric:nth-of-type(1) .v{color:#FFE29A !important;
       color:#7dd3fc !important;
       font-size:16px !important;
       font-weight:800 !important;
@@ -649,7 +649,7 @@ input[type="number"]{
 
 
     /* stronger card price hierarchy fix */
-    #results .result-card .metric:nth-of-type(1) .v{
+    #results .result-card .metric:nth-of-type(1) .v{color:#FFE29A !important;
       color:#ffd98a !important;
       font-size:16px !important;
       font-weight:800 !important;
@@ -678,6 +678,71 @@ input[type="number"]{
     #results .result-card .metric:nth-of-type(2) .k{
       font-weight:800 !important;
       color:#c9d4f2 !important;
+    }
+
+
+    /* make final price exactly match recommendation size/weight */
+    #results .result-card .metric:nth-of-type(1) .v,
+    #results .result-card .metric:nth-of-type(2) .v{
+      font-size:18px !important;
+      font-weight:800 !important;
+      letter-spacing:-0.01em !important;
+    }
+    #results .result-card .metric:nth-of-type(1) .k,
+    #results .result-card .metric:nth-of-type(2) .k{
+      font-size:11px !important;
+      font-weight:800 !important;
+    }
+
+
+    /* final authoritative card styles */
+    #results .result-card .metric:nth-of-type(1) .k,
+    #results .result-card .metric:nth-of-type(2) .k{
+      font-size:11px !important;
+      font-weight:800 !important;
+      color:#c9d4f2 !important;
+    }
+    #results .result-card .metric:nth-of-type(1) .v{color:#FFE29A !important;
+      color:#FFE29A !important;
+      font-size:18px !important;
+      font-weight:800 !important;
+      letter-spacing:-0.01em !important;
+    }
+    #results .result-card .metric:nth-of-type(2) .v{
+      color:#FF8A7A !important;
+      font-size:18px !important;
+      font-weight:800 !important;
+      letter-spacing:-0.01em !important;
+    }
+    #results .result-card .metric.gst .v{
+      font-size:16px !important;
+      font-weight:800 !important;
+    }
+
+
+#results .result-card .metric:nth-of-type(2) .k{font-weight:900 !important;color:#c9d4f2 !important;}
+
+    /* authoritative top price row styling */
+    #results .result-card .metric:nth-of-type(1) .k,
+    #results .result-card .metric:nth-of-type(2) .k{
+      font-size:12px !important;
+      font-weight:900 !important;
+      color:#e7efff !important;
+      letter-spacing:-0.01em !important;
+    }
+    #results .result-card .metric:nth-of-type(1) .v,
+    #results .result-card .metric .v.rec{
+      color:#FFE29A !important;
+      font-size:18px !important;
+      font-weight:800 !important;
+      letter-spacing:-0.01em !important;
+    }
+    #results .result-card .metric:nth-of-type(2) .v,
+    #results .result-card .metric .v.em{
+      color:#FF8A7A !important;
+      font-size:18px !important;
+      font-weight:800 !important;
+      letter-spacing:-0.01em !important;
     }
 
 </style>
@@ -1131,7 +1196,7 @@ input[type="number"]{
         ].join('');
 
         const gstHtml = c.code === 'SG'
-          ? `<div class="metric gst"><div class="k">GST 포함 표시가</div><div class="v">${fmtSmart(r.finalLocal * 1.09, c.code)} ${c.currency}</div></div>`
+          ? `<div class="metric gst"><div class="k">GST 포함 표시가</div><div class="v">${(Math.round((r.finalLocal * 1.09) * 100) / 100).toFixed(2)} ${c.currency}</div></div>`
           : '';
 
         item.innerHTML = `
@@ -1139,8 +1204,8 @@ input[type="number"]{
             <div class="result-name"><img class="flag" src="${c.flag}" alt="${c.code}"><span>${c.name}</span></div>
             <div class="currency">${c.currency}</div>
           </div>
-          <div class="metric"><div class="k">추천등록가</div><div class="v rec" style="color:#FFE29A !important;font-size:18px !important;font-weight:800 !important;letter-spacing:-0.01em !important;text-shadow:0 0 0 transparent;">${fmtSmart(r.recommended, c.code)} ${c.currency}</div></div>
-          <div class="metric"><div class="k">최종판매가</div><div class="v em" style="color:#FF8A7A !important;font-size:18px !important;font-weight:900 !important;letter-spacing:-0.01em !important;text-shadow:0 0 0 transparent;">${fmtSmart(r.finalLocal, c.code)} ${c.currency}</div></div>
+          <div class="metric"><div class="k"><span style="display:inline-block;font-size:12px;font-weight:900;color:#e7efff;letter-spacing:-0.01em;">추천등록가</span></div><div class="v rec"><span style="display:inline-block;color:#FFE29A !important;font-size:18px !important;font-weight:800 !important;letter-spacing:-0.01em !important;">${fmtSmart(r.recommended, c.code)} ${c.currency}</span></div></div>
+          <div class="metric"><div class="k"><span style="display:inline-block;font-size:12px;font-weight:900;color:#e7efff;letter-spacing:-0.01em;">최종판매가</span></div><div class="v em" style="color:#FF8A7A !important;font-size:18px !important;font-weight:800 !important;letter-spacing:-0.01em !important;" style="color:#FF8A7A !important;font-size:18px !important;font-weight:800 !important;letter-spacing:-0.01em !important;">${fmtSmart(r.finalLocal, c.code)} ${c.currency}</div></div>
           ${gstHtml}
           ${breakdownHtml}
           <div class="metric settlement"><div class="k">예상정산가</div><div class="v">${fmtSmart(r.settlementLocal, c.code)} ${c.currency}</div></div>
