@@ -737,43 +737,14 @@ input[type="number"]{
       font-weight:800 !important;
       letter-spacing:-0.01em !important;
     }
-#results .result-card .metric:nth-of-type(2) .v,
-#results .result-card .metric .v.em{
-  color:#FF8A7A !important;
-  font-size:18px !important;
-  font-weight:800 !important;
-  letter-spacing:-0.01em !important;
-}
+    #results .result-card .metric:nth-of-type(2) .v,
+    #results .result-card .metric .v.em{
+      color:#FF8A7A !important;
+      font-size:18px !important;
+      font-weight:800 !important;
+      letter-spacing:-0.01em !important;
+    }
 
-.margin-mode-tabs{
-  display:flex;
-  gap:8px;
-  margin-top:8px;
-}
-
-.margin-mode-btn{
-  flex:1;
-  height:42px;
-  border:1px solid var(--line);
-  background:#fff;
-  color:var(--ink);
-  border-radius:12px;
-  font:inherit;
-  font-weight:700;
-  cursor:pointer;
-  transition:.18s ease;
-}
-
-.margin-mode-btn:hover{
-  border-color:#c4b5fd;
-  background:#faf7ff;
-}
-
-.margin-mode-btn.active{
-  background:linear-gradient(135deg,var(--accent),var(--accent-2));
-  color:#fff;
-  border-color:transparent;
-}
 </style>
 </head>
 <body>
@@ -848,33 +819,7 @@ input[type="number"]{
             <div class="field"><label>제품구매가 (KRW)</label><input id="cost" type="number" min="0" step="1" value="0" /></div>
             <div class="field"><label>포장비용 (KRW)</label><input id="pack" type="number" min="0" step="1" value="0" /></div>
             <div class="field"><label>국내배송비 (KRW)</label><input id="domestic" type="number" min="0" step="1" value="0" /></div>
-            <div class="field">
-  <div class="field">
-  <div class="field">
-  <label>희망 마진</label>
-
-  <input id="margin" type="number" min="0" step="0.01" value="0">
-
-  <div class="margin-mode-tabs">
-    <button type="button" class="margin-mode-btn active" data-mode="krw">KRW</button>
-    <button type="button" class="margin-mode-btn" data-mode="percent">%</button>
-  </div>
-
-  <input type="hidden" id="marginMode" value="krw">
-
-  <div class="sub" id="marginModeHint">
-    고정 마진 금액을 입력해 주세요.
-  </div>
-</div>
-
-  <div class="margin-mode-tabs" id="marginModeTabs">
-    <button type="button" class="margin-mode-btn active" data-mode="krw">KRW</button>
-    <button type="button" class="margin-mode-btn" data-mode="percent">%</button>
-  </div>
-
-  <input type="hidden" id="marginMode" value="krw" />
-  <div class="sub" id="marginModeHint">고정 마진 금액을 입력해 주세요.</div>
-</div>
+            <div class="field"><label>희망 마진 (KRW)</label><input id="margin" type="number" min="0" step="1" value="0" /></div>
             <div class="field"><label>실중량 (g)</label><input id="actualWeight" type="number" min="0" step="1" value="0" /></div>
           </div>
 
@@ -1051,8 +996,7 @@ input[type="number"]{
 
     const roundIntMarkets = new Set(['TW','TH','VN','PH']);
     const storageKeyFx = 'shopeeCalcFx_v3';
-const storageKeyFee = 'shopeeCalcFee_v3';
-const storageKeyMarginMode = 'shopeeCalcMarginMode_v1';
+    const storageKeyFee = 'shopeeCalcFee_v3';
 
     const defaultFx = { SG:0, TW:0, TH:0, MY:0, VN:0, PH:0, BR:0, MX:0 };
 
@@ -1229,66 +1173,26 @@ const storageKeyMarginMode = 'shopeeCalcMarginMode_v1';
       return rows;
     }
 
-    function getMarginMode(){
-  return document.getElementById('marginMode')?.value || 'krw';
-}
-
-function updateMarginModeHint(){
-  const hint = document.getElementById('marginModeHint');
-  if (!hint) return;
-  hint.textContent = getMarginMode() === 'percent'
-    ? '총원가 기준 마진율을 입력해 주세요. 예: 10 = 10%'
-    : '고정 마진 금액을 입력해 주세요.';
-}
-
-function calculateCountry(code){
-  const appliedWeight = getAppliedWeight();
-  const baseKrw = getBaseCost();
-  const marginInput = (+document.getElementById('margin').value || 0);
-  const marginMode = getMarginMode();
-  const krwPerLocal = getKrwPerLocal(code);
-  const shippingLocal = getShippingCost(code, appliedWeight);
-  const shippingKrw = krwPerLocal ? (shippingLocal * krwPerLocal) : 0;
-  const percentFee = totalPercentFee(code);
-  const fixedLocal = totalFixedFee(code);
-  const fixedKrw = krwPerLocal ? (fixedLocal * krwPerLocal) : 0;
-
-  const marginBaseKrw = baseKrw + shippingKrw + fixedKrw;
-  const marginKrw = marginMode === 'percent'
-    ? (marginBaseKrw * (marginInput / 100))
-    : marginInput;
-
-  const costKrw = marginBaseKrw + marginKrw;
-  let finalLocal = (krwPerLocal && (1 - percentFee) > 0)
-    ? (costKrw / (1 - percentFee)) / krwPerLocal
-    : 0;
-
-  if (roundIntMarkets.has(code)) finalLocal = Math.round(finalLocal);
-  else finalLocal = Number(finalLocal.toFixed(2));
-
-  const recommended = roundIntMarkets.has(code)
-    ? Math.round(finalLocal * 1.3)
-    : Number((finalLocal * 1.3).toFixed(2));
-
-  const breakdown = getFeeBreakdown(code, finalLocal);
-  const feeTotalLocal = round2(breakdown.reduce((sum, row) => sum + row.amount, 0));
-  const settlementLocal = round2(finalLocal - shippingLocal - feeTotalLocal);
-
-  return {
-    appliedWeight,
-    baseKrw,
-    shippingLocal,
-    shippingKrw,
-    finalLocal,
-    recommended,
-    settlementLocal,
-    breakdown,
-    feeTotalLocal,
-    marginKrw,
-    marginMode,
-    marginBaseKrw
-  };
-}
+    function calculateCountry(code){
+      const appliedWeight = getAppliedWeight();
+      const baseKrw = getBaseCost();
+      const marginKrw = (+document.getElementById('margin').value || 0);
+      const krwPerLocal = getKrwPerLocal(code);
+      const shippingLocal = getShippingCost(code, appliedWeight);
+      const shippingKrw = krwPerLocal ? (shippingLocal * krwPerLocal) : 0;
+      const percentFee = totalPercentFee(code);
+      const fixedLocal = totalFixedFee(code);
+      const fixedKrw = krwPerLocal ? (fixedLocal * krwPerLocal) : 0;
+      const costKrw = baseKrw + shippingKrw + fixedKrw + marginKrw;
+      let finalLocal = (krwPerLocal && (1 - percentFee) > 0) ? (costKrw / (1 - percentFee)) / krwPerLocal : 0;
+      if (roundIntMarkets.has(code)) finalLocal = Math.round(finalLocal);
+      else finalLocal = Number(finalLocal.toFixed(2));
+      const recommended = roundIntMarkets.has(code) ? Math.round(finalLocal * 1.3) : Number((finalLocal * 1.3).toFixed(2));
+      const breakdown = getFeeBreakdown(code, finalLocal);
+      const feeTotalLocal = round2(breakdown.reduce((sum, row) => sum + row.amount, 0));
+      const settlementLocal = round2(finalLocal - shippingLocal - feeTotalLocal);
+      return { appliedWeight, baseKrw, shippingLocal, shippingKrw, finalLocal, recommended, settlementLocal, breakdown, feeTotalLocal };
+    }
 
     function renderResults(){
       const box = document.getElementById('results');
@@ -1395,33 +1299,13 @@ async function loadShippingTables(){
     function openModal(id){ document.getElementById(id).classList.add('show'); }
     function closeModal(id){ document.getElementById(id).classList.remove('show'); }
 
-    const marginModeEl = document.getElementById('marginMode');
-
-if (marginModeEl) {
-  marginModeEl.value = localStorage.getItem(storageKeyMarginMode) || 'krw';
-  updateMarginModeHint();
-
-  marginModeEl.addEventListener('change', () => {
-    localStorage.setItem(storageKeyMarginMode, marginModeEl.value);
-    updateMarginModeHint();
-    renderResults();
-  });
-}
-
-document.getElementById('calcBtn').addEventListener('click', renderResults);
-document.getElementById('resetBtn').addEventListener('click', () => {
-  ['productName','cost','pack','domestic','margin','actualWeight','length','width','height'].forEach(id => document.getElementById(id).value = (id==='margin' ? 0 : ''));
-  ['cost','pack','domestic','actualWeight','length','width','height'].forEach(id => document.getElementById(id).value ||= 0);
-
-  if (marginModeEl) {
-    marginModeEl.value = 'krw';
-    localStorage.setItem(storageKeyMarginMode, 'krw');
-    updateMarginModeHint();
-  }
-
-  updateVolWeightPreview();
-  renderResults();
-});
+    document.getElementById('calcBtn').addEventListener('click', renderResults);
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      ['productName','cost','pack','domestic','margin','actualWeight','length','width','height'].forEach(id => document.getElementById(id).value = (id==='margin' ? 0 : ''));
+      ['cost','pack','domestic','actualWeight','length','width','height'].forEach(id => document.getElementById(id).value ||= 0);
+      updateVolWeightPreview();
+      renderResults();
+    });
     document.getElementById('openFx').addEventListener('click', () => { buildFxTable(); openModal('fxModalWrap'); });
     document.getElementById('openFee').addEventListener('click', () => { buildFeeTable(); openModal('feeModalWrap'); });
     document.getElementById('hanaBtn').addEventListener('click', applyLiveFx);
@@ -1667,5 +1551,3 @@ document.getElementById('resetBtn').addEventListener('click', () => {
 
 </body>
 </html>
-
-
