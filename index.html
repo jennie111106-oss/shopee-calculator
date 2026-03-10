@@ -737,14 +737,43 @@ input[type="number"]{
       font-weight:800 !important;
       letter-spacing:-0.01em !important;
     }
-    #results .result-card .metric:nth-of-type(2) .v,
-    #results .result-card .metric .v.em{
-      color:#FF8A7A !important;
-      font-size:18px !important;
-      font-weight:800 !important;
-      letter-spacing:-0.01em !important;
-    }
+#results .result-card .metric:nth-of-type(2) .v,
+#results .result-card .metric .v.em{
+  color:#FF8A7A !important;
+  font-size:18px !important;
+  font-weight:800 !important;
+  letter-spacing:-0.01em !important;
+}
 
+.margin-mode-tabs{
+  display:flex;
+  gap:8px;
+  margin-top:8px;
+}
+
+.margin-mode-btn{
+  flex:1;
+  height:42px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--ink);
+  border-radius:12px;
+  font:inherit;
+  font-weight:700;
+  cursor:pointer;
+  transition:.18s ease;
+}
+
+.margin-mode-btn:hover{
+  border-color:#c4b5fd;
+  background:#faf7ff;
+}
+
+.margin-mode-btn.active{
+  background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:#fff;
+  border-color:transparent;
+}
 </style>
 </head>
 <body>
@@ -820,14 +849,30 @@ input[type="number"]{
             <div class="field"><label>포장비용 (KRW)</label><input id="pack" type="number" min="0" step="1" value="0" /></div>
             <div class="field"><label>국내배송비 (KRW)</label><input id="domestic" type="number" min="0" step="1" value="0" /></div>
             <div class="field">
+  <div class="field">
+  <div class="field">
   <label>희망 마진</label>
-  <div style="display:grid;grid-template-columns:minmax(0,1fr) 110px;gap:8px;align-items:center">
-    <input id="margin" type="number" min="0" step="0.01" value="0" />
-    <select id="marginMode">
-      <option value="krw">KRW</option>
-      <option value="percent">%</option>
-    </select>
+
+  <input id="margin" type="number" min="0" step="0.01" value="0">
+
+  <div class="margin-mode-tabs">
+    <button type="button" class="margin-mode-btn active" data-mode="krw">KRW</button>
+    <button type="button" class="margin-mode-btn" data-mode="percent">%</button>
   </div>
+
+  <input type="hidden" id="marginMode" value="krw">
+
+  <div class="sub" id="marginModeHint">
+    고정 마진 금액을 입력해 주세요.
+  </div>
+</div>
+
+  <div class="margin-mode-tabs" id="marginModeTabs">
+    <button type="button" class="margin-mode-btn active" data-mode="krw">KRW</button>
+    <button type="button" class="margin-mode-btn" data-mode="percent">%</button>
+  </div>
+
+  <input type="hidden" id="marginMode" value="krw" />
   <div class="sub" id="marginModeHint">고정 마진 금액을 입력해 주세요.</div>
 </div>
             <div class="field"><label>실중량 (g)</label><input id="actualWeight" type="number" min="0" step="1" value="0" /></div>
@@ -1622,4 +1667,5 @@ document.getElementById('resetBtn').addEventListener('click', () => {
 
 </body>
 </html>
+
 
