@@ -140,12 +140,6 @@
     .field input:focus{border-color:#5a81df;box-shadow:0 0 0 3px rgba(122,162,255,.15)}
     .field small{color:var(--muted);font-size:11px}
 
-    .margin-mode-compact{display:flex;gap:8px;margin-top:6px}
-    .margin-mode-chip{flex:1;height:32px;border-radius:12px;border:1px solid var(--line);background:#101c3b;color:#cfe0ff;font-size:12px;font-weight:800;cursor:pointer;transition:.18s ease}
-    .margin-mode-chip:hover{border-color:#5a81df;background:#122149}
-    .margin-mode-chip.active{background:linear-gradient(135deg,#8fe8ff,#7aa2ff 60%,#b39cff);color:#081021;border-color:transparent;box-shadow:0 8px 18px rgba(122,162,255,.22)}
-    .margin-mode-hint{color:var(--muted);font-size:11px;line-height:1.35;margin-top:4px}
-
     .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
 
     .results-title{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:18px 0 10px}
@@ -258,39 +252,484 @@ input[type="number"]{
     #volGuideWrap thead th{
       font-weight:800;
       text-align:center;
+      white-space:normal;
+      line-height:1.35;
     }
-    #volGuideWrap thead tr:first-child th{
-      background:rgba(255,255,255,.045);
+    #volGuideWrap thead th[rowspan="2"]{
+      background:rgba(30,44,88,.95);
+      color:#eef3ff;
     }
-    #volGuideWrap thead tr:nth-child(2) th{
-      background:rgba(255,255,255,.03);
+    #volGuideWrap thead th[colspan="2"]{
+      font-weight:800;
     }
-    #volGuideWrap tbody td:first-child,
-    #volGuideWrap tbody td:nth-child(2){
-      font-weight:700;
-      color:#e8f0ff;
+    #volGuideWrap thead th[colspan="2"]:first-of-type{
+      background:rgba(111,82,16,.38);
+      color:#ffe8a8;
+      font-weight:800;
     }
-    #volGuideWrap tbody td.cm-val{color:#9fd1ff;font-weight:700;text-align:center}
-    #volGuideWrap tbody td.kg-val{color:#ffd166;font-weight:700;text-align:center}
-    #volGuideWrap tbody tr:last-child td{border-bottom:none}
-    .vol-guide-table .cm-head{color:#9fd1ff}
-    .vol-guide-table .kg-head{color:#ffd166}
-
-    @media (max-width:720px){
-      .vol-guide-modal{width:min(96vw,1080px)}
-      .vol-guide-modal .modal-body{padding:8px 12px 14px}
-      #volGuideWrap table th,
-      #volGuideWrap table td{font-size:10px;padding:7px 8px}
+    #volGuideWrap thead th[colspan="2"]:last-of-type{
+      background:rgba(24,72,108,.48);
+      color:#bff3ff;
+      font-weight:800;
     }
-
-
-    #results .result-card .metric:nth-of-type(1){
-      margin-top:10px !important;
-      padding-top:10px !important;
-      border-top:1px dashed rgba(159,176,218,.18) !important;
+    #volGuideWrap thead th.cm-head{
+      background:rgba(111,82,16,.38);
+      color:#ffe8a8;
+      font-weight:800;
     }
-
+    #volGuideWrap thead th.kg-head{
+      background:rgba(24,72,108,.48);
+      color:#bff3ff;
+      font-weight:800;
+    }
     
+    #volGuideWrap tbody td{
+      background:rgba(8,16,37,.42);
+      text-align:center;
+      font-weight:600;
+      color:#dfe8ff;
+    }
+    #volGuideWrap tbody td:nth-child(2){
+      text-align:center;
+      white-space:normal;
+      word-break:break-word;
+      line-height:1.4;
+      font-weight:600;
+      color:#dfe8ff;
+    }
+    #volGuideWrap tbody td:first-child{
+      font-weight:800;
+      color:#ffffff;
+      white-space:normal;
+      line-height:1.35;
+      text-align:center;
+    }
+    .vol-guide-table col.col-cm{
+      background:rgba(255,214,120,.12);
+    }
+    .vol-guide-table col.col-kg{
+      background:rgba(141,231,255,.12);
+    }
+    #volGuideWrap td.cm-val{
+      color:#ffe8a8 !important;
+      font-weight:800;
+      text-align:center;
+    }
+    #volGuideWrap td.kg-val{
+      color:#bff3ff !important;
+      font-weight:800;
+      text-align:center;
+    }
+    #volGuideWrap tbody tr:last-child td{
+      border-bottom:none;
+    }
+    @media (max-width: 900px){
+      .vol-guide-modal{
+        width:min(96vw,96vw);
+        max-height:94vh;
+      }
+      .vol-guide-modal .modal-head{
+        padding:13px;
+      }
+      .vol-guide-modal .modal-body{
+        padding:12px 12px 16px;
+      }
+      .vol-guide-table col.col-market{width:14%}
+      .vol-guide-table col.col-channel{width:34%}
+      .vol-guide-table col.col-cm{width:13%}
+      .vol-guide-table col.col-kg{width:13%}
+      #volGuideWrap table th,
+      #volGuideWrap table td{
+        padding:7px 8px;
+        font-size:11px;
+      }
+    }
+
+
+
+    /* subtle scrollbars */
+    *{
+      scrollbar-width:thin;
+      scrollbar-color:rgba(159,176,218,.28) transparent;
+    }
+    *::-webkit-scrollbar{
+      width:10px;
+      height:10px;
+    }
+    *::-webkit-scrollbar-track{
+      background:transparent;
+    }
+    *::-webkit-scrollbar-thumb{
+      background:rgba(159,176,218,.22);
+      border-radius:999px;
+      border:2px solid transparent;
+      background-clip:padding-box;
+    }
+    *::-webkit-scrollbar-thumb:hover{
+      background:rgba(159,176,218,.32);
+      border:2px solid transparent;
+      background-clip:padding-box;
+    }
+
+
+    .metric.settlement{margin-top:6px;padding-top:12px;border-top:1px dashed rgba(255,255,255,.18)}
+    .metric.settlement .v{color:#fff0c6;font-size:18px}
+    .metric.gst{margin-top:6px;padding:10px 12px;border:1px dashed rgba(255,240,198,.18);border-radius:12px;background:rgba(255,214,120,.06)}
+    .metric.gst .k{color:#d8b4fe}
+    .metric.gst .v{color:#f9a8d4;font-size:14px;font-weight:800}
+    .metric .v.rec{color:#7dd3fc;font-size:14px;font-weight:800}
+
+    .top-grid > .card{display:flex;flex-direction:column}
+    .top-grid > .card .card-body{display:flex;flex-direction:column;flex:1;min-height:0}
+    .side-top{min-height:0}
+    .ad-slot{margin-top:auto;min-height:170px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;padding-top:18px}
+    .ad-inner{width:100%;max-width:330px;padding:16px;border-radius:14px;border:1px dashed rgba(255,255,255,0.25);text-align:center;background:rgba(15,25,60,0.35)}
+    .ad-title{font-weight:700;font-size:14px;margin-bottom:8px}
+    .ad-desc{font-size:11px;opacity:.8;margin-bottom:12px}
+    .ad-btn{padding:7px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.2);background:rgba(70,100,200,0.25);color:white;cursor:pointer}
+
+
+    /* result card visual hierarchy */
+    .result-card .metric:not(.gst):not(.settlement) .k{
+      font-size:10px;
+      color:#8ea3d6;
+    }
+    .result-card .metric:not(.gst):not(.settlement) .v{
+      font-size:11px;
+      color:#dfe8ff;
+      font-weight:700;
+    }
+    .result-card .metric:first-of-type .k,
+    .result-card .metric:nth-of-type(2) .k{
+      font-size:11px;
+    }
+    .result-card .metric:first-of-type .v.rec{
+      color:#7dd3fc !important;
+      font-size:14px !important;
+      font-weight:800 !important;
+    }
+    .result-card .metric:nth-of-type(2) .v.em{
+      color:#ffd166 !important;
+      font-size:15px !important;
+      font-weight:800 !important;
+    }
+
+
+    /* stronger result-card emphasis overrides */
+    #results .result-card .metric .k{
+      font-size:10px !important;
+      color:#8ea3d6 !important;
+    }
+    #results .result-card .metric .v{
+      font-size:11px !important;
+      color:#dfe8ff !important;
+      font-weight:700 !important;
+    }
+    #results .result-card .metric:nth-of-type(1) .k,
+    #results .result-card .metric:nth-of-type(2) .k{
+      font-size:11px !important;
+      color:#b9c7ea !important;
+    }
+    #results .result-card .metric:nth-of-type(1) .v{color:#FFE29A !important;
+      color:#7dd3fc !important;
+      font-size:16px !important;
+      font-weight:800 !important;
+    }
+    #results .result-card .metric:nth-of-type(2) .v{
+      color:#ffd166 !important;
+      font-size:17px !important;
+      font-weight:800 !important;
+    }
+    #results .result-card .metric.gst .k{
+      color:#d8b4fe !important;
+      font-size:11px !important;
+    }
+    #results .result-card .metric.gst .v{
+      color:#f9a8d4 !important;
+      font-size:16px !important;
+      font-weight:800 !important;
+    }
+    #results .result-card .metric.settlement .k{
+      color:#b9c7ea !important;
+      font-size:11px !important;
+    }
+    #results .result-card .metric.settlement .v{
+      color:#34d399 !important;
+      font-size:18px !important;
+      font-weight:800 !important;
+    }
+
+
+    /* sidebar layout */
+    .content-shell{
+      display:grid;
+      grid-template-columns:260px minmax(0,1fr);
+      gap:16px;
+      align-items:start;
+    }
+    .side-rail{
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      position:sticky;
+      top:18px;
+    }
+    .side-card{
+      background:linear-gradient(180deg,rgba(20,33,69,.94),rgba(12,20,42,.98));
+      border:1px solid var(--line-soft);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .side-card-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      padding:14px 14px 0;
+    }
+    .side-card-body{
+      padding:14px;
+    }
+    .guide-btn{
+      width:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      min-height:50px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(135deg,#1fb6ff 0%,#2dd4bf 55%,#60a5fa 100%);
+      color:#fff;
+      font-weight:800;
+      font-size:14px;
+      box-shadow:0 10px 22px rgba(45,212,191,.18);
+      cursor:pointer;
+    }
+    .guide-emoji{
+      width:28px;height:28px;border-radius:50%;
+      display:inline-flex;align-items:center;justify-content:center;
+      background:rgba(255,255,255,.14);
+      font-size:16px;
+    }
+    .notice-list{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .notice-item{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:8px;
+      align-items:center;
+      padding:8px 0;
+      border-bottom:1px solid rgba(159,176,218,.12);
+    }
+    .notice-item:last-child{border-bottom:none;padding-bottom:0}
+    .notice-badge{
+      font-size:10px;
+      line-height:1;
+      padding:3px 5px;
+      border-radius:999px;
+      color:#ff8b7c;
+      background:rgba(255,139,124,.12);
+      border:1px solid rgba(255,139,124,.22);
+      font-weight:700;
+    }
+    .notice-title{
+      font-size:11px;
+      color:#dfe8ff;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .notice-date{
+      font-size:10px;
+      color:var(--muted);
+      white-space:nowrap;
+    }
+    .notice-more{
+      font-size:11px;
+      color:#9ea9ff;
+      font-weight:700;
+    }
+    .side-ad-thumb{
+      width:100%;
+      aspect-ratio:1 / 1.02;
+      border-radius:12px;
+      background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      color:#cbd6ff;
+      font-size:12px;
+    }
+    .side-ad-actions{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      margin-top:10px;
+    }
+    .side-ad-actions .mini-brand{
+      font-size:11px;
+      color:#dfe8ff;
+      font-weight:800;
+    }
+    .side-ad-actions .mini-btn{
+      border:none;
+      border-radius:8px;
+      background:#2c69ff;
+      color:#fff;
+      font-size:11px;
+      padding:6px 10px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    /* final price emphasis */
+    #results .result-card .metric:nth-of-type(2) .k{
+      font-size:11px !important;
+      color:#c5d0ef !important;
+    }
+    #results .result-card .metric:nth-of-type(2) .v{
+      color:#ff8b7c !important;
+      font-size:19px !important;
+      font-weight:900 !important;
+      letter-spacing:-0.01em;
+    }
+
+    @media (max-width:1180px){
+      .content-shell{
+        grid-template-columns:1fr;
+      }
+      .side-rail{
+        position:static;
+        order:2;
+      }
+      .main-content{
+        order:1;
+      }
+    }
+
+
+    /* final price stronger emphasis */
+    #results .result-card .metric:nth-of-type(2) .v,
+    #results .result-card .metric .v.em{
+      color:#ff8b7c !important;
+      font-size:20px !important;
+      font-weight:900 !important;
+      letter-spacing:-0.01em !important;
+    }
+    #results .result-card .metric:nth-of-type(2) .k{
+      color:#c9d4f2 !important;
+      font-size:11px !important;
+      font-weight:700 !important;
+    }
+
+
+    /* recommendation vs final price emphasis */
+    #results .result-card .metric:nth-of-type(1) .v,
+    #results .result-card .metric .v.rec{
+      color:#ffd98a !important;
+      font-size:16px !important;
+      font-weight:800 !important;
+      letter-spacing:-0.01em !important;
+    }
+    #results .result-card .metric:nth-of-type(2) .v,
+    #results .result-card .metric .v.em{
+      color:#ff8b7c !important;
+      font-size:20px !important;
+      font-weight:900 !important;
+      letter-spacing:-0.01em !important;
+    }
+
+
+    /* stronger card price hierarchy fix */
+    #results .result-card .metric:nth-of-type(1) .v{color:#FFE29A !important;
+      color:#ffd98a !important;
+      font-size:16px !important;
+      font-weight:800 !important;
+      letter-spacing:-0.01em !important;
+    }
+    #results .result-card .metric:nth-of-type(2) .v{
+      color:#ff8b7c !important;
+      font-size:20px !important;
+      font-weight:900 !important;
+      letter-spacing:-0.01em !important;
+    }
+    #results .result-card .metric:nth-of-type(1) .v *{
+      color:#ffd98a !important;
+      font-size:16px !important;
+      font-weight:800 !important;
+    }
+    #results .result-card .metric:nth-of-type(2) .v *{
+      color:#ff8b7c !important;
+      font-size:20px !important;
+      font-weight:900 !important;
+    }
+
+
+    /* make recommendation/final labels equally bold */
+    #results .result-card .metric:nth-of-type(1) .k,
+    #results .result-card .metric:nth-of-type(2) .k{
+      font-weight:800 !important;
+      color:#c9d4f2 !important;
+    }
+
+
+    /* make final price exactly match recommendation size/weight */
+    #results .result-card .metric:nth-of-type(1) .v,
+    #results .result-card .metric:nth-of-type(2) .v{
+      font-size:18px !important;
+      font-weight:800 !important;
+      letter-spacing:-0.01em !important;
+    }
+    #results .result-card .metric:nth-of-type(1) .k,
+    #results .result-card .metric:nth-of-type(2) .k{
+      font-size:11px !important;
+      font-weight:800 !important;
+    }
+
+
+    /* final authoritative card styles */
+    #results .result-card .metric:nth-of-type(1) .k,
+    #results .result-card .metric:nth-of-type(2) .k{
+      font-size:11px !important;
+      font-weight:800 !important;
+      color:#c9d4f2 !important;
+    }
+    #results .result-card .metric:nth-of-type(1) .v{color:#FFE29A !important;
+      color:#FFE29A !important;
+      font-size:18px !important;
+      font-weight:800 !important;
+      letter-spacing:-0.01em !important;
+    }
+    #results .result-card .metric:nth-of-type(2) .v{
+      color:#FF8A7A !important;
+      font-size:18px !important;
+      font-weight:800 !important;
+      letter-spacing:-0.01em !important;
+    }
+    #results .result-card .metric.gst .v{
+      font-size:16px !important;
+      font-weight:800 !important;
+    }
+
+
+#results .result-card .metric:nth-of-type(2) .k{font-weight:900 !important;color:#c9d4f2 !important;}
+
+    /* authoritative top price row styling */
+    #results .result-card .metric:nth-of-type(1) .k,
+    #results .result-card .metric:nth-of-type(2) .k{
+      font-size:12px !important;
+      font-weight:900 !important;
+      color:#e7efff !important;
+      letter-spacing:-0.01em !important;
+    }
     #results .result-card .metric:nth-of-type(1) .v,
     #results .result-card .metric .v.rec{
       color:#FFE29A !important;
@@ -298,7 +737,6 @@ input[type="number"]{
       font-weight:800 !important;
       letter-spacing:-0.01em !important;
     }
-
     #results .result-card .metric:nth-of-type(2) .v,
     #results .result-card .metric .v.em{
       color:#FF8A7A !important;
@@ -306,36 +744,81 @@ input[type="number"]{
       font-weight:800 !important;
       letter-spacing:-0.01em !important;
     }
-  </style>
+</style>
 </head>
 <body>
   <div class="wrap">
-    <div class="hero">
+    <section class="hero">
       <div>
         <h1>Shopee Margin Calculator</h1>
-        <p>실제 판매자 부담 배송비 + 국가별 수수료 + 환율을 반영해서 판매가를 한 번에 확인해 보세요.</p>
+        <p>한눈에 보는 다크톤 구조 · 설정은 카드 안에서만 관리</p>
       </div>
-    </div>
+    </section>
 
-    <div class="grid top-grid">
-      <section class="card">
-        <div class="card-head"><h2>상품 정보</h2></div>
+    <div class="content-shell">
+      <aside class="side-rail">
+        <article class="side-card">
+          <div class="side-card-body">
+            <button class="guide-btn" type="button">
+              <span class="guide-emoji">💡</span>
+              <span>TOKKIWI 사용 가이드</span>
+            </button>
+          </div>
+        </article>
+
+        <article class="side-card">
+          <div class="side-card-head">
+            <h3>공지사항</h3>
+            <span class="notice-more">더보기</span>
+          </div>
+          <div class="side-card-body">
+            <div class="notice-list">
+              <div class="notice-item">
+                <span class="notice-badge">Shopee</span>
+                <span class="notice-title">[베트남 마켓] 개인 사업자(셀러) PIT 설정 안내</span>
+                <span class="notice-date">2025.03.19</span>
+              </div>
+              <div class="notice-item">
+                <span class="notice-badge">Shopee</span>
+                <span class="notice-title">[베트남 마켓] 쇼피 판매 수수료 변경 안내</span>
+                <span class="notice-date">2025.03.19</span>
+              </div>
+              <div class="notice-item">
+                <span class="notice-badge">Shopee</span>
+                <span class="notice-title">[싱가포르/말레이시아] 수수료 참고 공지</span>
+                <span class="notice-date">2025.02.25</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="side-card">
+          <div class="side-card-body">
+            <div class="side-ad-thumb">광고 이미지 영역</div>
+            <div class="side-ad-actions">
+              <span class="mini-brand">coupang</span>
+              <button class="mini-btn" type="button">주문하기 &gt;</button>
+            </div>
+          </div>
+        </article>
+      </aside>
+
+      <div class="main-content">
+    <section class="grid top-grid">
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2>상품 정보</h2>
+            <div class="sub">필수 값만 간단하게 입력</div>
+          </div>
+        </div>
         <div class="card-body">
           <div class="field-grid">
-            <div class="field"><label>상품명</label><input id="productName" placeholder="예: Lilybyred Mini Set" /></div>
+            <div class="field"><label>상품명</label><input id="productName" placeholder="예: 향수 50ml" /></div>
             <div class="field"><label>제품구매가 (KRW)</label><input id="cost" type="number" min="0" step="1" value="0" /></div>
-            <div class="field"><label>포장비 (KRW)</label><input id="pack" type="number" min="0" step="1" value="0" /></div>
+            <div class="field"><label>포장비용 (KRW)</label><input id="pack" type="number" min="0" step="1" value="0" /></div>
             <div class="field"><label>국내배송비 (KRW)</label><input id="domestic" type="number" min="0" step="1" value="0" /></div>
-            <div class="field">
-              <label>희망 마진</label>
-              <input id="margin" type="number" min="0" step="0.01" value="0" />
-              <div class="margin-mode-compact" id="marginModeTabs">
-                <button type="button" class="margin-mode-chip active" data-mode="krw">KRW</button>
-                <button type="button" class="margin-mode-chip" data-mode="percent">%</button>
-              </div>
-              <input type="hidden" id="marginMode" value="krw" />
-              <div class="margin-mode-hint" id="marginModeHint">고정 마진 금액을 입력해 주세요.</div>
-            </div>
+            <div class="field"><label>희망 마진</label><input id="margin" type="number" min="0" step="0.01" value="0" /><select id="marginMode" style="margin-top:6px;width:100%;height:26px;border-radius:8px;background:#0c1632;color:#eef3ff;border:1px solid #22376f;font-size:11px;"><option value="krw">KRW 마진</option><option value="percent">% 마진</option></select></div>
             <div class="field"><label>실중량 (g)</label><input id="actualWeight" type="number" min="0" step="1" value="0" /></div>
           </div>
 
@@ -344,109 +827,127 @@ input[type="number"]{
               <div>
                 <div class="vol-head-inline">
                   <h3>부피무게 입력</h3>
-                  <button type="button" class="help-btn" id="openVolGuide">?</button>
+                  <button class="help-btn" id="openVolGuide" type="button" aria-label="부피무게 최대 용량표 보기">?</button>
                 </div>
                 <div class="sub">가로 × 세로 × 높이 기준 · cm 단위</div>
               </div>
             </div>
-
             <div class="vol-grid">
               <div class="vol-side">
-                <div class="label">부피무게</div>
-                <div class="sub">(가로 × 세로 × 높이) / 6000</div>
+                <div class="label">부피무게</div><div class="sub">(가로 × 세로 × 높이) / 6000</div>
                 <div class="value" id="volWeightPreview">-</div>
               </div>
-
               <div class="dim-row">
                 <div class="dim-field">
-                  <label for="length">가로 cm</label>
+                  <label>가로 <span style="color:var(--muted);font-size:11px;font-weight:700">cm</span></label>
                   <div class="dim-wrap">
                     <input id="length" type="number" min="0" step="0.1" value="0" />
+                    
                   </div>
                 </div>
                 <div class="dim-field">
-                  <label for="width">세로 cm</label>
+                  <label>세로 <span style="color:var(--muted);font-size:11px;font-weight:700">cm</span></label>
                   <div class="dim-wrap">
                     <input id="width" type="number" min="0" step="0.1" value="0" />
+                    
                   </div>
                 </div>
                 <div class="dim-field">
-                  <label for="height">높이 cm</label>
+                  <label>높이 <span style="color:var(--muted);font-size:11px;font-weight:700">cm</span></label>
                   <div class="dim-wrap">
                     <input id="height" type="number" min="0" step="0.1" value="0" />
+                    
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
           <div class="toolbar">
-            <button class="btn primary" id="calcBtn">계산하기</button>
+            <button class="btn live-fx" id="calcBtn">계산하기</button>
             <button class="btn ghost" id="resetBtn">초기화</button>
           </div>
         </div>
-      </section>
+      </article>
 
-      <section class="card">
-        <div class="card-head"><h2>환율 설정</h2><button class="btn ghost" id="openFx">설정</button></div>
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2>환율 요약</h2>
+            <div class="sub">기본값 0 / 저장 후 반영</div>
+          </div>
+          <button class="btn" id="openFx">⚙️</button>
+        </div>
         <div class="card-body">
-          <div class="grid summary-grid">
-            <div class="summary-item"><div class="label">SGD</div><div class="value" id="fxChipSG">-</div></div>
-            <div class="summary-item"><div class="label">TWD</div><div class="value" id="fxChipTW">-</div></div>
-            <div class="summary-item"><div class="label">MYR</div><div class="value" id="fxChipMY">-</div></div>
-            <div class="summary-item"><div class="label">PHP</div><div class="value" id="fxChipPH">-</div></div>
-            <div class="summary-item"><div class="label">THB</div><div class="value" id="fxChipTH">-</div></div>
-            <div class="summary-item"><div class="label">VND</div><div class="value" id="fxChipVN">-</div></div>
-            <div class="summary-item"><div class="label">BRL</div><div class="value" id="fxChipBR">-</div></div>
-            <div class="summary-item"><div class="label">MXN</div><div class="value" id="fxChipMX">-</div></div>
+          <div class="side-top">
+            <div class="grid summary-grid" id="fxSummary"></div>
+            <div class="toolbar">
+              <button class="btn live-fx" id="hanaBtn">LIVE 환율 보기</button>
+            </div>
+          </div>
+          <div class="ad-slot">
+            <div class="ad-inner">
+              <div class="ad-title">광고 영역</div>
+              <div class="ad-desc">쿠팡 파트너스 광고를 여기에 넣을 수 있습니다.</div>
+              <button class="ad-btn" onclick="window.open('https://partners.coupang.com','_blank')">광고 링크</button>
+            </div>
           </div>
         </div>
-      </section>
+      </article>
 
-      <section class="card">
-        <div class="card-head"><h2>수수료 설정</h2><button class="btn ghost" id="openFee">설정</button></div>
+      <article class="card">
+        <div class="card-head">
+          <div>
+            <h2>수수료 요약</h2>
+            <div class="sub">국가별 주요 수수료 묶음 확인</div>
+          </div>
+          <button class="btn" id="openFee">⚙️</button>
+        </div>
         <div class="card-body">
-          <div class="note">국가별 Commission, Transaction, Service, Fixed fee를 자유롭게 조정할 수 있어요.</div>
-          <div class="hint-list">
-            <div class="hint-card"><div class="t">적용무게</div><div class="d">실중량과 부피무게 중 더 큰 값을 10g 단위 올림 적용</div></div>
-            <div class="hint-card"><div class="t">대만 / 말레이시아</div><div class="d">TW는 10g당 1.30 TWD, MY는 10g당 0.20 MYR 규칙 적용</div></div>
-            <div class="hint-card"><div class="t">판매가 계산</div><div class="d">총원가 + 마진을 수수료 역산해서 국가별 최종 판매가 계산</div></div>
+          <div class="side-top">
+            <div class="grid summary-grid" id="feeSummary"></div>
+            <p class="note" style="margin-top:14px">비율(%) 항목과 고정금액 항목을 각각 입력해 주세요.</p>
+          </div>
+          <div class="ad-slot">
+            <div class="ad-inner">
+              <div class="ad-title">광고 영역</div>
+              <div class="ad-desc">쿠팡 파트너스 광고를 여기에 넣을 수 있습니다.</div>
+              <button class="ad-btn" onclick="window.open('https://partners.coupang.com','_blank')">광고 링크</button>
+            </div>
           </div>
         </div>
-      </section>
-    </div>
+      </article>
+    </section>
 
-    <div class="results-title">
+    <section class="results-title">
       <div>
         <h2>국가별 계산 결과</h2>
-        <p>추천 판매가(Rec.)와 마진 포함 판매가(Margin)를 함께 표시해요.</p>
+        <p>최종판매가 = 실제 판매 기준 가격 / 추천등록가 = 최종판매가의 30% 인상</p>
+      </div>
+    </section>
+    <section class="grid result-grid" id="results"></section>
       </div>
     </div>
-
-    <section class="grid result-grid" id="results"></section>
   </div>
 
   <div class="modal-backdrop" id="fxModalWrap">
     <div class="modal fx-modal">
       <div class="modal-head">
         <div>
-          <h3>국가별 환율 설정</h3>
-          <div class="sub">현지통화 1단위당 KRW 값을 입력하세요.</div>
+          <h3>환율 설정</h3>
+          <div class="sub">저장 전 기본값 0 / LIVE 환율 또는 수동 입력</div>
         </div>
         <button class="close" data-close="fxModalWrap">×</button>
       </div>
       <div class="modal-body">
         <table class="fx-table">
-          <thead>
-            <tr><th>국가</th><th>기본값</th><th>입력값</th></tr>
-          </thead>
-          <tbody id="fxTableBody"></tbody>
+          <thead><tr><th>국가</th><th>통화</th><th>기준</th><th>환율</th></tr></thead>
+          <tbody id="fxTable"></tbody>
         </table>
         <div class="fx-footer-bar">
-          <div class="note">환율은 브라우저에 저장됩니다.</div>
+          <button class="btn live-fx" id="fxLiveBtn">LIVE 환율 보기</button>
           <div class="fx-footer-right">
-            <button class="btn live-fx" id="hanaBtn">하나은행 환율 보기</button>
-            <button class="btn primary" id="saveFx">저장</button>
+            <button class="btn ghost" data-close="fxModalWrap">닫기</button>
+            <button class="btn live-fx" id="saveFx">저장</button>
           </div>
         </div>
       </div>
@@ -458,7 +959,7 @@ input[type="number"]{
       <div class="modal-head">
         <div>
           <h3>국가별 수수료 설정</h3>
-          <div class="sub">Commission / Transaction / Service(%) + Fixed fee(현지통화)</div>
+          <div class="sub">카테고리별 상세 항목 입력</div>
         </div>
         <button class="close" data-close="feeModalWrap">×</button>
       </div>
@@ -466,129 +967,209 @@ input[type="number"]{
         <table>
           <thead>
             <tr>
-              <th>국가</th><th>Commission %</th><th>Transaction %</th><th>Service %</th><th>Fixed fee</th>
+              <th style="width:280px">항목</th>
+              <th>SG</th><th>TW</th><th>TH</th><th>MY</th><th>VN</th><th>PH</th><th>BR</th><th>MX</th>
             </tr>
           </thead>
-          <tbody id="feeTableBody"></tbody>
+          <tbody id="feeTable"></tbody>
         </table>
         <div class="footer-actions">
-          <button class="btn primary" id="saveFee">저장</button>
+          <button class="btn ghost" data-close="feeModalWrap">닫기</button>
+          <button class="btn live-fx" id="saveFee">저장</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    const markets = {
-      SG:{name:'Singapore',currency:'SGD',flag:'https://flagcdn.com/w40/sg.png'},
-      TW:{name:'Taiwan',currency:'TWD',flag:'https://flagcdn.com/w40/tw.png'},
-      MY:{name:'Malaysia',currency:'MYR',flag:'https://flagcdn.com/w40/my.png'},
-      PH:{name:'Philippines',currency:'PHP',flag:'https://flagcdn.com/w40/ph.png'},
-      TH:{name:'Thailand',currency:'THB',flag:'https://flagcdn.com/w40/th.png'},
-      VN:{name:'Vietnam',currency:'VND',flag:'https://flagcdn.com/w40/vn.png'},
-      BR:{name:'Brazil',currency:'BRL',flag:'https://flagcdn.com/w40/br.png'},
-      MX:{name:'Mexico',currency:'MXN',flag:'https://flagcdn.com/w40/mx.png'}
-    };
+    const countries = [
+      { code:'SG', name:'싱가포르', currency:'SGD', flag:'https://flagcdn.com/w40/sg.png' },
+      { code:'TW', name:'대만', currency:'TWD', flag:'https://flagcdn.com/w40/tw.png' },
+      { code:'TH', name:'태국', currency:'THB', flag:'https://flagcdn.com/w40/th.png' },
+      { code:'MY', name:'말레이시아', currency:'MYR', flag:'https://flagcdn.com/w40/my.png' },
+      { code:'VN', name:'베트남', currency:'VND', flag:'https://flagcdn.com/w40/vn.png' },
+      { code:'PH', name:'필리핀', currency:'PHP', flag:'https://flagcdn.com/w40/ph.png' },
+      { code:'BR', name:'브라질', currency:'BRL', flag:'https://flagcdn.com/w40/br.png' },
+      { code:'MX', name:'멕시코', currency:'MXN', flag:'https://flagcdn.com/w40/mx.png' },
+    ];
 
-    const roundIntMarkets = new Set(['TW','VN']);
-
-    const defaultFxRates = { SG:1115, TW:43.5, MY:310, PH:25.3, TH:31.5, VN:0.054, BR:275, MX:79 };
-    const defaultFeeRates = {
-      SG:{ commission:5.45, transaction:2.16, service:0, fixed:0 },
-      TW:{ commission:5.5, transaction:2.0, service:0, fixed:0 },
-      MY:{ commission:5.45, transaction:2.12, service:0, fixed:0 },
-      PH:{ commission:5.6, transaction:2.24, service:0, fixed:0 },
-      TH:{ commission:5.35, transaction:2.14, service:0, fixed:0 },
-      VN:{ commission:6.0, transaction:2.5, service:0, fixed:0 },
-      BR:{ commission:6.0, transaction:2.0, service:0, fixed:0 },
-      MX:{ commission:6.0, transaction:2.0, service:0, fixed:0 }
-    };
-
+    const roundIntMarkets = new Set(['TW','TH','VN','PH']);
     const storageKeyFx = 'shopeeCalcFx_v3';
     const storageKeyFee = 'shopeeCalcFee_v3';
     const storageKeyMarginMode = 'shopeeCalcMarginMode_v1';
 
-    function loadJson(key, fallback){
-      try { return JSON.parse(localStorage.getItem(key)) || fallback; }
-      catch(e){ return fallback; }
-    }
-    function saveJson(key, data){ localStorage.setItem(key, JSON.stringify(data)); }
+    const defaultFx = { SG:0, TW:0, TH:0, MY:0, VN:0, PH:0, BR:0, MX:0 };
 
-    const fxRates = loadJson(storageKeyFx, structuredClone(defaultFxRates));
-    const feeRates = loadJson(storageKeyFee, structuredClone(defaultFeeRates));
+    const feeStructure = [
+      { key:'selling_fee', label:'판매수수료 (%)' },
+      { key:'transaction_fee', label:'거래수수료 (%)' },
+      { key:'ccb_fee', label:'CCB (%)' },
+      { key:'fsp_fee', label:'FSP (%)' },
+      { key:'withdrawal_fee', label:'인출수수료 (%)' },
+      { key:'traffic_growth_fee', label:'트래픽 성장 수수료 (%)' },
+      { key:'platform_shipping_fee', label:'플랫폼 배송비 (%)' },
+      { key:'seller_pit', label:'개인 사업자(셀러) PIT (%)' },
+      { key:'platform_support_fee_fixed', label:'플랫폼 지원 수수료 (고정금액)' },
+      { key:'platform_infra_service_fixed', label:'플랫폼 인프라 서비스 (고정금액)' },
+      { key:'customs_fee_fixed', label:'세관 수수료 (고정금액)' },
+    ];
 
+    const feeLabels = {
+      selling_fee:'판매수수료',
+      transaction_fee:'거래수수료',
+      ccb_fee:'CCB',
+      fsp_fee:'FSP',
+      withdrawal_fee:'인출수수료',
+      traffic_growth_fee:'트래픽 성장 수수료',
+      platform_shipping_fee:'플랫폼 배송비',
+      seller_pit:'개인 사업자(셀러) PIT',
+      platform_support_fee_fixed:'플랫폼 지원 수수료',
+      platform_infra_service_fixed:'플랫폼 인프라 서비스',
+      customs_fee_fixed:'세관 수수료'
+    };
+
+    const defaultFeeValue = {
+      selling_fee:0,
+      transaction_fee:0,
+      ccb_fee:0,
+      fsp_fee:0,
+      withdrawal_fee:0,
+      traffic_growth_fee:0,
+      platform_shipping_fee:0,
+      seller_pit:0,
+      platform_support_fee_fixed:0,
+      platform_infra_service_fixed:0,
+      customs_fee_fixed:0
+    };
+
+    const defaultFees = Object.fromEntries(countries.map(c => [c.code, { ...defaultFeeValue }])) ;
+
+    let fxRates = loadJson(storageKeyFx, defaultFx);
+    let feeRates = loadJson(storageKeyFee, defaultFees);
     const shippingTables = {};
 
-    function round2(n){ return Math.round((Number(n)||0)*100)/100; }
-    function fmtLocal(n, code){
-      if (roundIntMarkets.has(code)) return String(Math.round(Number(n)||0));
-      return Number(n||0).toFixed(2);
+    function loadJson(key, fallback){
+      try{
+        const raw = localStorage.getItem(key);
+        return raw ? { ...fallback, ...JSON.parse(raw) } : structuredClone(fallback);
+      }catch{ return structuredClone(fallback); }
     }
-    function fmtKrw(n){ return Number(n||0).toLocaleString('ko-KR'); }
 
-    function getBaseCost(){
-      return (+document.getElementById('cost').value||0) + (+document.getElementById('pack').value||0) + (+document.getElementById('domestic').value||0);
+    function saveJson(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
+
+    function fmtSmart(num, countryCode){
+      if (!isFinite(num)) return '-';
+      if (countryCode === 'KRW') return Math.round(num).toLocaleString('ko-KR');
+      if (roundIntMarkets.has(countryCode)) return Math.round(num).toLocaleString('ko-KR');
+      const fixed = Math.abs(num) >= 100 ? 2 : 3;
+      return Number(num.toFixed(fixed)).toLocaleString('ko-KR');
     }
-    function getVolWeightKg(){
+
+    function getAppliedWeight(){
+      const actual = +document.getElementById('actualWeight').value || 0;
       const l = +document.getElementById('length').value || 0;
       const w = +document.getElementById('width').value || 0;
       const h = +document.getElementById('height').value || 0;
-      if (!(l>0 && w>0 && h>0)) return 0;
-      return (l*w*h)/6000;
+      const volumetric = (l*w*h/6000) * 1000;
+      return Math.ceil(Math.max(actual, volumetric) / 10) * 10 || 0;
     }
-    function getAppliedWeight(){
-      const actualG = +document.getElementById('actualWeight').value || 0;
-      const volG = getVolWeightKg() * 1000;
-      const applied = Math.max(actualG, volG);
-      return Math.ceil(applied / 10) * 10 || 0;
+
+    function getBaseCost(){
+      return (+document.getElementById('cost').value || 0) + (+document.getElementById('pack').value || 0) + (+document.getElementById('domestic').value || 0);
     }
-    function getKrwPerLocal(code){ return +fxRates[code] || 0; }
+
+    function getKrwPerLocal(code){
+      const fx = +fxRates[code] || 0;
+      if (!fx) return 0;
+      if (code === 'VN') return fx / 100;
+      return fx;
+    }
+
+    function getShippingCost(country, weight){
+      if (country === 'TW') return Math.ceil(weight / 10) * 1.30;
+      if (country === 'MY') return Math.ceil(weight / 10) * 0.20;
+      if (country === 'SG'){
+        const w = Math.ceil((Number(weight) || 0) / 10) * 10 || 0;
+        if (!w) return 0;
+        if (w <= 1000) return Number((w * 0.008).toFixed(2));
+        const extraBlocks = Math.ceil((w - 1000) / 100);
+        return Number((8 + extraBlocks * 0.7).toFixed(2));
+      }
+
+      const data = shippingTables[country];
+      if (!data || !weight) return 0;
+
+      if (!Array.isArray(data) && typeof data === 'object'){
+        const keys = Object.keys(data).map(Number).filter(Number.isFinite).sort((a,b)=>a-b);
+        const matchedKey = keys.find(k => weight <= k);
+        if (matchedKey == null) return 0;
+        return Number(data[String(matchedKey)] ?? data[matchedKey] ?? 0);
+      }
+
+      if (Array.isArray(data)){
+        if (!data.length) return 0;
+        const found = data.find(row => weight <= Number(row.max_weight || row.maxWeight || row.weight || 0));
+        const row = found || data[data.length - 1];
+        return Number(row.cost ?? row.price ?? row.rate ?? 0);
+      }
+
+      return 0;
+    }
+
     function totalPercentFee(code){
-      const f = feeRates[code] || {};
-      return ((+f.commission||0)+(+f.transaction||0)+(+f.service||0))/100;
+      const f = feeRates[code] || defaultFeeValue;
+      return (
+        f.selling_fee +
+        f.transaction_fee +
+        f.ccb_fee +
+        f.fsp_fee +
+        f.withdrawal_fee +
+        f.traffic_growth_fee +
+        f.platform_shipping_fee +
+        f.seller_pit
+      ) / 100;
     }
-    function totalFixedFee(code){ return +((feeRates[code]||{}).fixed || 0); }
+
+    function totalFixedFee(code){
+      const f = feeRates[code] || defaultFeeValue;
+      return (
+        (f.platform_support_fee_fixed || 0) +
+        (f.platform_infra_service_fixed || 0) +
+        (f.customs_fee_fixed || 0)
+      );
+    }
+
+    function round2(value){
+      return Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+    }
+
     function getFeeBreakdown(code, sellPriceLocal){
-      const f = feeRates[code] || {};
+      const f = feeRates[code] || defaultFeeValue;
       const rows = [];
-      if (+f.commission) rows.push({label:`Commission (${f.commission}%)`, amount:round2(sellPriceLocal*(+f.commission/100))});
-      if (+f.transaction) rows.push({label:`Transaction (${f.transaction}%)`, amount:round2(sellPriceLocal*(+f.transaction/100))});
-      if (+f.service) rows.push({label:`Service (${f.service}%)`, amount:round2(sellPriceLocal*(+f.service/100))});
-      if (+f.fixed) rows.push({label:'Fixed fee', amount:round2(+f.fixed)});
+      const percentKeys = ['selling_fee','transaction_fee','ccb_fee','fsp_fee','withdrawal_fee','traffic_growth_fee','platform_shipping_fee','seller_pit'];
+      percentKeys.forEach(key => {
+        const pct = Number(f[key] || 0);
+        if (pct <= 0) return;
+
+        let baseAmount = sellPriceLocal;
+
+        if (code === 'SG' && key === 'selling_fee') {
+          baseAmount = sellPriceLocal - (sellPriceLocal * 0.09);
+        } else if (code === 'SG' && key === 'transaction_fee') {
+          baseAmount = sellPriceLocal * 1.09;
+        }
+
+        rows.push({ key, label: feeLabels[key], amount: round2(baseAmount * (pct / 100)) });
+      });
+      ['platform_support_fee_fixed','platform_infra_service_fixed','customs_fee_fixed'].forEach(key => {
+        const fixed = Number(f[key] || 0);
+        if (fixed > 0) rows.push({ key, label: feeLabels[key], amount: round2(fixed) });
+      });
       return rows;
     }
 
     function getMarginMode(){
       return document.getElementById('marginMode')?.value || 'krw';
-    }
-    function updateMarginModeHint(){
-      const hint = document.getElementById('marginModeHint');
-      if (!hint) return;
-      hint.textContent = getMarginMode() === 'percent'
-        ? '총원가 기준 마진율을 입력해 주세요. 예: 10 = 10%'
-        : '고정 마진 금액을 입력해 주세요.';
-    }
-    function setMarginMode(mode){
-      const marginModeEl = document.getElementById('marginMode');
-      if (!marginModeEl) return;
-      marginModeEl.value = mode;
-      localStorage.setItem(storageKeyMarginMode, mode);
-      document.querySelectorAll('.margin-mode-chip').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.mode === mode);
-      });
-      updateMarginModeHint();
-    }
-
-    function getShippingCost(code, appliedWeight){
-      if (code === 'TW') return round2((appliedWeight / 10) * 1.3);
-      if (code === 'MY') return round2((appliedWeight / 10) * 0.2);
-      const table = shippingTables[code];
-      if (!table) return 0;
-      const key = String(appliedWeight);
-      if (table[key] != null) return Number(table[key]);
-      const keys = Object.keys(table).map(Number).sort((a,b)=>a-b);
-      for (const k of keys){ if (appliedWeight <= k) return Number(table[k]); }
-      return Number(table[keys[keys.length-1]]) || 0;
     }
 
     function calculateCountry(code){
@@ -602,117 +1183,111 @@ input[type="number"]{
       const percentFee = totalPercentFee(code);
       const fixedLocal = totalFixedFee(code);
       const fixedKrw = krwPerLocal ? (fixedLocal * krwPerLocal) : 0;
-
       const marginBaseKrw = baseKrw + shippingKrw + fixedKrw;
       const marginKrw = marginMode === 'percent'
-        ? (marginBaseKrw * (marginInput / 100))
+        ? marginBaseKrw * (marginInput / 100)
         : marginInput;
-
       const costKrw = marginBaseKrw + marginKrw;
-      let finalLocal = (krwPerLocal && (1 - percentFee) > 0)
-        ? (costKrw / (1 - percentFee)) / krwPerLocal
-        : 0;
-
+      let finalLocal = (krwPerLocal && (1 - percentFee) > 0) ? (costKrw / (1 - percentFee)) / krwPerLocal : 0;
       if (roundIntMarkets.has(code)) finalLocal = Math.round(finalLocal);
       else finalLocal = Number(finalLocal.toFixed(2));
-
-      const recommended = roundIntMarkets.has(code)
-        ? Math.round(finalLocal * 1.3)
-        : Number((finalLocal * 1.3).toFixed(2));
-
+      const recommended = roundIntMarkets.has(code) ? Math.round(finalLocal * 1.3) : Number((finalLocal * 1.3).toFixed(2));
       const breakdown = getFeeBreakdown(code, finalLocal);
       const feeTotalLocal = round2(breakdown.reduce((sum, row) => sum + row.amount, 0));
       const settlementLocal = round2(finalLocal - shippingLocal - feeTotalLocal);
-
-      return {
-        appliedWeight,
-        baseKrw,
-        shippingLocal,
-        shippingKrw,
-        finalLocal,
-        recommended,
-        settlementLocal,
-        breakdown,
-        feeTotalLocal,
-        marginKrw,
-        marginMode,
-        marginBaseKrw
-      };
-    }
-
-    function renderFxSummary(){
-      ['SG','TW','MY','PH','TH','VN','BR','MX'].forEach(code => {
-        const el = document.getElementById(`fxChip${code}`);
-        if (el) el.textContent = fxRates[code];
-      });
+      return { appliedWeight, baseKrw, shippingLocal, shippingKrw, finalLocal, recommended, settlementLocal, breakdown, feeTotalLocal, marginKrw, marginMode, marginBaseKrw };
     }
 
     function renderResults(){
-      const root = document.getElementById('results');
-      const appliedWeight = getAppliedWeight();
-      document.getElementById('volWeightPreview').textContent = getVolWeightKg() > 0 ? `${Number(getVolWeightKg().toFixed(3))} kg` : '-';
+      const box = document.getElementById('results');
+      box.innerHTML = '';
+      countries.forEach(c => {
+        const r = calculateCountry(c.code);
+        const item = document.createElement('article');
+        item.className = 'result-card';
 
-      root.innerHTML = Object.entries(markets).map(([code, info]) => {
-        const r = calculateCountry(code);
-        return `
-          <article class="result-card">
-            <div class="result-head">
-              <div class="result-name"><img class="flag" src="${info.flag}" alt="${code}" /> ${info.name}</div>
-              <div class="currency">${info.currency}</div>
+        const breakdownHtml = [
+          `<div class="metric"><div class="k">배송료</div><div class="v">- ${fmtSmart(r.shippingLocal, c.code)} ${c.currency}</div></div>`,
+          ...r.breakdown.map(row => `
+            <div class="metric">
+              <div class="k">${row.label}</div>
+              <div class="v">- ${fmtSmart(row.amount, c.code)} ${c.currency}</div>
             </div>
-            <div class="metric"><div class="k">추천 판매가 (Rec.)</div><div class="v rec">${fmtLocal(r.recommended, code)} ${info.currency}</div></div>
-            <div class="metric"><div class="k">마진 포함 판매가 (Margin)</div><div class="v em">${fmtLocal(r.finalLocal, code)} ${info.currency}</div></div>
-            <div class="metric"><div class="k">적용무게</div><div class="v">${appliedWeight} g</div></div>
-            <div class="metric"><div class="k">기본 원가</div><div class="v">₩ ${fmtKrw(r.baseKrw)}</div></div>
-            <div class="metric"><div class="k">해외배송비</div><div class="v">${fmtLocal(r.shippingLocal, code)} ${info.currency}</div></div>
-            <div class="metric"><div class="k">해외배송비 환산</div><div class="v">₩ ${fmtKrw(round2(r.shippingKrw))}</div></div>
-            <div class="metric"><div class="k">마진 기준 원가</div><div class="v">₩ ${fmtKrw(round2(r.marginBaseKrw))}</div></div>
-            <div class="metric"><div class="k">희망 마진</div><div class="v">₩ ${fmtKrw(round2(r.marginKrw))}${r.marginMode === 'percent' ? ` (${(+document.getElementById('margin').value || 0)}%)` : ''}</div></div>
-          </article>
+          `)
+        ].join('');
+
+        const gstHtml = c.code === 'SG'
+          ? `<div class="metric gst"><div class="k">GST 포함 표시가</div><div class="v">${(Math.round((r.finalLocal * 1.09) * 100) / 100).toFixed(2)} ${c.currency}</div></div>`
+          : '';
+
+        item.innerHTML = `
+          <div class="result-head">
+            <div class="result-name"><img class="flag" src="${c.flag}" alt="${c.code}"><span>${c.name}</span></div>
+            <div class="currency">${c.currency}</div>
+          </div>
+          <div class="metric"><div class="k"><span style="display:inline-block;font-size:12px;font-weight:900;color:#e7efff;letter-spacing:-0.01em;">추천등록가</span></div><div class="v rec"><span style="display:inline-block;color:#FFE29A !important;font-size:18px !important;font-weight:800 !important;letter-spacing:-0.01em !important;">${fmtSmart(r.recommended, c.code)} ${c.currency}</span></div></div>
+          <div class="metric"><div class="k"><span style="display:inline-block;font-size:12px;font-weight:900;color:#e7efff;letter-spacing:-0.01em;">최종판매가</span></div><div class="v em" style="color:#FF8A7A !important;font-size:18px !important;font-weight:800 !important;letter-spacing:-0.01em !important;">${fmtSmart(r.finalLocal, c.code)} ${c.currency}</div></div>
+          ${gstHtml}
+          ${breakdownHtml}
+          <div class="metric settlement"><div class="k">예상정산가</div><div class="v">${fmtSmart(r.settlementLocal, c.code)} ${c.currency}</div></div>
         `;
+        box.appendChild(item);
+      });
+    }
+
+    
+    const volWeightPreviewEl = document.getElementById('volWeightPreview');
+    function renderFxSummary(){
+      const box = document.getElementById('fxSummary');
+      box.innerHTML = countries.map(c => `
+        <div class="summary-item"><div class="label">${c.code} (${c.currency})</div><div class="value">${fmtSmart(fxRates[c.code] || 0, c.code)}</div></div>
+      `).join('');
+    }
+
+    function renderFeeSummary(){
+      const box = document.getElementById('feeSummary');
+      box.innerHTML = countries.map(c => {
+        const t = (totalPercentFee(c.code) * 100).toFixed(2);
+        return `<div class="summary-item"><div class="label">${c.code} 총 비율</div><div class="value">${t}%</div></div>`;
       }).join('');
     }
 
     function buildFxTable(){
-      const body = document.getElementById('fxTableBody');
-      body.innerHTML = Object.entries(markets).map(([code, info]) => `
+      const tb = document.getElementById('fxTable');
+      const fxBaseMap = {
+        SG: 'S$ 1 =',
+        TW: '$ 1 =',
+        TH: '฿ 1 =',
+        MY: 'RM 1 =',
+        VN: '₫ 100 =',
+        PH: '₱ 1 =',
+        BR: 'R$ 1 =',
+        MX: '$ 1 ='
+      };
+      tb.innerHTML = countries.map(c => `
         <tr>
-          <td><div class="fx-country"><img class="fx-flag" src="${info.flag}" alt="${code}" /> ${info.name} (${info.currency})</div></td>
-          <td><div class="fx-base">${defaultFxRates[code]}</div></td>
-          <td>
-            <div class="fx-input-wrap">
-              <input class="fx-input" data-fx="${code}" type="number" step="0.0001" value="${fxRates[code] ?? ''}" />
-              <span class="fx-unit">KRW / 1 ${info.currency}</span>
-            </div>
-          </td>
+          <td><div class="fx-country"><img class="fx-flag" src="${c.flag}" alt="${c.code}"><span>${c.name}</span></div></td>
+          <td>${c.currency}</td>
+          <td class="fx-base">${fxBaseMap[c.code] || `${c.currency} 1 =`}</td>
+          <td><div class="fx-input-wrap"><input class="fx-input" type="number" step="0.0001" data-fx="${c.code}" value="${fxRates[c.code] ?? ''}"><span class="fx-unit">원</span></div></td>
         </tr>
       `).join('');
     }
 
     function buildFeeTable(){
-      const body = document.getElementById('feeTableBody');
-      body.innerHTML = Object.entries(markets).map(([code, info]) => {
-        const f = feeRates[code] || {};
-        return `
-          <tr>
-            <td>${info.name} (${info.currency})</td>
-            <td><input data-fee-code="${code}" data-fee-key="commission" type="number" step="0.01" value="${f.commission ?? 0}" /></td>
-            <td><input data-fee-code="${code}" data-fee-key="transaction" type="number" step="0.01" value="${f.transaction ?? 0}" /></td>
-            <td><input data-fee-code="${code}" data-fee-key="service" type="number" step="0.01" value="${f.service ?? 0}" /></td>
-            <td><input data-fee-code="${code}" data-fee-key="fixed" type="number" step="0.01" value="${f.fixed ?? 0}" /></td>
-          </tr>
-        `;
-      }).join('');
+      const tb = document.getElementById('feeTable');
+      let html = '';
+      feeStructure.forEach(row => {
+        if (row.type === 'category') {
+          html += `<tr class="cat-row"><td colspan="9">${row.label}</td></tr>`;
+        } else {
+          html += `<tr><td>${row.label}</td>${countries.map(c => `<td><input type="number" step="0.01" data-fee-code="${c.code}" data-fee-key="${row.key}" value="${feeRates[c.code]?.[row.key] ?? 0}"></td>`).join('')}</tr>`;
+        }
+      });
+      tb.innerHTML = html;
     }
 
-    const EMBEDDED_SHIPPING_TABLES = {
-      SG:{"10":2.2,"20":2.25,"30":2.3,"40":2.35,"50":2.4,"60":2.45,"70":2.5,"80":2.55,"90":2.6,"100":2.65,"110":2.7,"120":2.75,"130":2.8,"140":2.85,"150":2.9,"160":2.95,"170":3,"180":3.05,"190":3.1,"200":3.15,"210":3.2,"220":3.25,"230":3.3,"240":3.35,"250":3.4,"260":3.45,"270":3.5,"280":3.55,"290":3.6,"300":3.65},
-      PH:{"10":58,"20":60,"30":62,"40":64,"50":66,"60":68,"70":70,"80":72,"90":74,"100":76,"110":78,"120":80,"130":82,"140":84,"150":86,"160":88,"170":90,"180":92,"190":94,"200":96,"210":98,"220":100,"230":102,"240":104,"250":106,"260":108,"270":110,"280":112,"290":114,"300":116},
-      TH:{"10":72,"20":74,"30":76,"40":78,"50":80,"60":82,"70":84,"80":86,"90":88,"100":90,"110":92,"120":94,"130":96,"140":98,"150":100,"160":102,"170":104,"180":106,"190":108,"200":110},
-      VN:{"10":12000,"20":12300,"30":12600,"40":12900,"50":13200,"60":13500,"70":13800,"80":14100,"90":14400,"100":14700,"110":15000,"120":15300,"130":15600,"140":15900,"150":16200,"160":16500,"170":16800,"180":17100,"190":17400,"200":17700},
-      BR:{"10":18.2,"20":18.5,"30":18.8,"40":19.1,"50":19.4,"60":19.7,"70":20,"80":20.3,"90":20.6,"100":20.9,"110":21.2,"120":21.5,"130":21.8,"140":22.1,"150":22.4,"160":22.7,"170":23,"180":23.3,"190":23.6,"200":23.9},
-      MX:{"10":42.2,"20":42.8,"30":43.4,"40":44,"50":44.6,"60":45.2,"70":45.8,"80":46.4,"90":47,"100":47.6,"110":48.2,"120":48.8,"130":49.4,"140":50,"150":50.6,"160":51.2,"170":51.8,"180":52.4,"190":53,"200":53.6}
-    };
+    const EMBEDDED_SHIPPING_TABLES = {"PH": {"10": 23, "20": 23, "30": 23, "40": 23, "50": 23, "60": 26, "70": 29, "80": 32, "90": 35, "100": 38, "110": 41, "120": 44, "130": 47, "140": 50, "150": 53, "160": 56, "170": 59, "180": 62, "190": 65, "200": 68, "210": 71, "220": 74, "230": 77, "240": 80, "250": 83, "260": 86, "270": 89, "280": 92, "290": 95, "300": 98, "310": 101, "320": 104, "330": 107, "340": 110, "350": 113, "360": 116, "370": 119, "380": 122, "390": 125, "400": 128, "410": 131, "420": 134, "430": 137, "440": 140, "450": 143, "460": 146, "470": 149, "480": 152, "490": 155, "500": 158, "510": 162, "520": 166, "530": 170, "540": 174, "550": 178, "560": 182, "570": 186, "580": 190, "590": 194, "600": 198, "610": 202, "620": 206, "630": 210, "640": 214, "650": 218, "660": 222, "670": 226, "680": 230, "690": 234, "700": 238, "710": 242, "720": 246, "730": 250, "740": 254, "750": 258, "760": 262, "770": 266, "780": 270, "790": 274, "800": 278, "810": 282, "820": 286, "830": 290, "840": 294, "850": 298, "860": 302, "870": 306, "880": 310, "890": 314, "900": 318, "910": 322, "920": 326, "930": 330, "940": 334, "950": 338, "960": 342, "970": 346, "980": 350, "990": 354, "1000": 358, "1010": 362, "1020": 366, "1030": 370, "1040": 374, "1050": 378, "1060": 382, "1070": 386, "1080": 390, "1090": 394, "1100": 398, "1110": 402, "1120": 406, "1130": 410, "1140": 414, "1150": 418, "1160": 422, "1170": 426, "1180": 430, "1190": 434, "1200": 438, "1210": 442, "1220": 446, "1230": 450, "1240": 454, "1250": 458, "1260": 462, "1270": 466, "1280": 470, "1290": 474, "1300": 478, "1310": 482, "1320": 486, "1330": 490, "1340": 494, "1350": 498, "1360": 502, "1370": 506, "1380": 510, "1390": 514, "1400": 518, "1410": 522, "1420": 526, "1430": 530, "1440": 534, "1450": 538, "1460": 542, "1470": 546, "1480": 550, "1490": 554, "1500": 558, "1510": 562, "1520": 566, "1530": 570, "1540": 574, "1550": 578, "1560": 582, "1570": 586, "1580": 590, "1590": 594, "1600": 598, "1610": 602, "1620": 606, "1630": 610, "1640": 614, "1650": 618, "1660": 622, "1670": 626, "1680": 630, "1690": 634, "1700": 638, "1710": 642, "1720": 646, "1730": 650, "1740": 654, "1750": 658, "1760": 662, "1770": 666, "1780": 670, "1790": 674, "1800": 678, "1810": 682, "1820": 686, "1830": 690, "1840": 694, "1850": 698, "1860": 702, "1870": 706, "1880": 710, "1890": 714, "1900": 718, "1910": 722, "1920": 726, "1930": 730, "1940": 734, "1950": 738, "1960": 742, "1970": 746, "1980": 750, "1990": 754, "2000": 758, "2010": 762, "2020": 766, "2030": 770, "2040": 774, "2050": 778, "2060": 782, "2070": 786, "2080": 790, "2090": 794, "2100": 798, "2110": 802, "2120": 806, "2130": 810, "2140": 814, "2150": 818, "2160": 822, "2170": 826, "2180": 830, "2190": 834, "2200": 838, "2210": 842, "2220": 846, "2230": 850, "2240": 854, "2250": 858, "2260": 862, "2270": 866, "2280": 870, "2290": 874, "2300": 878, "2310": 882, "2320": 886, "2330": 890, "2340": 894, "2350": 898, "2360": 902, "2370": 906, "2380": 910, "2390": 914, "2400": 918, "2410": 922, "2420": 926, "2430": 930, "2440": 934, "2450": 938, "2460": 942, "2470": 946, "2480": 950, "2490": 954, "2500": 958, "2510": 962, "2520": 966, "2530": 970, "2540": 974, "2550": 978, "2560": 982, "2570": 986, "2580": 990, "2590": 994, "2600": 998, "2610": 1002, "2620": 1006, "2630": 1010, "2640": 1014, "2650": 1018, "2660": 1022, "2670": 1026, "2680": 1030, "2690": 1034, "2700": 1038, "2710": 1042, "2720": 1046, "2730": 1050, "2740": 1054, "2750": 1058, "2760": 1062, "2770": 1066, "2780": 1070, "2790": 1074, "2800": 1078, "2810": 1082, "2820": 1086, "2830": 1090, "2840": 1094, "2850": 1098, "2860": 1102, "2870": 1106, "2880": 1110, "2890": 1114, "2900": 1118, "2910": 1122, "2920": 1126, "2930": 1130, "2940": 1134, "2950": 1138, "2960": 1142, "2970": 1146, "2980": 1150, "2990": 1154, "3000": 1158, "3010": 1162, "3020": 1166, "3030": 1170, "3040": 1174, "3050": 1178, "3060": 1182, "3070": 1186, "3080": 1190, "3090": 1194, "3100": 1198, "3110": 1202, "3120": 1206, "3130": 1210, "3140": 1214, "3150": 1218, "3160": 1222, "3170": 1226, "3180": 1230, "3190": 1234, "3200": 1238, "3210": 1242, "3220": 1246, "3230": 1250, "3240": 1254, "3250": 1258, "3260": 1262, "3270": 1266, "3280": 1270, "3290": 1274, "3300": 1278, "3310": 1282, "3320": 1286, "3330": 1290, "3340": 1294, "3350": 1298, "3360": 1302, "3370": 1306, "3380": 1310, "3390": 1314, "3400": 1318, "3410": 1322, "3420": 1326, "3430": 1330, "3440": 1334, "3450": 1338, "3460": 1342, "3470": 1346, "3480": 1350, "3490": 1354, "3500": 1358, "3510": 1362, "3520": 1366, "3530": 1370, "3540": 1374, "3550": 1378, "3560": 1382, "3570": 1386, "3580": 1390, "3590": 1394, "3600": 1398, "3610": 1402, "3620": 1406, "3630": 1410, "3640": 1414, "3650": 1418, "3660": 1422, "3670": 1426, "3680": 1430, "3690": 1434, "3700": 1438, "3710": 1442, "3720": 1446, "3730": 1450, "3740": 1454, "3750": 1458, "3760": 1462, "3770": 1466, "3780": 1470, "3790": 1474, "3800": 1478, "3810": 1482, "3820": 1486, "3830": 1490, "3840": 1494, "3850": 1498, "3860": 1502, "3870": 1506, "3880": 1510, "3890": 1514, "3900": 1518, "3910": 1522, "3920": 1526, "3930": 1530, "3940": 1534, "3950": 1538, "3960": 1542, "3970": 1546, "3980": 1550, "3990": 1554, "4000": 1558, "4010": 1562, "4020": 1566, "4030": 1570, "4040": 1574, "4050": 1578, "4060": 1582, "4070": 1586, "4080": 1590, "4090": 1594, "4100": 1598, "4110": 1602, "4120": 1606, "4130": 1610, "4140": 1614, "4150": 1618, "4160": 1622, "4170": 1626, "4180": 1630, "4190": 1634, "4200": 1638, "4210": 1642, "4220": 1646, "4230": 1650, "4240": 1654, "4250": 1658, "4260": 1662, "4270": 1666, "4280": 1670, "4290": 1674, "4300": 1678, "4310": 1682, "4320": 1686, "4330": 1690, "4340": 1694, "4350": 1698, "4360": 1702, "4370": 1706, "4380": 1710, "4390": 1714, "4400": 1718, "4410": 1722, "4420": 1726, "4430": 1730, "4440": 1734, "4450": 1738, "4460": 1742, "4470": 1746, "4480": 1750, "4490": 1754, "4500": 1758, "4510": 1762, "4520": 1766, "4530": 1770, "4540": 1774, "4550": 1778, "4560": 1782, "4570": 1786, "4580": 1790, "4590": 1794, "4600": 1798, "4610": 1802, "4620": 1806, "4630": 1810, "4640": 1814, "4650": 1818, "4660": 1822, "4670": 1826, "4680": 1830, "4690": 1834, "4700": 1838, "4710": 1842, "4720": 1846, "4730": 1850, "4740": 1854, "4750": 1858, "4760": 1862, "4770": 1866, "4780": 1870, "4790": 1874, "4800": 1878, "4810": 1882, "4820": 1886, "4830": 1890, "4840": 1894, "4850": 1898, "4860": 1902, "4870": 1906, "4880": 1910, "4890": 1914, "4900": 1918, "4910": 1922, "4920": 1926, "4930": 1930, "4940": 1934, "4950": 1938, "4960": 1942, "4970": 1946, "4980": 1950, "4990": 1954, "5000": 1958}, "VN": {"10": 5500, "20": 5500, "30": 5500, "40": 5500, "50": 5500, "60": 6600, "70": 7700, "80": 8800, "90": 9900, "100": 11000, "110": 12100, "120": 13200, "130": 14300, "140": 15400, "150": 16500, "160": 17600, "170": 18700, "180": 19800, "190": 20900, "200": 22000, "210": 23100, "220": 24200, "230": 25300, "240": 26400, "250": 27500, "260": 28600, "270": 29700, "280": 30800, "290": 31900, "300": 33000, "310": 34100, "320": 35200, "330": 36300, "340": 37400, "350": 38500, "360": 39600, "370": 40700, "380": 41800, "390": 42900, "400": 44000, "410": 45100, "420": 46200, "430": 47300, "440": 48400, "450": 49500, "460": 50600, "470": 51700, "480": 52800, "490": 53900, "500": 55000}};
 
     async function loadShippingTables(){
       Object.entries(EMBEDDED_SHIPPING_TABLES).forEach(([code, data]) => {
@@ -727,71 +1302,77 @@ input[type="number"]{
     function openModal(id){ document.getElementById(id).classList.add('show'); }
     function closeModal(id){ document.getElementById(id).classList.remove('show'); }
 
-    document.getElementById('calcBtn').addEventListener('click', renderResults);
-    document.getElementById('resetBtn').addEventListener('click', () => {
-      ['productName','cost','pack','domestic','margin','actualWeight','length','width','height'].forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.value = (id === 'margin' ? 0 : '');
-      });
-      ['cost','pack','domestic','actualWeight','length','width','height'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el && !el.value) el.value = 0;
-      });
-      setMarginMode('krw');
-      renderResults();
-    });
-
-    document.querySelectorAll('.margin-mode-chip').forEach(btn => {
-      btn.addEventListener('click', () => {
-        setMarginMode(btn.dataset.mode);
+    const marginModeEl = document.getElementById('marginMode');
+    if (marginModeEl) {
+      marginModeEl.value = localStorage.getItem(storageKeyMarginMode) || 'krw';
+      marginModeEl.addEventListener('change', () => {
+        localStorage.setItem(storageKeyMarginMode, marginModeEl.value);
         renderResults();
       });
-    });
+    }
 
+    document.getElementById('calcBtn').addEventListener('click', renderResults);
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      ['productName','cost','pack','domestic','margin','actualWeight','length','width','height'].forEach(id => document.getElementById(id).value = (id==='margin' ? 0 : ''));
+      ['cost','pack','domestic','actualWeight','length','width','height'].forEach(id => document.getElementById(id).value ||= 0);
+      if (marginModeEl) {
+        marginModeEl.value = 'krw';
+        localStorage.setItem(storageKeyMarginMode, 'krw');
+      }
+      updateVolWeightPreview();
+      renderResults();
+    });
     document.getElementById('openFx').addEventListener('click', () => { buildFxTable(); openModal('fxModalWrap'); });
     document.getElementById('openFee').addEventListener('click', () => { buildFeeTable(); openModal('feeModalWrap'); });
     document.getElementById('hanaBtn').addEventListener('click', applyLiveFx);
-    document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', e => closeModal(e.currentTarget.dataset.close)));
+    document.getElementById('fxLiveBtn')?.addEventListener('click', applyLiveFx);
 
+    document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', e => closeModal(e.currentTarget.dataset.close)));
     document.getElementById('saveFx').addEventListener('click', () => {
       document.querySelectorAll('[data-fx]').forEach(el => fxRates[el.dataset.fx] = +el.value || 0);
-      saveJson(storageKeyFx, fxRates);
-      renderFxSummary();
-      renderResults();
-      closeModal('fxModalWrap');
+      saveJson(storageKeyFx, fxRates); renderFxSummary(); renderResults(); closeModal('fxModalWrap');
     });
-
     document.getElementById('saveFee').addEventListener('click', () => {
       document.querySelectorAll('[data-fee-code]').forEach(el => {
         feeRates[el.dataset.feeCode][el.dataset.feeKey] = +el.value || 0;
       });
-      saveJson(storageKeyFee, feeRates);
-      renderResults();
-      closeModal('feeModalWrap');
+      saveJson(storageKeyFee, feeRates); renderFeeSummary(); renderResults(); closeModal('feeModalWrap');
     });
 
     document.querySelectorAll('.modal-backdrop').forEach(bg => bg.addEventListener('click', e => {
       if (e.target === bg) bg.classList.remove('show');
     }));
 
+    loadShippingTables().then(() => {
+      renderFxSummary();
+      renderFeeSummary();
+      renderResults();
+    });
+  
     document.addEventListener('click', (e) => {
       const openBtn = e.target.closest('#openVolGuide');
       if (openBtn) {
         document.getElementById('volGuideWrap')?.classList.add('show');
         return;
       }
+
       const closeBtn = e.target.closest('[data-close="volGuideWrap"]');
       if (closeBtn) {
         document.getElementById('volGuideWrap')?.classList.remove('show');
         return;
       }
+
       const wrap = document.getElementById('volGuideWrap');
-      if (wrap && e.target === wrap) wrap.classList.remove('show');
+      if (wrap && e.target === wrap) {
+        wrap.classList.remove('show');
+      }
     });
 
     function updateVolWeightPreview(){
-      const vol = getVolWeightKg();
+      const l = Number(document.getElementById('length')?.value || 0);
+      const w = Number(document.getElementById('width')?.value || 0);
+      const h = Number(document.getElementById('height')?.value || 0);
+      const vol = (l > 0 && w > 0 && h > 0) ? (l * w * h / 6000) : 0;
       const el = document.getElementById('volWeightPreview');
       if (el) el.textContent = vol > 0 ? String(Number(vol.toFixed(3))) + ' kg' : '-';
     }
@@ -799,16 +1380,11 @@ input[type="number"]{
     ['length','width','height'].forEach(id => {
       document.getElementById(id)?.addEventListener('input', updateVolWeightPreview);
     });
+    updateVolWeightPreview();
 
-    loadShippingTables().then(() => {
-      renderFxSummary();
-      const savedMode = localStorage.getItem(storageKeyMarginMode) || 'krw';
-      setMarginMode(savedMode);
-      updateVolWeightPreview();
-      renderResults();
-    });
-  </script>
+</script>
 
+  
   <div class="modal-backdrop" id="volGuideWrap">
     <div class="modal vol-guide-modal">
       <div class="modal-head">
@@ -865,6 +1441,7 @@ input[type="number"]{
                 <td class="kg-val">6</td>
                 <td class="kg-val">6</td>
               </tr>
+
               <tr>
                 <td rowspan="2">말레이시아</td>
                 <td>Doorstep delivery - Korea</td>
@@ -880,6 +1457,7 @@ input[type="number"]{
                 <td class="kg-val">30</td>
                 <td class="kg-val">30</td>
               </tr>
+
               <tr>
                 <td>태국</td>
                 <td>International Express - ส่งจากต่างประเทศ</td>
@@ -888,6 +1466,7 @@ input[type="number"]{
                 <td class="kg-val">20</td>
                 <td class="kg-val">20</td>
               </tr>
+
               <tr>
                 <td rowspan="2">필리핀</td>
                 <td>Standard International</td>
@@ -903,6 +1482,7 @@ input[type="number"]{
                 <td class="kg-val">50</td>
                 <td class="kg-val">50</td>
               </tr>
+
               <tr>
                 <td>브라질</td>
                 <td>Expresso Padrão - Coréia</td>
@@ -911,6 +1491,7 @@ input[type="number"]{
                 <td class="kg-val">30</td>
                 <td class="kg-val">30</td>
               </tr>
+
               <tr>
                 <td>멕시코</td>
                 <td>Envío Estándar - Productos Especiales - Corea</td>
@@ -919,6 +1500,7 @@ input[type="number"]{
                 <td class="kg-val">10</td>
                 <td class="kg-val">10</td>
               </tr>
+
               <tr>
                 <td rowspan="5">대만</td>
                 <td>蝦皮韓國 - 宅配</td>
@@ -955,6 +1537,7 @@ input[type="number"]{
                 <td class="kg-val">10</td>
                 <td class="kg-val">10</td>
               </tr>
+
               <tr>
                 <td rowspan="2">베트남</td>
                 <td>Standard Express - Korea</td>
@@ -973,11 +1556,14 @@ input[type="number"]{
             </tbody>
           </table>
         </div>
+
         <div class="footer-actions">
           <button class="btn ghost" data-close="volGuideWrap">닫기</button>
         </div>
       </div>
     </div>
   </div>
+
+
 </body>
 </html>
