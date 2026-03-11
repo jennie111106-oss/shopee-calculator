@@ -30,7 +30,19 @@
     .hero{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
     .hero h1{margin:0;font-size:14px;font-weight:800;letter-spacing:-.03em}
     .hero p{margin:8px 0 0;color:var(--muted);font-size:11px}
-
+.brand-logo{
+  margin:0;
+  font-size:34px;
+  font-weight:900;
+  letter-spacing:-0.06em;
+  line-height:0.95;
+  color:#ffffff;
+  background:linear-gradient(135deg,#ffffff 0%, #e8eeff 34%, #9ed8ff 68%, #7cf2d3 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  text-shadow:0 0 20px rgba(124,242,211,.10);
+}
     .grid{display:grid;gap:12px}
     .margin-mode-wrap{
   display:flex;
@@ -785,7 +797,7 @@ input[type="number"]{
   <div class="wrap">
     <section class="hero">
       <div>
-        <h1>MARGIN LAB</h1>
+        <h1 class="brand-logo">MARGIN LAB</h1>
     
       </div>
     </section>
@@ -1654,6 +1666,7 @@ if (marginModeEl) {
 
 </body>
 </html>
+
 
 
 
