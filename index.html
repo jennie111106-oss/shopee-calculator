@@ -28,14 +28,15 @@
     }
     .wrap{max-width:1320px;margin:0 auto;padding:18px 16px 34px}
     .hero{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
-    .hero h1{margin:0;font-size:14px;font-weight:800;letter-spacing:-.03em}
+    .hero h1{margin:0}
     .hero p{margin:8px 0 0;color:var(--muted);font-size:11px}
 .brand-logo{
   margin:0;
-  font-size:44px;
+  display:block;
+  font-size:50px;
   font-weight:900;
-  letter-spacing:-0.06em;
-  line-height:0.95;
+  letter-spacing:0.01em;
+  line-height:1;
   color:#ffffff;
   background:linear-gradient(135deg,#ffffff 0%, #e8eeff 34%, #9ed8ff 68%, #7cf2d3 100%);
   -webkit-background-clip:text;
@@ -537,21 +538,25 @@ input[type="number"]{
   padding:8px 10px 10px;
 }
     .guide-btn{
-      width:100%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      min-height:50px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.12);
-      background:linear-gradient(135deg,#1fb6ff 0%,#2dd4bf 55%,#60a5fa 100%);
-      color:#fff;
-      font-weight:800;
-      font-size:14px;
-      box-shadow:0 10px 22px rgba(45,212,191,.18);
-      cursor:pointer;
-    }
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  min-height:50px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background:linear-gradient(135deg,#1fb6ff 0%,#2dd4bf 55%,#60a5fa 100%);
+  color:#fff;
+  font-weight:600;
+  font-size:13px;
+  letter-spacing:-0.01em;
+  line-height:1;
+  box-shadow:0 10px 22px rgba(45,212,191,.18);
+  cursor:pointer;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
     .guide-emoji{
       width:28px;height:28px;border-radius:50%;
       display:inline-flex;align-items:center;justify-content:center;
@@ -1666,3 +1671,4 @@ if (marginModeEl) {
 
 </body>
 </html>
+
