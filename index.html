@@ -879,7 +879,7 @@ input[type="number"]{
         <div class="card-head">
           <div>
             <h2>상품 정보</h2>
-            <div class="sub">필수 값만 간단하게 입력</div>
+        
           </div>
         </div>
         <div class="card-body">
@@ -909,12 +909,10 @@ input[type="number"]{
                   <h3>부피무게 입력</h3>
                   <button class="help-btn" id="openVolGuide" type="button" aria-label="부피무게 최대 용량표 보기">?</button>
                 </div>
-                <div class="sub">가로 × 세로 × 높이 기준 · cm 단위</div>
               </div>
             </div>
             <div class="vol-grid">
               <div class="vol-side">
-                <div class="label">부피무게</div><div class="sub">(가로 × 세로 × 높이) / 6000</div>
                 <div class="value" id="volWeightPreview">-</div>
               </div>
               <div class="dim-row">
@@ -953,7 +951,6 @@ input[type="number"]{
         <div class="card-head">
           <div>
             <h2>환율 요약</h2>
-            <div class="sub">기본값 0 / 저장 후 반영</div>
           </div>
           <button class="btn" id="openFx">⚙️</button>
         </div>
@@ -978,14 +975,12 @@ input[type="number"]{
         <div class="card-head">
           <div>
             <h2>수수료 요약</h2>
-            <div class="sub">국가별 주요 수수료 묶음 확인</div>
           </div>
           <button class="btn" id="openFee">⚙️</button>
         </div>
         <div class="card-body">
           <div class="side-top">
             <div class="grid summary-grid" id="feeSummary"></div>
-            <p class="note" style="margin-top:14px">비율(%) 항목과 고정금액 항목을 각각 입력해 주세요.</p>
           </div>
           <div class="ad-slot">
             <div class="ad-inner">
@@ -1001,7 +996,6 @@ input[type="number"]{
     <section class="results-title">
       <div>
         <h2>국가별 계산 결과</h2>
-        <p>최종판매가 = 실제 판매 기준 가격 / 추천등록가 = 최종판매가의 30% 인상</p>
       </div>
     </section>
     <section class="grid result-grid" id="results"></section>
@@ -1689,6 +1683,7 @@ if (marginModeEl) {
 
 </body>
 </html>
+
 
 
 
