@@ -1162,19 +1162,13 @@ const storageKeyMarginMode = 'shopeeCalcMarginMode_v1';
     function getShippingCost(country, weight){
       if (country === 'TW') return Math.ceil(weight / 10) * 1.30;
       if (country === 'MY') return Math.ceil(weight / 10) * 0.20;
-      async function loadShippingTables(){
-  Object.entries(EMBEDDED_SHIPPING_TABLES).forEach(([code, data]) => {
-    shippingTables[code] = data;
-  });
-
-  try {
-    const res = await fetch(`shipping_sg.json?v=${Date.now()}`);
-    if (res.ok) {
-      shippingTables.SG = await res.json();
-    }
-  } catch (e) {
-    console.warn('shipping_sg.json load failed', e);
-  }
+      if (country === 'SG'){
+  const w = Math.ceil((Number(weight) || 0) / 10) * 10 || 0;
+  if (!w) return 0;
+  if (w <= 50) return 0.80;
+  if (w <= 1000) return Number((0.80 + ((w - 50) / 10) * 0.08).toFixed(2));
+  const extraBlocks = Math.ceil((w - 1000) / 100);
+  return Number((8.40 + extraBlocks * 0.70).toFixed(2));
 }
 
       const data = shippingTables[country];
