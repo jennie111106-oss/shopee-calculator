@@ -1160,12 +1160,18 @@ const storageKeyMarginMode = 'shopeeCalcMarginMode_v1';
     }
 
     function getShippingCost(country, weight){
-  if (country === 'TW') return Math.ceil(weight / 10) * 1.30;
-  if (country === 'MY') return Math.ceil(weight / 10) * 0.20;
+      if (country === 'TW') return Math.ceil(weight / 10) * 1.30;
+      if (country === 'MY') return Math.ceil(weight / 10) * 0.20;
+      if (country === 'SG'){
+        const w = Math.ceil((Number(weight) || 0) / 10) * 10 || 0;
+        if (!w) return 0;
+        if (w <= 1000) return Number((w * 0.008).toFixed(2));
+        const extraBlocks = Math.ceil((w - 1000) / 100);
+        return Number((8 + extraBlocks * 0.7).toFixed(2));
+      }
 
-  const data = shippingTables[country];
-  if (!data || !weight) return 0;
-
+      const data = shippingTables[country];
+      if (!data || !weight) return 0;
 
       // object 형태: { "400": 3.2, "500": 3.8 }
       if (!Array.isArray(data) && typeof data === 'object'){
@@ -1677,9 +1683,3 @@ if (marginModeEl) {
 
 </body>
 </html>
-
-
-
-
-
-
