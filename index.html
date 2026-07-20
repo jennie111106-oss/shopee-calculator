@@ -1173,12 +1173,17 @@ input[type="number"]{
 
     function saveJson(key, value){ localStorage.setItem(key, JSON.stringify(value)); }
 
-    function fmtSmart(num, countryCode){
+    function fmtSmart(num, countryCode, forceDecimals = false){
       if (!isFinite(num)) return '-';
       if (countryCode === 'KRW') return Math.round(num).toLocaleString('ko-KR');
-      if (roundIntMarkets.has(countryCode)) return Math.round(num).toLocaleString('ko-KR');
-      const fixed = Math.abs(num) >= 100 ? 2 : 3;
-      return Number(num.toFixed(fixed)).toLocaleString('ko-KR');
+      if (roundIntMarkets.has(countryCode) && !forceDecimals) {
+        return Math.round(num).toLocaleString('ko-KR');
+      }
+      // 화면 표시는 최대 소수점 둘째 자리까지만 반올림하고,
+      // 불필요한 0은 제거한다. 예: 2.002 → 2, 6.551 → 6.55
+      return Number(Number(num).toFixed(2)).toLocaleString('ko-KR', {
+        maximumFractionDigits: 2
+      });
     }
 
     function getAppliedWeight(){
@@ -1312,13 +1317,14 @@ input[type="number"]{
       const payoneerRate = Number((feeRates[code] || defaultFeeValue).withdrawal_fee || 0) / 100;
       const payoneerFeeExact = Math.max(0, shopeeSettlementLocal) * payoneerRate;
       const receivedLocal = Math.max(0, shopeeSettlementLocal) * (1 - payoneerRate);
-      const payoneerFeeDisplay = roundCurrency(code, payoneerFeeExact);
-
       if (payoneerRate > 0) {
         breakdown.push({
           key:'withdrawal_fee',
           label:feeLabels.withdrawal_fee,
-          amount:payoneerFeeDisplay
+          // Payoneer는 Shopee 정산액의 0.9%를 정확값으로 계산한다.
+          // TWD/THB처럼 일반 항목을 정수로 보여주는 국가도 이 항목은 소수 둘째 자리까지 표시한다.
+          amount:payoneerFeeExact,
+          forceDecimals:true
         });
       }
 
@@ -1423,7 +1429,7 @@ input[type="number"]{
           ...r.breakdown.map(row => `
             <div class="metric">
               <div class="k">${row.label}</div>
-              <div class="v">- ${fmtSmart(row.amount, c.code)} ${c.currency}</div>
+              <div class="v">- ${fmtSmart(row.amount, c.code, row.forceDecimals === true)} ${c.currency}</div>
             </div>
           `)
         ].join('');
